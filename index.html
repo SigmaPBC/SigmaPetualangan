@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Belajar Ceria ✨</title>
+    <style>
+        :root { 
+            --bg: #F0F9FF; 
+            --pink: #FF87B2; 
+            --yellow: #FFDE59;
+            --blue: #5CE1E6;
+            --text: #5A5A5A; 
+        }
+        
+        body { 
+            font-family: 'Arial Rounded MT Bold', sans-serif; 
+            background: var(--bg); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 15px;
+        }
+
+        /* LANDING PAGE STYLE */
+        #start-screen {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 40px;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 15px 0 #DDEEFA;
+            border: 8px solid white;
+        }
+
+        .hero-img { font-size: 80px; margin-bottom: 10px; }
+        
+        h2.title { 
+            color: var(--pink); 
+            font-size: 2rem; 
+            margin: 0; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .sub-title { color: #888; margin-bottom: 20px; display: block; }
+
+        .instruction-box {
+            background: #FFF9E3;
+            border: 2px dashed #FFDE59;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* BUTTONS */
+        .btn-play {
+            background: var(--pink);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #e06a94;
+            transition: 0.2s;
+            width: 80%;
+        }
+
+        .btn-play:active { transform: translateY(3px); box-shadow: 0 3px 0 #e06a94; }
+
+        /* GAME AREA */
+        #game-container { display: none; width: 100%; max-width: 500px; flex-direction: column; align-items: center; }
+        
+        .header-box { text-align: center; margin-bottom: 20px; }
+        .lvl-badge { background: var(--yellow); padding: 5px 15px; border-radius: 15px; font-weight: bold; color: #856404; font-size: 0.8rem; }
+        
+        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .column { display: flex; flex-direction: column; gap: 12px; }
+        
+        .card { 
+            background: white; 
+            border: 3px solid #E3F2FD; 
+            border-radius: 20px; 
+            padding: 15px; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 75px; 
+            box-shadow: 0 5px 0 #E3F2FD; 
+            text-align: center;
+        }
+        
+        .card span { font-size: 0.95rem; font-weight: bold; color: var(--text); }
+        .card .story-text { font-size: 0.8rem; line-height: 1.2; color: #444; }
+        
+        .selected { border-color: var(--blue); background: #E0F7FA; transform: scale(1.05); }
+        .matched { background: #E8F5E9 !important; border-color: #A5D6A7 !important; opacity: 0.3; cursor: default; box-shadow: none !important; }
+        .wrong { background: #FFEBEE; border-color: #FFCDD2; animation: shake 0.3s; }
+
+        @keyframes shake { 0%, 100% {transform:translateX(0);} 25% {transform:translateX(-5px);} 75% {transform:translateX(5px);} }
+        #next-btn { display: none; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <div class="hero-img">🧙‍♂️</div>
+        <h2 class="title">PETUALANGAN</h2>
+        <span class="sub-title">BELAJAR CERIA</span>
+        
+        <div class="instruction-box">
+            Ayo kerjakan games ini dengan mencari pasangan yang cocok!<br><br>
+            <b>Caranya:</b> Klik kotak di sebelah kiri, lalu cari jawabannya di sebelah kanan.
+        </div>
+
+        <button class="btn-play" onclick="startGame()">MULAI BERMAIN</button>
+    </div>
+
+    <div id="game-container">
+        <div class="header-box">
+            <div class="lvl-badge" id="lvl-badge">LEVEL 1</div>
+            <h1 id="lvl-title">Part 1</h1>
+            <div style="color:#888; font-size:0.85rem; margin-top:5px;" id="instr-text">...</div>
+        </div>
+
+        <div class="game-grid">
+            <div class="column" id="left-col"></div>
+            <div class="column" id="right-col"></div>
+        </div>
+
+        <button id="next-btn" class="btn-play" onclick="nextLevel()">LANJUT ➔</button>
+    </div>
+
+<script>
+    const levels = [
+        {
+            title: "Huruf Vokal A, I, U, E, O",
+            instr: "Lengkapi ejaan kata benda ini!",
+            // DI SINI DATA SUDAH DISALANG-SELING (A - U - I - O - E)
+            data: [
+                { l: "🎒 T _ S", r: "Huruf A", id: 1 },
+                { l: "📖 B _ K U", r: "Huruf U", id: 2 },
+                { l: "🧢 T O P _", r: "Huruf I", id: 3 },
+                { l: "⚽ B _ L A", r: "Huruf O", id: 4 },
+                { l: "✏️ P _ N S I L", r: "Huruf E", id: 5 }
+            ]
+        },
+        {
+            title: "Dunia Hewan",
+            instr: "Pasangkan Gambar dan Nama Hewan!",
+            data: [
+                { l: "🦒", r: "JERAPAH", id: 6 },
+                { l: "🐘", r: "GAJAH", id: 7 },
+                { l: "🦁", r: "SINGA", id: 8 },
+                { l: "🐒", r: "MONYET", id: 9 },
+                { l: "🐢", r: "KURA-KURA", id: 10 },
+                { l: "🦓", r: "ZEBRA", id: 11 }
+            ]
+        },
+        {
+            title: "Huruf Depan",
+            instr: "Cari huruf awal benda ini!",
+            data: [
+                { l: "🏠 RUMAH", r: "AWALAN R", id: 12 },
+                { l: "🚲 SEPEDA", r: "AWALAN S", id: 13 },
+                { l: "🍋 LEMON", r: "AWALAN L", id: 14 },
+                { l: "🍦 ES KRIM", r: "AWALAN E", id: 15 },
+                { l: "🍩 DONAT", r: "AWALAN D", id: 16 },
+                { l: "🍍 NANAS", r: "AWALAN N", id: 17 }
+            ]
+        },
+        {
+            title: "Pasangan Benda",
+            instr: "Mana pasangan yang serasi?",
+            data: [
+                { l: "Sikat Gigi 🪥", r: "Odol 🦷", id: 18 },
+                { l: "Sepatu 👟", r: "Kaos Kaki 🧦", id: 19 },
+                { l: "Buku 📖", r: "Pensil ✏️", id: 20 },
+                { l: "Meja 🪑", r: "Kursi 🛋️", id: 21 },
+                { l: "Hujan 🌧️", r: "Payung 🌂", id: 22 },
+                { l: "Kompor 🍳", r: "Wajan 🥘", id: 23 }
+            ]
+        },
+        {
+            title: "Matematika Ceria",
+            instr: "Ayo hitung belanjaan Ibu!",
+            data: [
+                { l: "🥚 Ibu ke pasar membeli 5 telur, lalu membeli lagi 2 telur.", r: "JADI 7", id: 24 },
+                { l: "🍎 Nenek membawa 10 apel, dimakan Kakak 4.", r: "SISA 6", id: 25 },
+                { l: "🍬 Adik mempunyai 3 permen, Ibu memberi 5 lagi.", r: "JADI 8", id: 26 },
+                { l: "🍩 Ada 9 donat di meja, dimakan Ayah 5.", r: "SISA 4", id: 27 },
+                { l: "🍌 Di rak buah ada 2 pisang hijau & 3 pisang kuning.", r: "TOTAL 5", id: 28 },
+                { l: "🥕 Ada 12 wortel, dimasak Ibu 3 wortel.", r: "SISA 9", id: 29 }
+            ]
+        }
+    ];
+
+    let currentLvl = 0, selectedId = null, matches = 0;
+
+    function startGame() {
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('game-container').style.display = 'flex';
+        initLevel();
+    }
+
+    function initLevel() {
+        const lvl = levels[currentLvl];
+        document.getElementById('lvl-badge').innerText = `LEVEL ${currentLvl + 1}`;
+        document.getElementById('lvl-title').innerText = lvl.title;
+        document.getElementById('instr-text').innerText = lvl.instr;
+        document.getElementById('next-btn').style.display = 'none';
+        matches = 0; selectedId = null;
+        
+        const lCol = document.getElementById('left-col'), rCol = document.getElementById('right-col');
+        lCol.innerHTML = ''; rCol.innerHTML = '';
+
+        let leftItems = lvl.data.map(d => ({c: d.l, id: d.id})).sort(() => Math.random() - 0.5);
+        let rightItems = lvl.data.map(d => ({c: d.r, id: d.id})).sort(() => Math.random() - 0.5);
+
+        leftItems.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = item.c.length > 25 ? `<span class="story-text">${item.c}</span>` : `<span>${item.c}</span>`;
+            div.onclick = () => {
+                if (div.classList.contains('matched')) return;
+                document.querySelectorAll('#left-col .card').forEach(c => c.classList.remove('selected'));
+                div.classList.add('selected'); selectedId = item.id;
+            };
+            lCol.appendChild(div);
+        });
+
+        rightItems.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `<span>${item.c}</span>`;
+            div.onclick = () => {
+                if (div.classList.contains('matched') || !selectedId) return;
+                if (selectedId === item.id) {
+                    div.classList.add('matched');
+                    document.querySelector('.selected').classList.add('matched');
+                    document.querySelector('.selected').classList.remove('selected');
+                    selectedId = null; matches++;
+                    if (matches === lvl.data.length) document.getElementById('next-btn').style.display = 'block';
+                } else {
+                    div.classList.add('wrong'); setTimeout(() => div.classList.remove('wrong'), 400);
+                }
+            };
+            rCol.appendChild(div);
+        });
+    }
+
+    function nextLevel() {
+        currentLvl++;
+        if (currentLvl < levels.length) initLevel();
+        else {
+            document.getElementById('game-container').innerHTML = `
+                <div style='text-align:center; background:white; padding:40px; border-radius:30px; box-shadow:0 10px 0 #DDEEFA;'>
+                    <div style='font-size:4rem;'>🏆</div>
+                    <h2 style='color:var(--pink)'>LUAR BIASA!</h2>
+                    <p style='color:#666'>Kamu telah menyelesaikan semua tantangan!</p>
+                    <button class="btn-play" onclick="location.reload()">MAIN LAGI</button>
+                </div>`;
+        }
+    }
+</script>
+</body>
+</html>
