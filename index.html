@@ -1,276 +1,690 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Petualangan Belajar Ceria ✨</title>
-    <style>
-        :root { 
-            --bg: #F0F9FF; 
-            --pink: #FF87B2; 
-            --yellow: #FFDE59;
-            --blue: #5CE1E6;
-            --text: #5A5A5A; 
-        }
-        
-        body { 
-            font-family: 'Arial Rounded MT Bold', sans-serif; 
-            background: var(--bg); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            padding: 15px;
-        }
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motorik Halus Anak 4-6 Tahun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* LANDING PAGE STYLE */
-        #start-screen {
-            background: white;
-            width: 100%;
-            max-width: 400px;
-            border-radius: 40px;
-            padding: 40px 20px;
-            text-align: center;
-            box-shadow: 0 15px 0 #DDEEFA;
-            border: 8px solid white;
-        }
+    body {
+      box-sizing: border-box;
+      font-family: 'Fredoka', sans-serif;
+    }
 
-        .hero-img { font-size: 80px; margin-bottom: 10px; }
-        
-        h2.title { 
-            color: var(--pink); 
-            font-size: 2rem; 
-            margin: 0; 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .sub-title { color: #888; margin-bottom: 20px; display: block; }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Nunito', sans-serif;
+    }
 
-        .instruction-box {
-            background: #FFF9E3;
-            border: 2px dashed #FFDE59;
-            border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 30px;
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
+    #app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
 
-        /* BUTTONS */
-        .btn-play {
-            background: var(--pink);
-            color: white;
-            border: none;
-            padding: 18px 50px;
-            border-radius: 50px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 6px 0 #e06a94;
-            transition: 0.2s;
-            width: 80%;
-        }
+    .screen {
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+    }
 
-        .btn-play:active { transform: translateY(3px); box-shadow: 0 3px 0 #e06a94; }
+    .screen.active {
+      display: flex;
+    }
 
-        /* GAME AREA */
-        #game-container { display: none; width: 100%; max-width: 500px; flex-direction: column; align-items: center; }
-        
-        .header-box { text-align: center; margin-bottom: 20px; }
-        .lvl-badge { background: var(--yellow); padding: 5px 15px; border-radius: 15px; font-weight: bold; color: #856404; font-size: 0.8rem; }
-        
-        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-        .column { display: flex; flex-direction: column; gap: 12px; }
-        
-        .card { 
-            background: white; 
-            border: 3px solid #E3F2FD; 
-            border-radius: 20px; 
-            padding: 15px; 
-            cursor: pointer; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 75px; 
-            box-shadow: 0 5px 0 #E3F2FD; 
-            text-align: center;
-        }
-        
-        .card span { font-size: 0.95rem; font-weight: bold; color: var(--text); }
-        .card .story-text { font-size: 0.8rem; line-height: 1.2; color: #444; }
-        
-        .selected { border-color: var(--blue); background: #E0F7FA; transform: scale(1.05); }
-        .matched { background: #E8F5E9 !important; border-color: #A5D6A7 !important; opacity: 0.3; cursor: default; box-shadow: none !important; }
-        .wrong { background: #FFEBEE; border-color: #FFCDD2; animation: shake 0.3s; }
+    .activity-btn {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      border-radius: 1rem;
+    }
 
-        @keyframes shake { 0%, 100% {transform:translateX(0);} 25% {transform:translateX(-5px);} 75% {transform:translateX(5px);} }
-        #next-btn { display: none; margin-top: 30px; }
-    </style>
-</head>
-<body>
+    .activity-btn:hover {
+      transform: translateY(-8px) scale(1.05);
+    }
 
-    <div id="start-screen">
-        <div class="hero-img">🧙‍♂️</div>
-        <h2 class="title">PETUALANGAN</h2>
-        <span class="sub-title">BELAJAR CERIA</span>
-        
-        <div class="instruction-box">
-            Ayo kerjakan games ini dengan mencari pasangan yang cocok!<br><br>
-            <b>Caranya:</b> Klik kotak di sebelah kiri, lalu cari jawabannya di sebelah kanan.
-        </div>
+    .activity-btn:active {
+      transform: translateY(-2px);
+    }
 
-        <button class="btn-play" onclick="startGame()">MULAI BERMAIN</button>
+    .nav-btn {
+      cursor: pointer;
+      border: none;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .drawing-canvas {
+      touch-action: none;
+      cursor: crosshair;
+      background: white;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app"><!-- HOME SCREEN -->
+   <div id="home-screen" class="screen active" style="background: linear-gradient(180deg, #FFF5E6 0%, #FFE8D6 100%); padding: 2rem 1rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+     <div style="font-size: 3.5rem; margin-bottom: 1rem; animation: bounce 1s infinite;">
+      ✏️
+     </div>
+     <h1 id="main-title" style="color: #D97706; font-size: 2.5rem; margin: 0 0 0.5rem 0;">Motorik Halus Anak</h1>
+     <p style="color: #EC9B6F; font-size: 1.25rem; margin: 0;">Bermain &amp; Belajar Menulis 🎉</p>
     </div>
-
-    <div id="game-container">
-        <div class="header-box">
-            <div class="lvl-badge" id="lvl-badge">LEVEL 1</div>
-            <h1 id="lvl-title">Part 1</h1>
-            <div style="color:#888; font-size:0.85rem; margin-top:5px;" id="instr-text">...</div>
-        </div>
-
-        <div class="game-grid">
-            <div class="column" id="left-col"></div>
-            <div class="column" id="right-col"></div>
-        </div>
-
-        <button id="next-btn" class="btn-play" onclick="nextLevel()">LANJUT ➔</button>
+    <div style="max-width: 1200px; margin: 0 auto;"><!-- Koordinasi Mata & Tangan -->
+     <h2 style="color: #D97706; font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 1rem 0;">1️⃣ Koordinasi Mata &amp; Tangan</h2>
+     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-bottom: 2rem;"><button class="activity-btn" style="background: linear-gradient(135deg, #FECACA 0%, #FCA5A5 100%); padding: 1rem; color: white;" onclick="startAct('coordination','dotpath')">
+       <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        🔵
+       </div>
+       <div style="font-weight: bold; font-size: 0.875rem;">
+        Jalan Titik
+       </div></button> <button class="activity-btn" style="background: linear-gradient(135deg, #D8F3D8 0%, #C2EDBE 100%); padding: 1rem; color: white;" onclick="startAct('coordination','tunnel')">
+       <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        🚗
+       </div>
+       <div style="font-weight: bold; font-size: 0.875rem;">
+        Terowongan
+       </div></button> <button class="activity-btn" style="background: linear-gradient(135deg, #BAE6FD 0%, #7DD3FC 100%); padding: 1rem; color: white;" onclick="startAct('coordination','maze')">
+       <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        🌀
+       </div>
+       <div style="font-weight: bold; font-size: 0.875rem;">
+        Labirin
+       </div></button> <button class="activity-btn" style="background: linear-gradient(135deg, #FED7AA 0%, #FDBA74 100%); padding: 1rem; color: white;" onclick="startAct('coordination','target')">
+       <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        🎯
+       </div>
+       <div style="font-weight: bold; font-size: 0.875rem;">
+        Sasaran
+       </div></button>
+     </div><!-- Pola Pattern -->
+     <h2 style="color: #D97706; font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 1rem 0;">2️⃣ Pola Pattern</h2>
+     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-bottom: 2rem;"><button class="activity-btn" style="background: linear-gradient(135deg, #F8B4D6 0%, #F5A3CA 100%); padding: 1rem; color: white;" onclick="startAct('pattern','triangle')">
+       <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        △
+       </div>
+       <div style="font-weight: bold; font-size: 0.875rem;">
+        Segitiga
+       </div></button> <button class="activity-btn" style="background: linear-gradient(135deg, #E0BBE4 0%, #D8A5D4 100%); padding: 1rem; color: white;" onclick="startAct('pattern','square')">
+       <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        □
+       </div>
+       <div style="font-weight: bold; font-size: 0.875rem;">
+        Persegi
+       </div></button> <button class="activity-btn" style="background: linear-gradient(135deg, #C7E9C0 0%, #B3DEBA 100%); padding: 1rem; color: white;" onclick="startAct('pattern','circle')">
+       <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        ◯
+       </div>
+       <div style="font-weight: bold; font-size: 0.875rem;">
+        Lingkaran
+       </div></button> <button class="activity-btn" style="background: linear-gradient(135deg, #FFE0B2 0%, #FFD8A0 100%); padding: 1rem; color: white;" onclick="startAct('pattern','repeat')">
+       <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        〰️
+       </div>
+       <div style="font-weight: bold; font-size: 0.875rem;">
+        Garis Berulang
+       </div></button>
+     </div><!-- Angka -->
+     <h2 style="color: #D97706; font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 1rem 0;">3️⃣ Pra-Menulis Angka</h2>
+     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.75rem; margin-bottom: 2rem;"><button class="activity-btn" style="background: linear-gradient(135deg, #FCA5A5 0%, #FB8C8C 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number1')">1️⃣ Angka 1</button> <button class="activity-btn" style="background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number2')">2️⃣ Angka 2</button> <button class="activity-btn" style="background: linear-gradient(135deg, #86EFAC 0%, #6EE7B7 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number3')">3️⃣ Angka 3</button> <button class="activity-btn" style="background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number4')">4️⃣ Angka 4</button> <button class="activity-btn" style="background: linear-gradient(135deg, #C084FC 0%, #A855F7 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number5')">5️⃣ Angka 5</button> <button class="activity-btn" style="background: linear-gradient(135deg, #FB7185 0%, #F43F5E 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number6')">6️⃣ Angka 6</button> <button class="activity-btn" style="background: linear-gradient(135deg, #F97316 0%, #EA580C 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number7')">7️⃣ Angka 7</button> <button class="activity-btn" style="background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number8')">8️⃣ Angka 8</button> <button class="activity-btn" style="background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number9')">9️⃣ Angka 9</button> <button class="activity-btn" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('number','number10')">🔟 Angka 10</button>
+     </div><!-- Huruf -->
+     <h2 style="color: #D97706; font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 1rem 0;">4️⃣ Pra-Menulis Huruf Vokal</h2>
+     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.75rem; margin-bottom: 3rem;"><button class="activity-btn" style="background: linear-gradient(135deg, #FCA5A5 0%, #FB8C8C 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('letter','letterA')">Aa Huruf A</button> <button class="activity-btn" style="background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('letter','letterE')">Ee Huruf E</button> <button class="activity-btn" style="background: linear-gradient(135deg, #86EFAC 0%, #6EE7B7 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('letter','letterI')">Ii Huruf I</button> <button class="activity-btn" style="background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('letter','letterO')">Oo Huruf O</button> <button class="activity-btn" style="background: linear-gradient(135deg, #C084FC 0%, #A855F7 100%); padding: 1rem; color: white; font-weight: bold;" onclick="startAct('letter','letterU')">Uu Huruf U</button>
+     </div>
     </div>
+    <div style="text-align: center;">
+     <div style="font-size: 3.5rem; margin-bottom: 1rem; animation: bounce 1s infinite;">
+      🐰
+     </div>
+     <p id="encouragement" style="color: #EC9B6F; font-size: 1.125rem; font-weight: bold; margin: 0 0 1rem 0;">Kamu pasti bisa! 💪</p>
+    </div>
+   </div><!-- ACTIVITY SCREEN -->
+   <div id="activity-screen" class="screen" style="background: #FFFBF5;">
+    <div style="background: white; padding: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; gap: 1rem;"><button id="back-btn" class="nav-btn" style="background: #FB7185; color: white;">← Kembali</button>
+     <h2 id="activity-title" style="color: #D97706; margin: 0; flex: 1; text-align: center; font-size: 1.5rem;">Aktivitas</h2><button id="clear-btn" class="nav-btn" style="background: #3B82F6; color: white;">🗑️ Hapus</button>
+    </div>
+    <div style="background: rgba(5, 150, 105, 0.1); padding: 1rem; text-align: center;">
+     <p id="instruction" style="color: #3D405B; font-weight: 600; margin: 0; font-size: 1.125rem;">Instruksi akan ditampilkan di sini</p>
+    </div>
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow: hidden; position: relative;">
+     <svg id="drawing-canvas" class="drawing-canvas" viewbox="0 0 600 450" preserveaspectratio="xMidYMid slice" style="border-radius: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 100%; max-height: 100%;"><g id="guide-layer"></g> <g id="drawing-layer"></g>
+     </svg>
+     <div id="completion-overlay" class="hidden" style="position: absolute; inset: 0; background: rgba(255,255,255,0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 1.5rem; z-index: 50;">
+      <div style="font-size: 3.5rem; margin-bottom: 1rem; animation: bounce 1s infinite;">
+       🌟
+      </div>
+      <h3 style="color: #D97706; font-size: 1.875rem; font-weight: bold; margin: 0 0 0.5rem 0;">Hebat Sekali!</h3>
+      <p style="color: #EC9B6F; font-size: 1.125rem; font-weight: 600; margin: 0 0 1.5rem 0;">Kamu berhasil! 🎉</p>
+      <div style="display: flex; gap: 0.75rem;"><button id="retry-btn" class="nav-btn" style="background: #86EFAC; color: #3D405B; font-weight: bold;">🔄 Ulangi</button> <button id="next-btn" class="nav-btn" style="background: #3B82F6; color: white; font-weight: bold;">➡️ Lanjut</button>
+      </div>
+     </div>
+    </div>
+    <div style="text-align: center; padding: 1rem;">
+     <div style="display: inline-block; background: #F59E0B; color: white; padding: 0.5rem 1.5rem; border-radius: 9999px; font-weight: bold;">
+      Level <span id="level-num">1</span> dari <span id="level-total">2</span>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const config = {
+      app_title: 'Motorik Halus Anak 4-6 Tahun',
+      encouragement_text: 'Kamu pasti bisa! 💪'
+    };
 
-<script>
-    const levels = [
-        {
-            title: "Huruf Vokal A, I, U, E, O",
-            instr: "Lengkapi ejaan kata benda ini!",
-            // DI SINI DATA SUDAH DISALANG-SELING (A - U - I - O - E)
-            data: [
-                { l: "🎒 T _ S", r: "Huruf A", id: 1 },
-                { l: "📖 B _ K U", r: "Huruf U", id: 2 },
-                { l: "🧢 T O P _", r: "Huruf I", id: 3 },
-                { l: "⚽ B _ L A", r: "Huruf O", id: 4 },
-                { l: "✏️ P _ N S I L", r: "Huruf E", id: 5 }
-            ]
-        },
-        {
-            title: "Dunia Hewan",
-            instr: "Pasangkan Gambar dan Nama Hewan!",
-            data: [
-                { l: "🦒", r: "JERAPAH", id: 6 },
-                { l: "🐘", r: "GAJAH", id: 7 },
-                { l: "🦁", r: "SINGA", id: 8 },
-                { l: "🐒", r: "MONYET", id: 9 },
-                { l: "🐢", r: "KURA-KURA", id: 10 },
-                { l: "🦓", r: "ZEBRA", id: 11 }
-            ]
-        },
-        {
-            title: "Huruf Depan",
-            instr: "Cari huruf awal benda ini!",
-            data: [
-                { l: "🏠 RUMAH", r: "AWALAN R", id: 12 },
-                { l: "🚲 SEPEDA", r: "AWALAN S", id: 13 },
-                { l: "🍋 LEMON", r: "AWALAN L", id: 14 },
-                { l: "🍦 ES KRIM", r: "AWALAN E", id: 15 },
-                { l: "🍩 DONAT", r: "AWALAN D", id: 16 },
-                { l: "🍍 NANAS", r: "AWALAN N", id: 17 }
-            ]
-        },
-        {
-            title: "Pasangan Benda",
-            instr: "Mana pasangan yang serasi?",
-            data: [
-                { l: "Sikat Gigi 🪥", r: "Odol 🦷", id: 18 },
-                { l: "Sepatu 👟", r: "Kaos Kaki 🧦", id: 19 },
-                { l: "Buku 📖", r: "Pensil ✏️", id: 20 },
-                { l: "Meja 🪑", r: "Kursi 🛋️", id: 21 },
-                { l: "Hujan 🌧️", r: "Payung 🌂", id: 22 },
-                { l: "Kompor 🍳", r: "Wajan 🥘", id: 23 }
-            ]
-        },
-        {
-            title: "Matematika Ceria",
-            instr: "Ayo hitung belanjaan Ibu!",
-            data: [
-                { l: "🥚 Ibu ke pasar membeli 5 telur, lalu membeli lagi 2 telur.", r: "JADI 7", id: 24 },
-                { l: "🍎 Nenek membawa 10 apel, dimakan Kakak 4.", r: "SISA 6", id: 25 },
-                { l: "🍬 Adik mempunyai 3 permen, Ibu memberi 5 lagi.", r: "JADI 8", id: 26 },
-                { l: "🍩 Ada 9 donat di meja, dimakan Ayah 5.", r: "SISA 4", id: 27 },
-                { l: "🍌 Di rak buah ada 2 pisang hijau & 3 pisang kuning.", r: "TOTAL 5", id: 28 },
-                { l: "🥕 Ada 12 wortel, dimasak Ibu 3 wortel.", r: "SISA 9", id: 29 }
-            ]
-        }
-    ];
+    let currentCategory = null;
+    let currentActivity = null;
+    let currentLevel = 0;
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    let strokeCount = 0;
 
-    let currentLvl = 0, selectedId = null, matches = 0;
+    const activities = {
+      coordination: {
+        dotpath: { title: '🔵 Jalan Titik', levels: [
+          { type: 'dot1', instruction: 'Hubungkan titik-titik dengan garis lurus' },
+          { type: 'dot2', instruction: 'Hubungkan lebih banyak titik dengan berbelok' }
+        ]},
+        tunnel: { title: '🚗 Terowongan', levels: [
+          { type: 'tun1', instruction: 'Kemudi mobil melewati terowongan jangan menyentuh dinding' },
+          { type: 'tun2', instruction: 'Terowongan lebih sempit dan berbelok' }
+        ]},
+        maze: { title: '🌀 Labirin', levels: [
+          { type: 'mz1', instruction: 'Bantu karakter keluar dari labirin sederhana' },
+          { type: 'mz2', instruction: 'Labirin lebih rumit dengan banyak jalur' }
+        ]},
+        target: { title: '🎯 Sasaran', levels: [
+          { type: 'tg1', instruction: 'Arahkan garis ke target di tengah lingkaran' },
+          { type: 'tg2', instruction: 'Kena target bergerak dengan presisi tinggi' }
+        ]}
+      },
+      pattern: {
+        triangle: { title: '△ Pola Segitiga', levels: [
+          { type: 'pt1', instruction: 'Ikuti garis putus-putus segitiga' },
+          { type: 'pt2', instruction: 'Buat pola segitiga berulang' }
+        ]},
+        square: { title: '�� Pola Persegi', levels: [
+          { type: 'ps1', instruction: 'Ikuti garis putus-putus persegi' },
+          { type: 'ps2', instruction: 'Buat pola persegi berulang' }
+        ]},
+        circle: { title: '◯ Pola Lingkaran', levels: [
+          { type: 'pc1', instruction: 'Ikuti garis putus-putus lingkaran' },
+          { type: 'pc2', instruction: 'Buat pola lingkaran berulang' }
+        ]},
+        repeat: { title: '〰️ Garis Berulang', levels: [
+          { type: 'pr1', instruction: 'Ikuti pola garis berulang' },
+          { type: 'pr2', instruction: 'Buat pola garis lebih kompleks' }
+        ]}
+      },
+      number: {
+        number1: { title: '1️⃣ Angka 1', levels: [{ type: 'num1', instruction: 'Ikuti garis putus-putus untuk menulis angka 1' }]},
+        number2: { title: '2️⃣ Angka 2', levels: [{ type: 'num2', instruction: 'Ikuti garis putus-putus untuk menulis angka 2' }]},
+        number3: { title: '3️⃣ Angka 3', levels: [{ type: 'num3', instruction: 'Ikuti garis putus-putus untuk menulis angka 3' }]},
+        number4: { title: '4️⃣ Angka 4', levels: [{ type: 'num4', instruction: 'Ikuti garis putus-putus untuk menulis angka 4' }]},
+        number5: { title: '5️⃣ Angka 5', levels: [{ type: 'num5', instruction: 'Ikuti garis putus-putus untuk menulis angka 5' }]},
+        number6: { title: '6️⃣ Angka 6', levels: [{ type: 'num6', instruction: 'Ikuti garis putus-putus untuk menulis angka 6' }]},
+        number7: { title: '7️⃣ Angka 7', levels: [{ type: 'num7', instruction: 'Ikuti garis putus-putus untuk menulis angka 7' }]},
+        number8: { title: '8️⃣ Angka 8', levels: [{ type: 'num8', instruction: 'Ikuti garis putus-putus untuk menulis angka 8' }]},
+        number9: { title: '9️⃣ Angka 9', levels: [{ type: 'num9', instruction: 'Ikuti garis putus-putus untuk menulis angka 9' }]},
+        number10: { title: '🔟 Angka 10', levels: [{ type: 'num10', instruction: 'Ikuti garis putus-putus untuk menulis angka 10' }]}
+      },
+      letter: {
+        letterA: { title: 'Aa Huruf A', levels: [
+          { type: 'letA_upper', instruction: 'Ikuti garis putus-putus untuk menulis huruf A besar' },
+          { type: 'letA_lower', instruction: 'Ikuti garis putus-putus untuk menulis huruf a kecil' }
+        ]},
+        letterE: { title: 'Ee Huruf E', levels: [
+          { type: 'letE_upper', instruction: 'Ikuti garis putus-putus untuk menulis huruf E besar' },
+          { type: 'letE_lower', instruction: 'Ikuti garis putus-putus untuk menulis huruf e kecil' }
+        ]},
+        letterI: { title: 'Ii Huruf I', levels: [
+          { type: 'letI_upper', instruction: 'Ikuti garis putus-putus untuk menulis huruf I besar' },
+          { type: 'letI_lower', instruction: 'Ikuti garis putus-putus untuk menulis huruf i kecil' }
+        ]},
+        letterO: { title: 'Oo Huruf O', levels: [
+          { type: 'letO_upper', instruction: 'Ikuti garis putus-putus untuk menulis huruf O besar' },
+          { type: 'letO_lower', instruction: 'Ikuti garis putus-putus untuk menulis huruf o kecil' }
+        ]},
+        letterU: { title: 'Uu Huruf U', levels: [
+          { type: 'letU_upper', instruction: 'Ikuti garis putus-putus untuk menulis huruf U besar' },
+          { type: 'letU_lower', instruction: 'Ikuti garis putus-putus untuk menulis huruf u kecil' }
+        ]}
+      }
+    };
 
-    function startGame() {
-        document.getElementById('start-screen').style.display = 'none';
-        document.getElementById('game-container').style.display = 'flex';
-        initLevel();
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: config,
+        onConfigChange: async (newConfig) => {
+          Object.assign(config, newConfig);
+          document.getElementById('main-title').textContent = config.app_title || 'Motorik Halus Anak 4-6 Tahun';
+          document.getElementById('encouragement').textContent = config.encouragement_text || 'Kamu pasti bisa! 💪';
+        },
+        mapToCapabilities: () => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ['app_title', cfg.app_title || 'Motorik Halus Anak 4-6 Tahun'],
+          ['encouragement_text', cfg.encouragement_text || 'Kamu pasti bisa! 💪']
+        ])
+      });
     }
 
-    function initLevel() {
-        const lvl = levels[currentLvl];
-        document.getElementById('lvl-badge').innerText = `LEVEL ${currentLvl + 1}`;
-        document.getElementById('lvl-title').innerText = lvl.title;
-        document.getElementById('instr-text').innerText = lvl.instr;
-        document.getElementById('next-btn').style.display = 'none';
-        matches = 0; selectedId = null;
+    function startAct(cat, act) {
+      currentCategory = cat;
+      currentActivity = act;
+      currentLevel = 0;
+      document.getElementById('home-screen').classList.remove('active');
+      document.getElementById('activity-screen').classList.add('active');
+      loadLevel();
+    }
+
+    function goHome() {
+      document.getElementById('activity-screen').classList.remove('active');
+      document.getElementById('home-screen').classList.add('active');
+      document.getElementById('completion-overlay').classList.add('hidden');
+      clearCanvas();
+    }
+
+    function loadLevel() {
+      const actData = activities[currentCategory][currentActivity];
+      const level = actData.levels[currentLevel];
+      
+      document.getElementById('activity-title').textContent = actData.title;
+      document.getElementById('instruction').textContent = level.instruction;
+      document.getElementById('level-num').textContent = currentLevel + 1;
+      document.getElementById('level-total').textContent = actData.levels.length;
+      document.getElementById('completion-overlay').classList.add('hidden');
+      
+      clearCanvas();
+      renderGuide(level.type);
+      setupCanvas();
+    }
+
+    function createSVGElement(tag, attrs) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (let key in attrs) {
+        el.setAttribute(key, attrs[key]);
+      }
+      return el;
+    }
+
+    function renderGuide(type) {
+      const guideLayer = document.getElementById('guide-layer');
+      guideLayer.innerHTML = '';
+      const guideColor = '#D4A373';
+      const sw = 4;
+
+      const guides = {
+        // COORDINATION GUIDES
+        dot1: () => {
+          // Jalan titik sederhana - 5 titik bersusun
+          const positions = [
+            { x: 100, y: 150 },
+            { x: 200, y: 100 },
+            { x: 300, y: 200 },
+            { x: 400, y: 120 },
+            { x: 500, y: 200 }
+          ];
+          positions.forEach((pos, idx) => {
+            const circle = createSVGElement('circle', { cx: pos.x, cy: pos.y, r: '20', fill: '#D4A373', opacity: '0.6' });
+            guideLayer.appendChild(circle);
+            const text = createSVGElement('text', { x: pos.x, y: pos.y + 8, 'text-anchor': 'middle', 'font-size': '24', 'font-weight': 'bold', fill: 'white' });
+            text.textContent = idx + 1;
+            guideLayer.appendChild(text);
+          });
+          const instr = createSVGElement('text', { x: '300', y: '350', 'text-anchor': 'middle', 'font-size': '18', fill: '#666' });
+          instr.textContent = 'Hubungkan dari titik 1 → 2 → 3 → 4 → 5';
+          guideLayer.appendChild(instr);
+        },
+        dot2: () => {
+          // Jalan titik kompleks - 8 titik dengan jalur berbelok
+          const positions = [
+            { x: 80, y: 100 }, { x: 180, y: 100 }, { x: 280, y: 100 }, { x: 380, y: 100 },
+            { x: 480, y: 150 }, { x: 380, y: 200 }, { x: 180, y: 200 }, { x: 80, y: 200 }
+          ];
+          positions.forEach((pos, idx) => {
+            const circle = createSVGElement('circle', { cx: pos.x, cy: pos.y, r: '18', fill: '#D4A373', opacity: '0.5' });
+            guideLayer.appendChild(circle);
+            const text = createSVGElement('text', { x: pos.x, y: pos.y + 7, 'text-anchor': 'middle', 'font-size': '20', 'font-weight': 'bold', fill: 'white' });
+            text.textContent = idx + 1;
+            guideLayer.appendChild(text);
+          });
+        },
+        tun1: () => {
+          // Terowongan sederhana - jalur sempit lurus
+          const tunnelPath = createSVGElement('path', { d: 'M 150 150 L 450 150 L 450 250 L 150 250 Z', stroke: '#8B6F47', 'stroke-width': '3', fill: '#E8D4C4', opacity: '0.3' });
+          guideLayer.appendChild(tunnelPath);
+          // Dinding terowongan
+          guideLayer.appendChild(createSVGElement('line', { x1: '150', y1: '150', x2: '450', y2: '150', stroke: '#8B6F47', 'stroke-width': '8', opacity: '0.7' }));
+          guideLayer.appendChild(createSVGElement('line', { x1: '150', y1: '250', x2: '450', y2: '250', stroke: '#8B6F47', 'stroke-width': '8', opacity: '0.7' }));
+          // Mobil di awal
+          guideLayer.appendChild(createSVGElement('text', { x: '120', y: '210', 'font-size': '40' })).textContent = '🚗';
+          // Target di akhir
+          guideLayer.appendChild(createSVGElement('text', { x: '475', y: '210', 'font-size': '40' })).textContent = '🏁';
+        },
+        tun2: () => {
+          // Terowongan kompleks - jalur sempit berbelok
+          const path = createSVGElement('path', { d: 'M 100 100 L 300 100 Q 350 100 350 200 L 350 300 Q 350 350 300 350 L 100 350', stroke: '#8B6F47', 'stroke-width': '8', fill: 'none', opacity: '0.7' });
+          guideLayer.appendChild(path);
+          guideLayer.appendChild(createSVGElement('text', { x: '70', y: '120', 'font-size': '40' })).textContent = '🚗';
+          guideLayer.appendChild(createSVGElement('text', { x: '90', y: '350', 'font-size': '40' })).textContent = '🏁';
+        },
+        mz1: () => {
+          // Labirin sederhana
+          const walls = [
+            { x1: '200', y1: '100', x2: '200', y2: '200' },
+            { x1: '350', y1: '150', x2: '350', y2: '300' },
+            { x1: '100', y1: '250', x2: '400', y2: '250' }
+          ];
+          walls.forEach(wall => {
+            guideLayer.appendChild(createSVGElement('line', { x1: wall.x1, y1: wall.y1, x2: wall.x2, y2: wall.y2, stroke: '#8B6F47', 'stroke-width': '12', opacity: '0.7' }));
+          });
+          guideLayer.appendChild(createSVGElement('text', { x: '80', y: '120', 'font-size': '40' })).textContent = '🧒';
+          guideLayer.appendChild(createSVGElement('text', { x: '480', y: '320', 'font-size': '40' })).textContent = '🎁';
+        },
+        mz2: () => {
+          // Labirin kompleks
+          const walls = [
+            { x1: '150', y1: '100', x2: '150', y2: '180' },
+            { x1: '250', y1: '120', x2: '250', y2: '220' },
+            { x1: '350', y1: '100', x2: '350', y2: '250' },
+            { x1: '100', y1: '240', x2: '300', y2: '240' },
+            { x1: '400', y1: '260', x2: '480', y2: '260' }
+          ];
+          walls.forEach(wall => {
+            guideLayer.appendChild(createSVGElement('line', { x1: wall.x1, y1: wall.y1, x2: wall.x2, y2: wall.y2, stroke: '#8B6F47', 'stroke-width': '10', opacity: '0.6' }));
+          });
+          guideLayer.appendChild(createSVGElement('text', { x: '60', y: '120', 'font-size': '40' })).textContent = '🧒';
+          guideLayer.appendChild(createSVGElement('text', { x: '500', y: '300', 'font-size': '40' })).textContent = '🎁';
+        },
+        tg1: () => {
+          // Target sederhana - lingkaran tengah
+          guideLayer.appendChild(createSVGElement('circle', { cx: '300', cy: '200', r: '150', stroke: '#D4A373', 'stroke-width': '4', fill: 'none', opacity: '0.4', 'stroke-dasharray': '10,8' }));
+          guideLayer.appendChild(createSVGElement('circle', { cx: '300', cy: '200', r: '80', stroke: '#D4A373', 'stroke-width': '4', fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' }));
+          guideLayer.appendChild(createSVGElement('circle', { cx: '300', cy: '200', r: '20', fill: '#D4A373', opacity: '0.8' }));
+          const instr = createSVGElement('text', { x: '300', y: '350', 'text-anchor': 'middle', 'font-size': '18', fill: '#666' });
+          instr.textContent = 'Tarik garis ke sasaran di tengah';
+          guideLayer.appendChild(instr);
+        },
+        tg2: () => {
+          // Target presisi tinggi - target lebih kecil
+          guideLayer.appendChild(createSVGElement('circle', { cx: '300', cy: '200', r: '100', stroke: '#D4A373', 'stroke-width': '3', fill: 'none', opacity: '0.3', 'stroke-dasharray': '10,8' }));
+          guideLayer.appendChild(createSVGElement('circle', { cx: '300', cy: '200', r: '40', stroke: '#D4A373', 'stroke-width': '3', fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' }));
+          guideLayer.appendChild(createSVGElement('circle', { cx: '300', cy: '200', r: '10', fill: '#D4A373', opacity: '0.9' }));
+          guideLayer.appendChild(createSVGElement('text', { x: '300', y: '200', 'text-anchor': 'middle', 'dominant-baseline': 'middle', 'font-size': '16', fill: 'white', 'font-weight': 'bold' })).textContent = '✓';
+        },
+        // PATTERN GUIDES
+        pt1: () => {
+          // Pola segitiga tunggal
+          const triPath = createSVGElement('path', { d: 'M 300 100 L 200 280 L 400 280 Z', stroke: guideColor, 'stroke-width': sw, fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' });
+          guideLayer.appendChild(triPath);
+          const label = createSVGElement('text', { x: '300', y: '350', 'text-anchor': 'middle', 'font-size': '20', fill: '#666' });
+          label.textContent = 'Ikuti garis segitiga di atas';
+          guideLayer.appendChild(label);
+        },
+        pt2: () => {
+          // Pola segitiga berulang
+          for (let i = 0; i < 3; i++) {
+            const x = 150 + i * 150;
+            const triPath = createSVGElement('path', { d: `M ${x} 100 L ${x-60} 200 L ${x+60} 200 Z`, stroke: guideColor, 'stroke-width': sw, fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' });
+            guideLayer.appendChild(triPath);
+          }
+        },
+        ps1: () => {
+          // Pola persegi tunggal
+          const sqPath = createSVGElement('rect', { x: '200', y: '100', width: '200', height: '200', stroke: guideColor, 'stroke-width': sw, fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' });
+          guideLayer.appendChild(sqPath);
+          const label = createSVGElement('text', { x: '300', y: '350', 'text-anchor': 'middle', 'font-size': '20', fill: '#666' });
+          label.textContent = 'Ikuti garis persegi di atas';
+          guideLayer.appendChild(label);
+        },
+        ps2: () => {
+          // Pola persegi berulang
+          for (let i = 0; i < 3; i++) {
+            const x = 80 + i * 160;
+            const sqPath = createSVGElement('rect', { x: x, y: '120', width: '120', height: '120', stroke: guideColor, 'stroke-width': sw, fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' });
+            guideLayer.appendChild(sqPath);
+          }
+        },
+        pc1: () => {
+          // Pola lingkaran tunggal
+          const cirPath = createSVGElement('circle', { cx: '300', cy: '200', r: '100', stroke: guideColor, 'stroke-width': sw, fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' });
+          guideLayer.appendChild(cirPath);
+          const label = createSVGElement('text', { x: '300', y: '350', 'text-anchor': 'middle', 'font-size': '20', fill: '#666' });
+          label.textContent = 'Ikuti garis lingkaran di atas';
+          guideLayer.appendChild(label);
+        },
+        pc2: () => {
+          // Pola lingkaran berulang
+          for (let i = 0; i < 4; i++) {
+            const x = 100 + i * 130;
+            const cirPath = createSVGElement('circle', { cx: x, cy: '200', r: '50', stroke: guideColor, 'stroke-width': sw, fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' });
+            guideLayer.appendChild(cirPath);
+          }
+        },
+        pr1: () => {
+          // Pola garis berulang sederhana
+          for (let i = 0; i < 6; i++) {
+            const y = 80 + i * 55;
+            const linePath = createSVGElement('path', { d: `M 100 ${y} Q 200 ${y-20} 300 ${y} Q 400 ${y+20} 500 ${y}`, stroke: guideColor, 'stroke-width': sw, fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' });
+            guideLayer.appendChild(linePath);
+          }
+        },
+        pr2: () => {
+          // Pola garis berulang kompleks
+          for (let i = 0; i < 5; i++) {
+            const y = 80 + i * 70;
+            const linePath = createSVGElement('path', { d: `M 80 ${y} L 150 ${y+30} L 220 ${y} L 290 ${y+30} L 360 ${y} L 430 ${y+30} L 500 ${y}`, stroke: guideColor, 'stroke-width': sw, fill: 'none', opacity: '0.5', 'stroke-dasharray': '10,8' });
+            guideLayer.appendChild(linePath);
+          }
+        },
+        num1: () => renderNumberGuide('1'),
+        num2: () => renderNumberGuide('2'),
+        num3: () => renderNumberGuide('3'),
+        num4: () => renderNumberGuide('4'),
+        num5: () => renderNumberGuide('5'),
+        num6: () => renderNumberGuide('6'),
+        num7: () => renderNumberGuide('7'),
+        num8: () => renderNumberGuide('8'),
+        num9: () => renderNumberGuide('9'),
+        num10: () => renderNumberGuide('10'),
+        letA_upper: () => renderLetterGuide('A', 'BESAR'),
+        letA_lower: () => renderLetterGuide('a', 'kecil'),
+        letE_upper: () => renderLetterGuide('E', 'BESAR'),
+        letE_lower: () => renderLetterGuide('e', 'kecil'),
+        letI_upper: () => renderLetterGuide('I', 'BESAR'),
+        letI_lower: () => renderLetterGuide('i', 'kecil'),
+        letO_upper: () => renderLetterGuide('O', 'BESAR'),
+        letO_lower: () => renderLetterGuide('o', 'kecil'),
+        letU_upper: () => renderLetterGuide('U', 'BESAR'),
+        letU_lower: () => renderLetterGuide('u', 'kecil')
+      };
+
+      if (guides[type]) guides[type]();
+    }
+
+    function renderNumberGuide(num) {
+      const gl = document.getElementById('guide-layer');
+      
+      // Teks atas (contoh)
+      const label = createSVGElement('text', { x: '300', y: '70', 'text-anchor': 'middle', 'font-size': '28', 'font-weight': 'bold', fill: '#D97706' });
+      label.textContent = 'Angka ' + num;
+      gl.appendChild(label);
+      
+      // Contoh angka besar dengan garis putus-putus (standar penulisan anak usia dini)
+      const numberPaths = {
+        '1': 'M 300 120 L 300 280',
+        '2': 'M 240 160 Q 240 120 280 120 Q 320 120 320 160 Q 320 200 240 280 L 320 280',
+        '3': 'M 240 120 L 320 120 Q 340 120 340 150 L 240 150 L 340 150 Q 340 180 320 200 Q 340 220 340 250 Q 340 280 300 280 Q 240 280 240 280',
+        '4': 'M 280 120 L 240 220 L 320 220 M 320 120 L 320 280',
+        '5': 'M 320 120 L 240 120 L 240 190 L 300 190 Q 330 190 330 230 Q 330 270 290 270 Q 240 270 240 270',
+        '6': 'M 320 120 L 260 120 Q 240 120 240 160 L 240 260 Q 240 280 280 280 Q 330 280 330 250 Q 330 220 280 220 Q 250 220 250 220',
+        '7': 'M 240 120 L 320 120 L 250 280',
+        '8': 'M 280 120 Q 240 120 240 155 Q 240 190 280 190 Q 320 190 320 155 Q 320 120 280 120 M 280 190 Q 240 190 240 250 Q 240 280 280 280 Q 320 280 320 250 Q 320 190 280 190',
+        '9': 'M 240 280 L 280 280 Q 330 280 330 240 L 330 160 Q 330 120 280 120 Q 240 120 240 160 Q 240 200 280 200 L 330 200',
+        '10': 'M 200 120 L 200 280 M 280 150 Q 280 120 310 120 Q 340 120 340 150 Q 340 200 280 200 Q 250 200 250 200'
+      };
+      
+      const numPath = createSVGElement('path', { d: numberPaths[num], stroke: '#D4A373', 'stroke-width': '8', fill: 'none', opacity: '0.4', 'stroke-dasharray': '15,10', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+      gl.appendChild(numPath);
+      
+      // Instruksi di bawah
+      const instr = createSVGElement('text', { x: '300', y: '350', 'text-anchor': 'middle', 'font-size': '20', fill: '#666' });
+      instr.textContent = 'Ikuti garis putus-putus di atas';
+      gl.appendChild(instr);
+    }
+
+    function renderLetterGuide(letter, size) {
+      const gl = document.getElementById('guide-layer');
+      
+      // Label ukuran
+      const sizeLabel = createSVGElement('text', { x: '300', y: '60', 'text-anchor': 'middle', 'font-size': '24', 'font-weight': 'bold', fill: '#D97706' });
+      sizeLabel.textContent = 'Huruf ' + size;
+      gl.appendChild(sizeLabel);
+      
+      // Emoji pendukung
+      const emojis = {
+        'A': '🍎', 'a': '🍎',
+        'E': '🥚', 'e': '🥚',
+        'I': '🍦', 'i': '🍦',
+        'O': '🍊', 'o': '🍊',
+        'U': '☂️', 'u': '☂️'
+      };
+      const emoji = createSVGElement('text', { x: '100', y: '200', 'font-size': '80' });
+      emoji.textContent = emojis[letter] || '✏️';
+      gl.appendChild(emoji);
+      
+      // Garis putus-putus huruf (standar penulisan anak usia dini)
+      const letterPaths = {
+        'A': 'M 240 280 L 300 100 L 360 280 M 260 210 L 340 210',
+        'a': 'M 330 200 Q 330 160 280 160 Q 240 160 240 190 Q 240 220 280 220 L 330 220 L 330 280',
+        'E': 'M 330 100 L 240 100 L 240 190 L 320 190 M 240 190 L 330 280 L 240 280',
+        'e': 'M 240 210 L 320 210 Q 340 210 340 240 Q 340 270 300 280 L 240 280',
+        'I': 'M 260 100 L 340 100 L 300 100 L 300 280 L 260 280 L 340 280',
+        'i': 'M 300 120 L 300 120 M 300 170 L 300 280',
+        'O': 'M 280 100 Q 240 100 240 190 Q 240 280 280 280 Q 320 280 320 190 Q 320 100 280 100',
+        'o': 'M 280 170 Q 250 170 250 210 Q 250 250 280 250 Q 310 250 310 210 Q 310 170 280 170',
+        'U': 'M 240 100 L 240 240 Q 240 280 280 280 L 320 280 Q 360 280 360 240 L 360 100',
+        'u': 'M 240 170 L 240 270 Q 240 280 260 280 L 300 280 Q 320 280 320 270 L 320 170'
+      };
+      
+      const letterPath = createSVGElement('path', { d: letterPaths[letter], stroke: '#D4A373', 'stroke-width': '10', fill: 'none', opacity: '0.5', 'stroke-dasharray': '15,10', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+      gl.appendChild(letterPath);
+      
+      // Instruksi
+      const instr = createSVGElement('text', { x: '300', y: '350', 'text-anchor': 'middle', 'font-size': '20', fill: '#666' });
+      instr.textContent = 'Ikuti garis putus-putus di atas';
+      gl.appendChild(instr);
+    }
+
+    function setupCanvas() {
+      const canvas = document.getElementById('drawing-canvas');
+      const newCanvas = canvas.cloneNode(true);
+      canvas.parentNode.replaceChild(newCanvas, canvas);
+      
+      newCanvas.addEventListener('pointerdown', (e) => {
+        isDrawing = true;
+        const rect = newCanvas.getBoundingClientRect();
+        const scaleX = 600 / rect.width;
+        const scaleY = 450 / rect.height;
+        lastX = (e.clientX - rect.left) * scaleX;
+        lastY = (e.clientY - rect.top) * scaleY;
+      });
+      
+      newCanvas.addEventListener('pointermove', (e) => {
+        if (!isDrawing) return;
+        const rect = newCanvas.getBoundingClientRect();
+        const scaleX = 600 / rect.width;
+        const scaleY = 450 / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+        const drawLayer = document.getElementById('drawing-layer');
         
-        const lCol = document.getElementById('left-col'), rCol = document.getElementById('right-col');
-        lCol.innerHTML = ''; rCol.innerHTML = '';
-
-        let leftItems = lvl.data.map(d => ({c: d.l, id: d.id})).sort(() => Math.random() - 0.5);
-        let rightItems = lvl.data.map(d => ({c: d.r, id: d.id})).sort(() => Math.random() - 0.5);
-
-        leftItems.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.innerHTML = item.c.length > 25 ? `<span class="story-text">${item.c}</span>` : `<span>${item.c}</span>`;
-            div.onclick = () => {
-                if (div.classList.contains('matched')) return;
-                document.querySelectorAll('#left-col .card').forEach(c => c.classList.remove('selected'));
-                div.classList.add('selected'); selectedId = item.id;
-            };
-            lCol.appendChild(div);
-        });
-
-        rightItems.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.innerHTML = `<span>${item.c}</span>`;
-            div.onclick = () => {
-                if (div.classList.contains('matched') || !selectedId) return;
-                if (selectedId === item.id) {
-                    div.classList.add('matched');
-                    document.querySelector('.selected').classList.add('matched');
-                    document.querySelector('.selected').classList.remove('selected');
-                    selectedId = null; matches++;
-                    if (matches === lvl.data.length) document.getElementById('next-btn').style.display = 'block';
-                } else {
-                    div.classList.add('wrong'); setTimeout(() => div.classList.remove('wrong'), 400);
-                }
-            };
-            rCol.appendChild(div);
-        });
-    }
-
-    function nextLevel() {
-        currentLvl++;
-        if (currentLvl < levels.length) initLevel();
-        else {
-            document.getElementById('game-container').innerHTML = `
-                <div style='text-align:center; background:white; padding:40px; border-radius:30px; box-shadow:0 10px 0 #DDEEFA;'>
-                    <div style='font-size:4rem;'>🏆</div>
-                    <h2 style='color:var(--pink)'>LUAR BIASA!</h2>
-                    <p style='color:#666'>Kamu telah menyelesaikan semua tantangan!</p>
-                    <button class="btn-play" onclick="location.reload()">MAIN LAGI</button>
-                </div>`;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', lastX);
+        line.setAttribute('y1', lastY);
+        line.setAttribute('x2', x);
+        line.setAttribute('y2', y);
+        line.setAttribute('stroke', '#D97706');
+        line.setAttribute('stroke-width', '8');
+        line.setAttribute('stroke-linecap', 'round');
+        line.setAttribute('stroke-linejoin', 'round');
+        drawLayer.appendChild(line);
+        
+        lastX = x;
+        lastY = y;
+      });
+      
+      newCanvas.addEventListener('pointerup', () => {
+        if (isDrawing) {
+          strokeCount++;
+          isDrawing = false;
+          if (strokeCount >= 1) {
+            setTimeout(() => {
+              document.getElementById('completion-overlay').classList.remove('hidden');
+            }, 600);
+          }
         }
+      });
     }
-</script>
-</body>
+
+    function clearCanvas() {
+      const drawLayer = document.getElementById('drawing-layer');
+      if (drawLayer) drawLayer.innerHTML = '';
+      strokeCount = 0;
+    }
+
+    document.getElementById('back-btn').addEventListener('click', goHome);
+    document.getElementById('clear-btn').addEventListener('click', clearCanvas);
+    document.getElementById('retry-btn').addEventListener('click', () => {
+      clearCanvas();
+      document.getElementById('completion-overlay').classList.add('hidden');
+    });
+    document.getElementById('next-btn').addEventListener('click', () => {
+      const actData = activities[currentCategory][currentActivity];
+      if (currentLevel < actData.levels.length - 1) {
+        currentLevel++;
+        loadLevel();
+      } else {
+        goHome();
+      }
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ca33396701be78d',t:'MTc3MDQ3MDYwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
