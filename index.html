@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tugas Klasifikasi Biaya - Akuntansi Manajemen</title>
+    <!-- html2canvas to capture the page as an image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -176,9 +178,7 @@
 
         <div class="btn-container">
             <button class="btn-print" onclick="window.print()">Simpan sebagai PDF / Cetak</button>
-            <button class="btn-check"
-                onclick="alert('Jawaban telah disimpan. Silakan diskusikan hasil klasifikasi Anda dengan Dosen di kelas.')">Kumpulkan
-                Jawaban</button>
+            <button class="btn-check" id="btn-collect" onclick="collectAndShare()">Kumpulkan Jawaban</button>
         </div>
 
         <footer style="margin-top: 30px; text-align: center; font-size: 0.8rem; color: #94a3b8;">
@@ -214,6 +214,50 @@
         `;
             tbody.innerHTML += row;
         });
+
+        async function collectAndShare() {
+            const btn = document.getElementById('btn-collect');
+            const originalText = btn.innerText;
+            btn.innerText = "Memproses...";
+            btn.disabled = true;
+
+            try {
+                // Prepare container for capture (hide buttons and instructions like in print)
+                const container = document.querySelector('.container');
+                const btnContainer = document.querySelector('.btn-container');
+                const instructions = document.querySelector('.instructions');
+
+                btnContainer.style.display = 'none';
+                instructions.style.display = 'none';
+
+                const canvas = await html2canvas(container, {
+                    scale: 2, // Better resolution
+                    backgroundColor: '#ffffff'
+                });
+
+                // Restore UI
+                btnContainer.style.display = 'flex';
+                instructions.style.display = 'block';
+
+                // Copy to clipboard
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                const item = new ClipboardItem({ "image/png": blob });
+                await navigator.clipboard.write([item]);
+
+                alert("Tangkapan layar berhasil disalin ke clipboard!\n\nSelanjutnya, WhatsApp akan terbuka. Silakan PASTE (Ctrl+V / Cmd+V) gambar tugas Anda di chat.");
+
+                // Redirect to WhatsApp
+                const message = encodeURIComponent("Halo Dosen, ini adalah hasil tugas Klasifikasi Biaya saya.");
+                window.open(`https://wa.me/6281383107880?text=${message}`, '_blank');
+
+            } catch (err) {
+                console.error("Gagal mengambil gambar:", err);
+                alert("Maaf, terjadi kesalahan saat mengambil gambar. Pastikan browser Anda mendukung fitur ini.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
     </script>
 
 </body>
