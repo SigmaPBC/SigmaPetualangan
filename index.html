@@ -1,128 +1,221 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
-    <title>Bright Sparks Math Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Klasifikasi Biaya - Akuntansi Manajemen</title>
     <style>
-        /* CSS UNTUK TAMPILAN */
-        body { background-color: #f0f9ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .quiz-card { background: white; width: 90%; max-width: 600px; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 4px solid #bae6fd; text-align: center; }
-        h1 { color: #0284c7; margin-bottom: 10px; }
-        .instruction { color: #64748b; font-style: italic; margin-bottom: 20px; }
-        
-        /* Tombol Jawaban */
-        .option-container { display: grid; gap: 15px; margin-top: 20px; }
-        .btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
-        .btn:hover { transform: scale(1.02); filter: brightness(1.1); }
-        .btn-red { background-color: #ef4444; }
-        .btn-blue { background-color: #3b82f6; }
-        .btn-yellow { background-color: #f59e0b; }
-        .btn-green { background-color: #10b981; }
-        
-        /* Tombol Mulai & Reset */
-        .btn-main { background-color: #0284c7; padding: 15px 40px; font-size: 1.3rem; margin-top: 20px; }
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
+        }
 
-        /* Logic Tampilan */
-        .screen { display: none; }
-        .active { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+        }
 
-        .difficulty { font-size: 0.8rem; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; display: inline-block; }
-        .easy { background: #dcfce7; color: #166534; }
-        .medium { background: #fef9c3; color: #854d0e; }
-        .hard { background: #fee2e2; color: #991b1b; }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .instructions {
+            background: #eff6ff;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .col-item {
+            text-align: left;
+            font-weight: 500;
+            width: 30%;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f5f9;
+        }
+
+        tr:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-container {
+            margin-top: 25px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-print {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-check {
+            background: var(--primary);
+            color: white;
+        }
+
+        @media print {
+
+            .btn-container,
+            .instructions {
+                display: none;
+            }
+
+            body {
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border: none;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="quiz-card">
-    <div id="welcome-screen" class="screen active">
-        <div style="font-size: 4rem;">🎓</div>
-        <h1>Bright Sparks Math</h1>
-        <p>Grade 5: Percentage Challenge</p>
-        <button class="btn btn-main" onclick="startQuiz()">Start Quiz! 🚀</button>
+    <div class="container">
+        <header>
+            <h1>MATRIKS KLASIFIKASI BIAYA</h1>
+            <p>Mata Kuliah: Akuntansi Manajemen | Pertemuan 4</p>
+        </header>
+
+        <div class="instructions">
+            <strong>Instruksi:</strong> Analisislah setiap komponen biaya pada operasional <strong>Pabrik Sepatu
+                Olahraga</strong>. Berikan tanda centang pada kolom yang menurut Anda paling tepat.
+        </div>
+
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">No</th>
+                    <th rowspan="2">Komponen Biaya</th>
+                    <th colspan="2">Hubungan Objek</th>
+                    <th colspan="2">Fungsi Organisasi</th>
+                    <th colspan="3">Perilaku Biaya</th>
+                </tr>
+                <tr>
+                    <th>Langsung</th>
+                    <th>Tak Langsung</th>
+                    <th>Produksi</th>
+                    <th>Non-Produksi</th>
+                    <th>Tetap</th>
+                    <th>Variabel</th>
+                    <th>Semi</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+            </tbody>
+        </table>
+
+        <div class="btn-container">
+            <button class="btn-print" onclick="window.print()">Simpan sebagai PDF / Cetak</button>
+            <button class="btn-check"
+                onclick="alert('Jawaban telah disimpan. Silakan diskusikan hasil klasifikasi Anda dengan Dosen di kelas.')">Kumpulkan
+                Jawaban</button>
+        </div>
+
+        <footer style="margin-top: 30px; text-align: center; font-size: 0.8rem; color: #94a3b8;">
+            &copy; 2026 - Modul Digital Akuntansi Manajemen
+        </footer>
     </div>
 
-    <div id="quiz-content" class="screen text-start">
-        <div id="question-area"></div>
-    </div>
+    <script>
+        const items = [
+            "Bahan Baku Kulit Sintetis", "Upah Buruh Jahit (per Pasang)", "Sewa Gedung Pabrik (Tahunan)",
+            "Listrik Mesin Produksi (Beban + Pakai)", "Gaji Satpam Kantor Pusat", "Lem dan Benang (Bahan Penolong)",
+            "Penyusutan Mesin (Garis Lurus)", "Komisi Sales Penjualan (per Unit)", "Gaji Manajer Produksi (Bulanan)",
+            "Biaya Iklan TV & Media Sosial", "Pajak Bumi dan Bangunan (PBB) Pabrik", "Oli/Pelumas Perawatan Mesin",
+            "Gaji Akuntan Perusahaan", "Biaya Pengiriman ke Pelanggan", "Bonus Supervisor (Target Tercapai)",
+            "Biaya Wi-Fi Kantor & Pabrik", "Tali Sepatu", "Biaya Pelatihan Karyawan Baru",
+            "Pemeliharaan AC (Kontrak Tetap)", "Biaya Sampel Produk (Prototipe)"
+        ];
 
-    <div id="result-screen" class="screen">
-        <h2>🎉 Selesai! 🎉</h2>
-        <div style="font-size: 3rem; margin: 20px 0; color: #0284c7;" id="final-score">0/10</div>
-        <p id="feedback"></p>
-        <button class="btn btn-main" onclick="location.reload()">Coba Lagi 🔄</button>
-    </div>
-</div>
-
-<script>
-    // DATA SOAL
-    const questions = [
-        { q: "A roll of ribbon was 300 cm long. Cindy used 75 cm. What percentage was used? 🎈", options: ["20%", "25%", "30%", "15%"], correct: 1, level: "EASY 🟢", cClass: "easy" },
-        { q: "What percentage of 150 is 18? 🕵️‍♂️", options: ["10%", "12%", "15%", "20%"], correct: 1, level: "EASY 🟢", cClass: "easy" },
-        { q: "Yonna answered 30 out of 40 questions correctly. What is her score percentage? 📝", options: ["60%", "70%", "75%", "80%"], correct: 2, level: "EASY 🟢", cClass: "easy" },
-        { q: "Sinta had $600. She spent 12% on a toaster and 66% on a TV. How much is left? 🛒", options: ["$132", "$468", "$78", "$220"], correct: 0, level: "MEDIUM 🟡", cClass: "medium" },
-        { q: "Deessy has 250 balloons. 28% red, 16% green, the rest are yellow. How many yellow? 🎈", options: ["110", "140", "56", "44"], correct: 1, level: "MEDIUM 🟡", cClass: "medium" },
-        { q: "In a concert of 600 people, 55% were children. How many MORE children than adults? 🎶", options: ["30", "60", "270", "330"], correct: 1, level: "HARD 🔴", cClass: "hard" },
-        { q: "Machine costs $780. What is 7% GST + Total Price? 🧺", options: ["GST: $54.60, Total: $834.60", "GST: $7.80, Total: $787.80", "GST: $50, Total: $830", "GST: $54.60, Total: $844.60"], correct: 0, level: "MEDIUM 🟡", cClass: "medium" },
-        { q: "Daisy saves $4000 at 2.5% interest/year. Total savings after 1 year? 💰", options: ["$4,100", "$4,025", "$4,250", "$100"], correct: 0, level: "HARD 🔴", cClass: "hard" },
-        { q: "Dining set $1690. Discount 35%. How much did she pay? 🍽️", options: ["$591.50", "$1,098.50", "$1,100", "$1,050.50"], correct: 1, level: "HARD 🔴", cClass: "hard" },
-        { q: "7% GST and total for a $725 camera? 📸", options: ["GST: $50.75, Total: $775.75", "GST: $7.25, Total: $732.25", "GST: $50.75, Total: $750.75", "GST: $5, Total: $730"], correct: 0, level: "MEDIUM 🟡", cClass: "medium" }
-    ];
-
-    let currentIdx = 0;
-    let score = 0;
-
-    function startQuiz() {
-        document.getElementById('welcome-screen').classList.remove('active');
-        document.getElementById('quiz-content').classList.add('active');
-        showQuestion();
-    }
-
-    function showQuestion() {
-        const item = questions[currentIdx];
-        const area = document.getElementById('question-area');
-        
-        area.innerHTML = `
-            <span class="difficulty ${item.cClass}">${item.level}</span>
-            <h3 style="margin-top:0;">${currentIdx + 1}. ${item.q}</h3>
-            <p class="instruction">Choose the correct answer!</p>
-            <div class="option-container">
-                <button class="btn btn-red" onclick="nextQuestion(0)">A. ${item.options[0]}</button>
-                <button class="btn btn-blue" onclick="nextQuestion(1)">B. ${item.options[1]}</button>
-                <button class="btn btn-yellow" onclick="nextQuestion(2)">C. ${item.options[2]}</button>
-                <button class="btn btn-green" onclick="nextQuestion(3)">D. ${item.options[3]}</button>
-            </div>
-            <p style="margin-top:20px; color:#94a3b8">Question ${currentIdx + 1} of 10</p>
+        const tbody = document.getElementById('table-body');
+        items.forEach((item, index) => {
+            const row = `
+            <tr>
+                <td>${index + 1}</td>
+                <td class="col-item">${item}</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+            </tr>
         `;
-    }
-
-    window.nextQuestion = function(choice) {
-        if (choice === questions[currentIdx].correct) {
-            score++;
-        }
-        
-        currentIdx++;
-        
-        if (currentIdx < questions.length) {
-            showQuestion();
-        } else {
-            showFinal();
-        }
-    }
-
-    function showFinal() {
-        document.getElementById('quiz-content').classList.remove('active');
-        document.getElementById('result-screen').classList.add('active');
-        document.getElementById('final-score').innerText = score + " / " + questions.length;
-        
-        let msg = "";
-        if (score === 10) msg = "Perfect! Kamu luar biasa! 🏆";
-        else if (score >= 7) msg = "Bagus sekali! Pertahankan! 🌟";
-        else msg = "Ayo belajar lagi, kamu pasti bisa! 💪";
-        document.getElementById('feedback').innerText = msg;
-    }
-</script>
+            tbody.innerHTML += row;
+        });
+    </script>
 
 </body>
+
 </html>
