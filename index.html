@@ -134,6 +134,10 @@
                 box-shadow: none;
                 border: none;
             }
+
+            tr {
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
@@ -234,8 +238,13 @@
                     margin: 10,
                     filename: 'Tugas_Klasifikasi_Biaya.pdf',
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                    html2canvas: {
+                        scale: 2,
+                        logging: false,
+                        useCORS: true
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, // Switched to portrait for better vertical fit
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
                 };
 
                 // Generate and download PDF
