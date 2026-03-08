@@ -60,8 +60,9 @@
         }
 
         th {
-            background-color: var(--primary);
-            color: white;
+            background-color: #1e3a8a;
+            /* Explicit hex for compatibility */
+            color: #ffffff;
             padding: 12px 8px;
             text-align: center;
             border: 1px solid #ddd;
@@ -138,6 +139,17 @@
             tr {
                 page-break-inside: avoid;
             }
+
+            th {
+                color: #ffffff !important;
+                background-color: #1e3a8a !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                border: 1px solid #1e3a8a !important;
+                vertical-align: middle !important;
+                text-align: center !important;
+                height: auto !important;
+            }
         }
     </style>
 </head>
@@ -160,13 +172,15 @@
         <table>
             <thead>
                 <tr>
-                    <th rowspan="2">No</th>
-                    <th rowspan="2">Komponen Biaya</th>
+                    <th></th>
+                    <th></th>
                     <th colspan="2">Hubungan Objek</th>
                     <th colspan="2">Fungsi Organisasi</th>
                     <th colspan="3">Perilaku Biaya</th>
                 </tr>
                 <tr>
+                    <th>No</th>
+                    <th>Komponen Biaya</th>
                     <th>Langsung</th>
                     <th>Tak Langsung</th>
                     <th>Produksi</th>
@@ -181,7 +195,7 @@
         </table>
 
         <div class="btn-container">
-            <button class="btn-print" onclick="window.print()">Simpan sebagai PDF / Cetak</button>
+            <button class="btn-print" onclick="downloadPDF()">Simpan sebagai PDF</button>
             <button class="btn-check" id="btn-collect" onclick="collectAndShare()">Kumpulkan Jawaban</button>
         </div>
 
@@ -219,6 +233,68 @@
             tbody.innerHTML += row;
         });
 
+        async function downloadPDF() {
+            const btn = document.querySelector('.btn-print');
+            const originalText = btn.innerText;
+            btn.innerText = "Generating PDF...";
+            btn.disabled = true;
+
+            try {
+                const container = document.querySelector('.container');
+                const btnContainer = document.querySelector('.btn-container');
+                const instructions = document.querySelector('.instructions');
+
+                btnContainer.remove();
+                instructions.remove();
+
+                container.style.padding = '15px';
+                container.style.fontSize = '0.75rem';
+                const table = container.querySelector('table');
+                table.style.fontSize = '0.7rem';
+                const allTh = container.querySelectorAll('th');
+                allTh.forEach(th => { th.style.padding = '6px 4px'; });
+                const allTd = container.querySelectorAll('td');
+                allTd.forEach(td => { td.style.padding = '4px'; });
+                const header = container.querySelector('header');
+                header.style.marginBottom = '10px';
+                header.style.paddingBottom = '5px';
+                const h1 = container.querySelector('h1');
+                h1.style.fontSize = '1.2rem';
+                const footer = container.querySelector('footer');
+                footer.style.marginTop = '10px';
+
+                const opt = {
+                    margin: 5,
+                    filename: 'Tugas_Klasifikasi_Biaya.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, logging: false, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                    pagebreak: { mode: 'avoid-all' }
+                };
+
+                await html2pdf().from(container).set(opt).save();
+
+                container.style.padding = '';
+                container.style.fontSize = '';
+                table.style.fontSize = '';
+                allTh.forEach(th => { th.style.padding = ''; });
+                allTd.forEach(td => { td.style.padding = ''; });
+                header.style.marginBottom = '';
+                header.style.paddingBottom = '';
+                h1.style.fontSize = '';
+                footer.style.marginTop = '';
+
+                container.querySelector('table').insertAdjacentElement('afterend', btnContainer);
+                container.querySelector('header').insertAdjacentElement('afterend', instructions);
+            } catch (err) {
+                console.error("Gagal membuat PDF:", err);
+                alert("Maaf, terjadi kesalahan saat membuat PDF.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
         async function collectAndShare() {
             const btn = document.getElementById('btn-collect');
             const originalText = btn.innerText;
@@ -230,12 +306,29 @@
                 const btnContainer = document.querySelector('.btn-container');
                 const instructions = document.querySelector('.instructions');
 
-                // Temporarily hide UI elements for clean PDF
-                btnContainer.style.display = 'none';
-                instructions.style.display = 'none';
+                // Remove elements from DOM entirely (display:none still leaves gaps in html2canvas)
+                btnContainer.remove();
+                instructions.remove();
+
+                // Shrink content to fit everything on one page
+                container.style.padding = '15px';
+                container.style.fontSize = '0.75rem';
+                const table = container.querySelector('table');
+                table.style.fontSize = '0.7rem';
+                const allTh = container.querySelectorAll('th');
+                allTh.forEach(th => { th.style.padding = '6px 4px'; });
+                const allTd = container.querySelectorAll('td');
+                allTd.forEach(td => { td.style.padding = '4px'; });
+                const header = container.querySelector('header');
+                header.style.marginBottom = '10px';
+                header.style.paddingBottom = '5px';
+                const h1 = container.querySelector('h1');
+                h1.style.fontSize = '1.2rem';
+                const footer = container.querySelector('footer');
+                footer.style.marginTop = '10px';
 
                 const opt = {
-                    margin: 10,
+                    margin: 5,
                     filename: 'Tugas_Klasifikasi_Biaya.pdf',
                     image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: {
@@ -243,22 +336,33 @@
                         logging: false,
                         useCORS: true
                     },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, // Switched to portrait for better vertical fit
-                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                    pagebreak: { mode: 'avoid-all' }
                 };
 
                 // Generate and download PDF
                 await html2pdf().from(container).set(opt).save();
 
-                // Restore UI
-                btnContainer.style.display = 'flex';
-                instructions.style.display = 'block';
+                // Restore original styles
+                container.style.padding = '';
+                container.style.fontSize = '';
+                table.style.fontSize = '';
+                allTh.forEach(th => { th.style.padding = ''; });
+                allTd.forEach(td => { td.style.padding = ''; });
+                header.style.marginBottom = '';
+                header.style.paddingBottom = '';
+                h1.style.fontSize = '';
+                footer.style.marginTop = '';
+
+                // Re-insert removed elements back into DOM
+                container.querySelector('table').insertAdjacentElement('afterend', btnContainer);
+                container.querySelector('header').insertAdjacentElement('afterend', instructions);
 
                 alert("Tugas Anda telah diunduh sebagai PDF!\n\nSelanjutnya, WhatsApp akan terbuka. Silakan LAMPIRKAN (Attach) file tersebut ke chat.");
 
                 // Redirect to WhatsApp
                 const message = encodeURIComponent("Halo Dosen, ini adalah hasil tugas Klasifikasi Biaya saya.");
-                window.open(`https://wa.me/6281383107880?text=${message}`, '_blank');
+                window.open(`https://wa.me/6287862357442?text=${message}`, '_blank');
 
             } catch (err) {
                 console.error("Gagal membuat PDF:", err);
