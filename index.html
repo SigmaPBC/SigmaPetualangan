@@ -233,6 +233,57 @@
             tbody.innerHTML += row;
         });
 
+        // Shared helper: prepare container for PDF capture
+        function preparePDFCapture(container) {
+            container.style.maxWidth = '900px';
+            container.style.width = '900px';
+            container.style.padding = '10px';
+            container.style.fontSize = '0.7rem';
+            container.style.boxShadow = 'none';
+            const table = container.querySelector('table');
+            table.style.fontSize = '0.65rem';
+            const allTh = container.querySelectorAll('th');
+            allTh.forEach(th => { th.style.padding = '5px 3px'; });
+            const allTd = container.querySelectorAll('td');
+            allTd.forEach(td => { td.style.padding = '3px'; });
+            const header = container.querySelector('header');
+            header.style.marginBottom = '5px';
+            header.style.paddingBottom = '3px';
+            const h1 = container.querySelector('h1');
+            h1.style.fontSize = '1rem';
+            const p = header.querySelector('p');
+            if (p) p.style.fontSize = '0.7rem';
+            const footer = container.querySelector('footer');
+            footer.style.marginTop = '5px';
+            return { table, allTh, allTd, header, h1, p, footer };
+        }
+
+        // Shared helper: restore container after PDF capture
+        function restorePDFCapture(container, refs) {
+            container.style.maxWidth = '';
+            container.style.width = '';
+            container.style.padding = '';
+            container.style.fontSize = '';
+            container.style.boxShadow = '';
+            refs.table.style.fontSize = '';
+            refs.allTh.forEach(th => { th.style.padding = ''; });
+            refs.allTd.forEach(td => { td.style.padding = ''; });
+            refs.header.style.marginBottom = '';
+            refs.header.style.paddingBottom = '';
+            refs.h1.style.fontSize = '';
+            if (refs.p) refs.p.style.fontSize = '';
+            refs.footer.style.marginTop = '';
+        }
+
+        const pdfOpt = {
+            margin: 3,
+            filename: 'Tugas_Klasifikasi_Biaya.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, logging: false, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+            pagebreak: { mode: 'avoid-all' }
+        };
+
         async function downloadPDF() {
             const btn = document.querySelector('.btn-print');
             const originalText = btn.innerText;
@@ -246,44 +297,11 @@
 
                 btnContainer.remove();
                 instructions.remove();
+                const refs = preparePDFCapture(container);
 
-                container.style.padding = '15px';
-                container.style.fontSize = '0.75rem';
-                const table = container.querySelector('table');
-                table.style.fontSize = '0.7rem';
-                const allTh = container.querySelectorAll('th');
-                allTh.forEach(th => { th.style.padding = '6px 4px'; });
-                const allTd = container.querySelectorAll('td');
-                allTd.forEach(td => { td.style.padding = '4px'; });
-                const header = container.querySelector('header');
-                header.style.marginBottom = '10px';
-                header.style.paddingBottom = '5px';
-                const h1 = container.querySelector('h1');
-                h1.style.fontSize = '1.2rem';
-                const footer = container.querySelector('footer');
-                footer.style.marginTop = '10px';
+                await html2pdf().from(container).set(pdfOpt).save();
 
-                const opt = {
-                    margin: 5,
-                    filename: 'Tugas_Klasifikasi_Biaya.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, logging: false, useCORS: true },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                    pagebreak: { mode: 'avoid-all' }
-                };
-
-                await html2pdf().from(container).set(opt).save();
-
-                container.style.padding = '';
-                container.style.fontSize = '';
-                table.style.fontSize = '';
-                allTh.forEach(th => { th.style.padding = ''; });
-                allTd.forEach(td => { td.style.padding = ''; });
-                header.style.marginBottom = '';
-                header.style.paddingBottom = '';
-                h1.style.fontSize = '';
-                footer.style.marginTop = '';
-
+                restorePDFCapture(container, refs);
                 container.querySelector('table').insertAdjacentElement('afterend', btnContainer);
                 container.querySelector('header').insertAdjacentElement('afterend', instructions);
             } catch (err) {
@@ -306,70 +324,24 @@
                 const btnContainer = document.querySelector('.btn-container');
                 const instructions = document.querySelector('.instructions');
 
-                // Remove elements from DOM entirely (display:none still leaves gaps in html2canvas)
                 btnContainer.remove();
                 instructions.remove();
+                const refs = preparePDFCapture(container);
 
-                // Shrink content to fit everything on one page
-                container.style.padding = '15px';
-                container.style.fontSize = '0.75rem';
-                const table = container.querySelector('table');
-                table.style.fontSize = '0.7rem';
-                const allTh = container.querySelectorAll('th');
-                allTh.forEach(th => { th.style.padding = '6px 4px'; });
-                const allTd = container.querySelectorAll('td');
-                allTd.forEach(td => { td.style.padding = '4px'; });
-                const header = container.querySelector('header');
-                header.style.marginBottom = '10px';
-                header.style.paddingBottom = '5px';
-                const h1 = container.querySelector('h1');
-                h1.style.fontSize = '1.2rem';
-                const footer = container.querySelector('footer');
-                footer.style.marginTop = '10px';
+                await html2pdf().from(container).set(pdfOpt).save();
 
-                const opt = {
-                    margin: 5,
-                    filename: 'Tugas_Klasifikasi_Biaya.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        logging: false,
-                        useCORS: true
-                    },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                    pagebreak: { mode: 'avoid-all' }
-                };
-
-                // Generate and download PDF
-                await html2pdf().from(container).set(opt).save();
-
-                // Restore original styles
-                container.style.padding = '';
-                container.style.fontSize = '';
-                table.style.fontSize = '';
-                allTh.forEach(th => { th.style.padding = ''; });
-                allTd.forEach(td => { td.style.padding = ''; });
-                header.style.marginBottom = '';
-                header.style.paddingBottom = '';
-                h1.style.fontSize = '';
-                footer.style.marginTop = '';
-
-                // Re-insert removed elements back into DOM
+                restorePDFCapture(container, refs);
                 container.querySelector('table').insertAdjacentElement('afterend', btnContainer);
                 container.querySelector('header').insertAdjacentElement('afterend', instructions);
 
                 alert("Tugas Anda telah diunduh sebagai PDF!\n\nSelanjutnya, WhatsApp akan terbuka. Silakan LAMPIRKAN (Attach) file tersebut ke chat.");
 
-                // Redirect to WhatsApp
                 const message = encodeURIComponent("Halo Dosen, ini adalah hasil tugas Klasifikasi Biaya saya.");
                 window.open(`https://wa.me/6287862357442?text=${message}`, '_blank');
 
             } catch (err) {
                 console.error("Gagal membuat PDF:", err);
                 alert("Maaf, terjadi kesalahan saat membuat PDF. Pastikan browser Anda mendukung fitur ini.");
-                // Ensure UI is restored on error
-                document.querySelector('.btn-container').style.display = 'flex';
-                document.querySelector('.instructions').style.display = 'block';
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
