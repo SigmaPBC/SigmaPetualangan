@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tugas Klasifikasi Biaya - Akuntansi Manajemen</title>
-    <!-- html2canvas to capture the page as an image -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Library to generate PDF from HTML -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -218,41 +218,45 @@
         async function collectAndShare() {
             const btn = document.getElementById('btn-collect');
             const originalText = btn.innerText;
-            btn.innerText = "Memproses...";
+            btn.innerText = "Generating PDF...";
             btn.disabled = true;
 
             try {
-                // Prepare container for capture (hide buttons and instructions like in print)
                 const container = document.querySelector('.container');
                 const btnContainer = document.querySelector('.btn-container');
                 const instructions = document.querySelector('.instructions');
 
+                // Temporarily hide UI elements for clean PDF
                 btnContainer.style.display = 'none';
                 instructions.style.display = 'none';
 
-                const canvas = await html2canvas(container, {
-                    scale: 2, // Better resolution
-                    backgroundColor: '#ffffff'
-                });
+                const opt = {
+                    margin: 10,
+                    filename: 'Tugas_Klasifikasi_Biaya.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                };
+
+                // Generate and download PDF
+                await html2pdf().from(container).set(opt).save();
 
                 // Restore UI
                 btnContainer.style.display = 'flex';
                 instructions.style.display = 'block';
 
-                // Copy to clipboard
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-                const item = new ClipboardItem({ "image/png": blob });
-                await navigator.clipboard.write([item]);
-
-                alert("Tangkapan layar berhasil disalin ke clipboard!\n\nSelanjutnya, WhatsApp akan terbuka. Silakan PASTE (Ctrl+V / Cmd+V) gambar tugas Anda di chat.");
+                alert("Tugas Anda telah diunduh sebagai PDF!\n\nSelanjutnya, WhatsApp akan terbuka. Silakan LAMPIRKAN (Attach) file tersebut ke chat.");
 
                 // Redirect to WhatsApp
                 const message = encodeURIComponent("Halo Dosen, ini adalah hasil tugas Klasifikasi Biaya saya.");
                 window.open(`https://wa.me/6281383107880?text=${message}`, '_blank');
 
             } catch (err) {
-                console.error("Gagal mengambil gambar:", err);
-                alert("Maaf, terjadi kesalahan saat mengambil gambar. Pastikan browser Anda mendukung fitur ini.");
+                console.error("Gagal membuat PDF:", err);
+                alert("Maaf, terjadi kesalahan saat membuat PDF. Pastikan browser Anda mendukung fitur ini.");
+                // Ensure UI is restored on error
+                document.querySelector('.btn-container').style.display = 'flex';
+                document.querySelector('.instructions').style.display = 'block';
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
