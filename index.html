@@ -1,354 +1,147 @@
 <!DOCTYPE html>
-<html lang="id">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200">
-    <title>Tugas Klasifikasi Biaya - Akuntansi Manajemen</title>
-    <!-- Library to generate PDF from HTML -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge Math Challenge: Rates & Ratios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #1e3a8a;
-            --secondary: #3b82f6;
-            --bg: #f8fafc;
-            --border: #e2e8f0;
-        }
+        :root { --primary: #2980b9; --secondary: #27ae60; --dark: #2c3e50; --light: #ecf0f1; --accent: #e67e22; }
+        body { font-family: 'Montserrat', sans-serif; background: #f4f7f6; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: var(--dark); }
+        #app-container { background: white; width: 95%; max-width: 800px; padding: 40px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        
+        /* Landing Page Styles */
+        #landing-page { text-align: center; }
+        .badge { background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 20px; display: inline-block; }
+        h1 { font-size: 32px; margin: 10px 0; color: var(--primary); }
+        .description { margin-bottom: 30px; line-height: 1.6; color: #7f8c8d; }
+        
+        /* Quiz Styles */
+        #quiz-page { display: none; }
+        .header-quiz { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .progress-container { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 25px; }
+        .progress-fill { height: 100%; background: var(--secondary); width: 0%; transition: 0.4s; }
+        .difficulty-indicator { font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 5px; text-transform: uppercase; }
+        .easy { background: #dff9fb; color: #130f40; }
+        .medium { background: #f9ca24; color: #000; }
+        .hard { background: #ff7979; color: #fff; }
+        
+        .question-text { font-size: 18px; line-height: 1.6; margin-bottom: 25px; font-weight: 600; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .opt-btn { padding: 15px; border: 2px solid #dfe6e9; border-radius: 12px; background: white; cursor: pointer; transition: 0.3s; font-weight: 500; font-family: inherit; }
+        .opt-btn:hover { border-color: var(--primary); background: #f0f7ff; transform: translateY(-2px); }
+        
+        /* Result Styles */
+        #result-page { display: none; text-align: center; }
+        .score-circle { width: 150px; height: 150px; border: 10px solid var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; margin: 30px auto; color: var(--secondary); }
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        header {
-            text-align: center;
-            border-bottom: 3px solid var(--primary);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
-
-        h1 {
-            color: var(--primary);
-            margin: 0;
-            font-size: 1.8rem;
-        }
-
-        .instructions {
-            background: #eff6ff;
-            border-left: 4px solid var(--secondary);
-            padding: 15px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 0.85rem;
-        }
-
-        th {
-            background-color: #1e3a8a;
-            /* Explicit hex for compatibility */
-            color: #ffffff;
-            padding: 12px 8px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-
-        td {
-            padding: 8px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .col-item {
-            text-align: left;
-            font-weight: 500;
-            width: 30%;
-        }
-
-        input[type="checkbox"] {
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f1f5f9;
-        }
-
-        tr:hover {
-            background-color: #e2e8f0;
-        }
-
-        .btn-container {
-            margin-top: 25px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-print {
-            background: #64748b;
-            color: white;
-        }
-
-        .btn-check {
-            background: var(--primary);
-            color: white;
-        }
-
-        @media print {
-
-            .btn-container,
-            .instructions {
-                display: none;
-            }
-
-            body {
-                padding: 0;
-            }
-
-            .container {
-                box-shadow: none;
-                border: none;
-            }
-
-            tr {
-                page-break-inside: avoid;
-            }
-
-            th {
-                color: #ffffff !important;
-                background-color: #1e3a8a !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-                border: 1px solid #1e3a8a !important;
-                vertical-align: middle !important;
-                text-align: center !important;
-                height: auto !important;
-            }
-        }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-main:hover { background: #2171a3; transform: scale(1.05); }
     </style>
 </head>
-
 <body>
 
-    <div class="container">
-        <header>
-            <h1>MATRIKS KLASIFIKASI BIAYA</h1>
-            <p>Mata Kuliah: Akuntansi Manajemen | Pertemuan 4</p>
-        </header>
-
-        <div class="instructions">
-            <strong>Instruksi:</strong> Analisislah setiap komponen biaya pada operasional <strong>Pabrik Sepatu
-                Olahraga</strong>. Berikan tanda centang pada kolom yang menurut Anda paling tepat.
-        </div>
-
-
-
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th colspan="2">Hubungan Objek</th>
-                    <th colspan="2">Fungsi Organisasi</th>
-                    <th colspan="3">Perilaku Biaya</th>
-                </tr>
-                <tr>
-                    <th>No</th>
-                    <th>Komponen Biaya</th>
-                    <th>Langsung</th>
-                    <th>Tak Langsung</th>
-                    <th>Produksi</th>
-                    <th>Non-Produksi</th>
-                    <th>Tetap</th>
-                    <th>Variabel</th>
-                    <th>Semi</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-            </tbody>
-        </table>
-
-        <div class="btn-container">
-            <button class="btn-print" onclick="downloadPDF()">Simpan sebagai PDF</button>
-            <button class="btn-check" id="btn-collect" onclick="collectAndShare()">Kumpulkan Jawaban</button>
-        </div>
-
-        <footer style="margin-top: 30px; text-align: center; font-size: 0.8rem; color: #94a3b8;">
-            &copy; 2026 - Modul Digital Akuntansi Manajemen
-        </footer>
+<div id="app-container">
+    <div id="landing-page">
+        <div class="badge">LES PRIVAT SIGMA - GLOBAL CURRICULUM</div>
+        <h1>Rate Mastery Challenge</h1>
+        <p class="description">Test your reasoning skills with Cambridge-style word problems. Focus on unit conversion, comparison, and multi-step logic. Good luck, scholar!</p>
+        <button class="btn-main" onclick="startQuiz()">Start Assessment</button>
     </div>
 
-    <script>
-        const items = [
-            "Bahan Baku Kulit Sintetis", "Upah Buruh Jahit (per Pasang)", "Sewa Gedung Pabrik (Tahunan)",
-            "Listrik Mesin Produksi (Beban + Pakai)", "Gaji Satpam Kantor Pusat", "Lem dan Benang (Bahan Penolong)",
-            "Penyusutan Mesin (Garis Lurus)", "Komisi Sales Penjualan (per Unit)", "Gaji Manajer Produksi (Bulanan)",
-            "Biaya Iklan TV & Media Sosial", "Pajak Bumi dan Bangunan (PBB) Pabrik", "Oli/Pelumas Perawatan Mesin",
-            "Gaji Akuntan Perusahaan", "Biaya Pengiriman ke Pelanggan", "Bonus Supervisor (Target Tercapai)",
-            "Biaya Wi-Fi Kantor & Pabrik", "Tali Sepatu", "Biaya Pelatihan Karyawan Baru",
-            "Pemeliharaan AC (Kontrak Tetap)", "Biaya Sampel Produk (Prototipe)"
-        ];
+    <div id="quiz-page">
+        <div class="header-quiz">
+            <span id="q-count">Question 1/15</span>
+            <span id="diff-tag" class="difficulty-indicator"></span>
+        </div>
+        <div class="progress-container"><div class="progress-fill" id="p-fill"></div></div>
+        <div id="question-box" class="question-text"></div>
+        <div id="options-box" class="options-grid"></div>
+    </div>
 
-        const tbody = document.getElementById('table-body');
-        items.forEach((item, index) => {
-            const row = `
-            <tr>
-                <td>${index + 1}</td>
-                <td class="col-item">${item}</td>
-                <td><input type="checkbox"></td>
-                <td><input type="checkbox"></td>
-                <td><input type="checkbox"></td>
-                <td><input type="checkbox"></td>
-                <td><input type="checkbox"></td>
-                <td><input type="checkbox"></td>
-                <td><input type="checkbox"></td>
-            </tr>
-        `;
-            tbody.innerHTML += row;
+    <div id="result-page">
+        <h2 id="result-title">Assessment Complete</h2>
+        <div class="score-circle" id="score-display">0/15</div>
+        <p id="feedback-text"></p>
+        <button class="btn-main" onclick="location.reload()">Restart Challenge</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        // STAGE 1: FOUNDATION (Unit Prices & Basic Speed)
+        { d: "easy", q: "A supermarket sells 2.5 kg of flour for $5.00. What is the cost per kilogram of flour?", a: ["$1.25", "$2.00", "$2.50", "$0.50"], c: 1 },
+        { d: "easy", q: "A cyclist travels 15 kilometers in 30 minutes. What is the cyclist's speed in km/h?", a: ["15 km/h", "30 km/h", "45 km/h", "60 km/h"], c: 1 },
+        { d: "easy", q: "A machine can label 120 bottles in 4 minutes. How many bottles can it label per minute?", a: ["25", "30", "40", "60"], c: 1 },
+        { d: "easy", q: "The exchange rate is 1 USD = 0.85 EUR. If you exchange 200 USD, how many Euros will you receive?", a: ["170 EUR", "235 EUR", "185 EUR", "160 EUR"], c: 0 },
+        { d: "easy", q: "An athlete runs 400 meters in 80 seconds. What is their rate of speed in meters per second?", a: ["4 m/s", "5 m/s", "8 m/s", "10 m/s"], c: 1 },
+        
+        // STAGE 2: APPLICATION (Reasoning & Comparison)
+        { d: "medium", q: "Shop A sells 4 pens for $6.00. Shop B sells 6 pens for $8.40. Which shop offers a cheaper price per pen and by how much?", a: ["Shop A is $0.10 cheaper", "Shop B is $0.10 cheaper", "Shop B is $0.20 cheaper", "Both are the same"], c: 1 },
+        { d: "medium", q: "A car travels 90 km in 1.5 hours. At this same rate, how far will the car travel in 4 hours?", a: ["240 km", "270 km", "300 km", "360 km"], c: 0 },
+        { d: "medium", q: "A water tank fills at a rate of 12 liters per minute. How long (in minutes and seconds) will it take to fill a 150-liter tank?", a: ["12m 15s", "12m 30s", "10m 50s", "15m 00s"], c: 1 },
+        { d: "medium", q: "A printer can print 15 pages every 20 seconds. How many pages can it print in 5 minutes?", a: ["150 pages", "225 pages", "300 pages", "450 pages"], c: 1 },
+        { d: "medium", q: "12 identical books weigh a total of 9 kg. What is the weight of 20 of these books in kilograms?", a: ["12 kg", "15 kg", "18 kg", "20 kg"], c: 1 },
+
+        // STAGE 3: MASTERY (Combined Rates & Conversion)
+        { d: "hard", q: "Pipe A fills a pool in 6 hours. Pipe B fills the same pool in 3 hours. If both pipes are turned on at the same time, how many hours will it take to fill the pool?", a: ["2 hours", "4.5 hours", "1.5 hours", "9 hours"], c: 0 },
+        { d: "hard", q: "A runner completes a 10 km race. They run the first 4 km at 8 km/h and the remaining 6 km at 12 km/h. What is the total time taken in minutes?", a: ["50 minutes", "60 minutes", "75 minutes", "80 minutes"], c: 1 },
+        { d: "hard", q: "A garden hose has a flow rate of 250 ml per second. How many liters of water will it produce if it runs for 12 minutes?", a: ["120 L", "150 L", "180 L", "200 L"], c: 2 },
+        { d: "hard", q: "A factory produces 45 items every 15 minutes. Due to a power cut, the rate drops by 20%. How many items will be produced in the next 2 hours?", a: ["288 items", "360 items", "240 items", "300 items"], c: 0 },
+        { d: "hard", q: "Currency X: 1 USD = 1.25 CAD. Currency Y: 1 CAD = 0.80 EUR. If you have 100 USD, how many Euros can you get by converting through CAD?", a: ["100 EUR", "80 EUR", "125 EUR", "110 EUR"], c: 0 }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    function startQuiz() {
+        document.getElementById('landing-page').style.display = 'none';
+        document.getElementById('quiz-page').style.display = 'block';
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const data = quizData[currentQ];
+        document.getElementById('q-count').innerText = `Question ${currentQ + 1}/15`;
+        document.getElementById('diff-tag').innerText = data.d;
+        document.getElementById('diff-tag').className = `difficulty-indicator ${data.d}`;
+        document.getElementById('question-box').innerText = data.q;
+        document.getElementById('p-fill').style.width = `${(currentQ / 15) * 100}%`;
+
+        const optionsBox = document.getElementById('options-box');
+        optionsBox.innerHTML = '';
+        data.a.forEach((ans, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.innerText = ans;
+            btn.onclick = () => checkAnswer(i);
+            optionsBox.appendChild(btn);
         });
+    }
 
-        // Shared helper: prepare container for PDF capture
-        function preparePDFCapture(container) {
-            container.style.maxWidth = '900px';
-            container.style.width = '900px';
-            container.style.padding = '10px';
-            container.style.fontSize = '0.7rem';
-            container.style.boxShadow = 'none';
-            const table = container.querySelector('table');
-            table.style.fontSize = '0.65rem';
-            const allTh = container.querySelectorAll('th');
-            allTh.forEach(th => { th.style.padding = '5px 3px'; });
-            const allTd = container.querySelectorAll('td');
-            allTd.forEach(td => { td.style.padding = '3px'; });
-            const header = container.querySelector('header');
-            header.style.marginBottom = '5px';
-            header.style.paddingBottom = '3px';
-            const h1 = container.querySelector('h1');
-            h1.style.fontSize = '1rem';
-            const p = header.querySelector('p');
-            if (p) p.style.fontSize = '0.7rem';
-            const footer = container.querySelector('footer');
-            footer.style.marginTop = '5px';
-            return { table, allTh, allTd, header, h1, p, footer };
+    function checkAnswer(i) {
+        if (i === quizData[currentQ].c) score++;
+        currentQ++;
+        if (currentQ < quizData.length) {
+            showQuestion();
+        } else {
+            showResult();
         }
+    }
 
-        // Shared helper: restore container after PDF capture
-        function restorePDFCapture(container, refs) {
-            container.style.maxWidth = '';
-            container.style.width = '';
-            container.style.padding = '';
-            container.style.fontSize = '';
-            container.style.boxShadow = '';
-            refs.table.style.fontSize = '';
-            refs.allTh.forEach(th => { th.style.padding = ''; });
-            refs.allTd.forEach(td => { td.style.padding = ''; });
-            refs.header.style.marginBottom = '';
-            refs.header.style.paddingBottom = '';
-            refs.h1.style.fontSize = '';
-            if (refs.p) refs.p.style.fontSize = '';
-            refs.footer.style.marginTop = '';
-        }
-
-        const pdfOpt = {
-            margin: 3,
-            filename: 'Tugas_Klasifikasi_Biaya.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, logging: false, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-            pagebreak: { mode: 'avoid-all' }
-        };
-
-        async function downloadPDF() {
-            const btn = document.querySelector('.btn-print');
-            const originalText = btn.innerText;
-            btn.innerText = "Generating PDF...";
-            btn.disabled = true;
-
-            try {
-                const container = document.querySelector('.container');
-                const btnContainer = document.querySelector('.btn-container');
-                const instructions = document.querySelector('.instructions');
-
-                btnContainer.remove();
-                instructions.remove();
-                const refs = preparePDFCapture(container);
-
-                await html2pdf().from(container).set(pdfOpt).save();
-
-                restorePDFCapture(container, refs);
-                container.querySelector('table').insertAdjacentElement('afterend', btnContainer);
-                container.querySelector('header').insertAdjacentElement('afterend', instructions);
-            } catch (err) {
-                console.error("Gagal membuat PDF:", err);
-                alert("Maaf, terjadi kesalahan saat membuat PDF.");
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        async function collectAndShare() {
-            const btn = document.getElementById('btn-collect');
-            const originalText = btn.innerText;
-            btn.innerText = "Generating PDF...";
-            btn.disabled = true;
-
-            try {
-                const container = document.querySelector('.container');
-                const btnContainer = document.querySelector('.btn-container');
-                const instructions = document.querySelector('.instructions');
-
-                btnContainer.remove();
-                instructions.remove();
-                const refs = preparePDFCapture(container);
-
-                await html2pdf().from(container).set(pdfOpt).save();
-
-                restorePDFCapture(container, refs);
-                container.querySelector('table').insertAdjacentElement('afterend', btnContainer);
-                container.querySelector('header').insertAdjacentElement('afterend', instructions);
-
-                alert("Tugas Anda telah diunduh sebagai PDF!\n\nSelanjutnya, WhatsApp akan terbuka. Silakan LAMPIRKAN (Attach) file tersebut ke chat.");
-
-                const message = encodeURIComponent("Halo Dosen, ini adalah hasil tugas Klasifikasi Biaya saya.");
-                window.open(`https://wa.me/6287862357442?text=${message}`, '_blank');
-
-            } catch (err) {
-                console.error("Gagal membuat PDF:", err);
-                alert("Maaf, terjadi kesalahan saat membuat PDF. Pastikan browser Anda mendukung fitur ini.");
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-    </script>
-
+    function showResult() {
+        document.getElementById('quiz-page').style.display = 'none';
+        document.getElementById('result-page').style.display = 'block';
+        document.getElementById('score-display').innerText = `${score}/15`;
+        
+        let feedback = "";
+        if (score === 15) feedback = "Outstanding! You've mastered the Global Standard for Rates.";
+        else if (score >= 11) feedback = "Great work! You have a very strong grasp of complex rate problems.";
+        else if (score >= 7) feedback = "Good effort! Try reviewing unit conversions to improve your score.";
+        else feedback = "Keep practicing! Focus on understanding 'Unit Rates' before moving to complex problems.";
+        
+        document.getElementById('feedback-text').innerText = feedback;
+    }
+</script>
 </body>
-
 </html>
