@@ -1,147 +1,315 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cambridge Math Challenge: Rates & Ratios</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Persiapan Ulangan Matematika - Les Privat Sigma</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap"
+        rel="stylesheet">
     <style>
-        :root { --primary: #2980b9; --secondary: #27ae60; --dark: #2c3e50; --light: #ecf0f1; --accent: #e67e22; }
-        body { font-family: 'Montserrat', sans-serif; background: #f4f7f6; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: var(--dark); }
-        #app-container { background: white; width: 95%; max-width: 800px; padding: 40px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
-        
-        /* Landing Page Styles */
-        #landing-page { text-align: center; }
-        .badge { background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 20px; display: inline-block; }
-        h1 { font-size: 32px; margin: 10px 0; color: var(--primary); }
-        .description { margin-bottom: 30px; line-height: 1.6; color: #7f8c8d; }
-        
-        /* Quiz Styles */
-        #quiz-page { display: none; }
-        .header-quiz { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .progress-container { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 25px; }
-        .progress-fill { height: 100%; background: var(--secondary); width: 0%; transition: 0.4s; }
-        .difficulty-indicator { font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 5px; text-transform: uppercase; }
-        .easy { background: #dff9fb; color: #130f40; }
-        .medium { background: #f9ca24; color: #000; }
-        .hard { background: #ff7979; color: #fff; }
-        
-        .question-text { font-size: 18px; line-height: 1.6; margin-bottom: 25px; font-weight: 600; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .opt-btn { padding: 15px; border: 2px solid #dfe6e9; border-radius: 12px; background: white; cursor: pointer; transition: 0.3s; font-weight: 500; font-family: inherit; }
-        .opt-btn:hover { border-color: var(--primary); background: #f0f7ff; transform: translateY(-2px); }
-        
-        /* Result Styles */
-        #result-page { display: none; text-align: center; }
-        .score-circle { width: 150px; height: 150px; border: 10px solid var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; margin: 30px auto; color: var(--secondary); }
+        :root {
+            --primary: #4A90E2;
+            --secondary: #FF6F61;
+            --accent: #FFD166;
+            --success: #06D6A0;
+            --bg: #F8F9FE;
+        }
 
-        .btn-main { background: var(--primary); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-main:hover { background: #2171a3; transform: scale(1.05); }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #landing-page {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            border-bottom: 8px solid var(--primary);
+            margin-top: 50px;
+        }
+
+        .btn-start {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-family: 'Fredoka', sans-serif;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 111, 97, 0.4);
+        }
+
+        #quiz-container {
+            display: none;
+            max-width: 850px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-family: 'Fredoka', sans-serif;
+            color: var(--primary);
+            border-bottom: 3px dashed var(--accent);
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        h3 {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .question {
+            margin: 20px 0;
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .hint {
+            display: inline-block;
+            background: #fff9c4;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #f57f17;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        /* MATH BERSUSUN STYLE */
+        .math-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 30px;
+            margin: 25px 0;
+        }
+
+        .math-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            width: 85px;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .math-row {
+            font-family: 'monospace';
+            font-size: 2rem;
+            letter-spacing: 12px;
+            padding-right: 5px;
+        }
+
+        .math-line {
+            width: 100%;
+            border-bottom: 4px solid #333;
+            margin: 5px 0;
+            position: relative;
+        }
+
+        .math-sign {
+            position: absolute;
+            left: -25px;
+            bottom: -15px;
+            font-family: sans-serif;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .ans-input {
+            width: 100% !important;
+            font-size: 1.8rem !important;
+            height: 50px;
+            margin-top: 5px;
+            border: 2px solid var(--primary) !important;
+        }
+
+        .btn-submit {
+            background-color: var(--success);
+            color: white;
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-family: 'Fredoka', sans-serif;
+            cursor: pointer;
+            margin-top: 50px;
+        }
     </style>
 </head>
+
 <body>
 
-<div id="app-container">
     <div id="landing-page">
-        <div class="badge">LES PRIVAT SIGMA - GLOBAL CURRICULUM</div>
-        <h1>Rate Mastery Challenge</h1>
-        <p class="description">Test your reasoning skills with Cambridge-style word problems. Focus on unit conversion, comparison, and multi-step logic. Good luck, scholar!</p>
-        <button class="btn-main" onclick="startQuiz()">Start Assessment</button>
+        <div style="font-size: 80px;">🎒</div>
+        <h1>Les Privat Sigma</h1>
+        <p>Persiapan Ulangan Matematika<br><b>Kelas 1 SD</b></p>
+        <button class="btn-start" onclick="startQuiz()">Mulai Belajar 🚀</button>
     </div>
 
-    <div id="quiz-page">
-        <div class="header-quiz">
-            <span id="q-count">Question 1/15</span>
-            <span id="diff-tag" class="difficulty-indicator"></span>
-        </div>
-        <div class="progress-container"><div class="progress-fill" id="p-fill"></div></div>
-        <div id="question-box" class="question-text"></div>
-        <div id="options-box" class="options-grid"></div>
+    <div id="quiz-container">
+        <h1 style="text-align:center; color: var(--secondary); font-family: 'Fredoka';">Latihan Soal Matematika</h1>
+
+        <section>
+            <h2>Materi: Bilangan Cacah</h2>
+
+            <h3>A. Nilai Tempat</h3>
+            <div class="question">1. Bilangan 56 terdiri dari <input type="number" style="width: 60px;"> puluhan dan
+                <input type="number" style="width: 60px;"> satuan.</div>
+            <div class="question">2. Bilangan yang memiliki 4 puluhan dan 3 satuan adalah <input type="number"
+                    style="width: 70px;">.</div>
+            <div class="question">3. Manakah bilangan yang memiliki 7 puluhan?<br>
+                <input type="radio" name="q3"> a. 17 &nbsp; <input type="radio" name="q3"> b. 70 &nbsp; <input
+                    type="radio" name="q3"> c. 27
+            </div>
+
+            <h3>B. Urutan Bilangan</h3>
+            <div class="question">1. Urutkan dari yang <b>terkecil</b>: 45, 28, 31, 19<br>👉 <input type="text"
+                    style="width: 200px;"></div>
+            <div class="question">2. Urutkan dari yang <b>terbesar</b>: 67, 54, 72, 49<br>👉 <input type="text"
+                    style="width: 200px;"></div>
+
+            <h3>C. Perbandingan Bilangan</h3>
+            <div class="question">1. Isi dengan <b>&gt; , &lt; , atau =</b> <br>
+                45 <input type="text" style="width: 50px;"> 54 &nbsp; | &nbsp;
+                63 <input type="text" style="width: 50px;"> 36 &nbsp; | &nbsp;
+                40 <input type="text" style="width: 50px;"> 40
+            </div>
+            <div class="question">2. Bilangan yang lebih besar dari 58 tetapi lebih kecil dari 60 adalah <input
+                    type="number" style="width: 70px;">.</div>
+        </section>
+
+        <section>
+            <h2>Materi: Pola Bilangan</h2>
+            <div class="question">1. 2, 4, 6, <input type="number" style="width: 60px;">, <input type="number"
+                    style="width: 60px;"> <span class="hint">Loncat 2</span></div>
+            <div class="question">2. 5, 10, 15, <input type="number" style="width: 60px;">, <input type="number"
+                    style="width: 60px;"> <span class="hint">Loncat 5</span></div>
+            <div class="question">3. 3, 6, 9, <input type="number" style="width: 60px;">, <input type="number"
+                    style="width: 60px;"> <span class="hint">Loncat 3</span></div>
+            <div class="question">4. 20, 18, 16, <input type="number" style="width: 60px;">, <input type="number"
+                    style="width: 60px;"> <span class="hint">Mundur 2</span></div>
+        </section>
+
+        <section>
+            <h2>Materi: Penjumlahan Bersusun</h2>
+            <div class="math-wrapper">
+                <div class="math-box">
+                    <div class="math-row">23</div>
+                    <div class="math-row">15</div>
+                    <div class="math-line"><span class="math-sign">+</span></div><input type="number" class="ans-input">
+                </div>
+                <div class="math-box">
+                    <div class="math-row">34</div>
+                    <div class="math-row">24</div>
+                    <div class="math-line"><span class="math-sign">+</span></div><input type="number" class="ans-input">
+                </div>
+                <div class="math-box">
+                    <div class="math-row">12</div>
+                    <div class="math-row">46</div>
+                    <div class="math-line"><span class="math-sign">+</span></div><input type="number" class="ans-input">
+                </div>
+                <div class="math-box">
+                    <div class="math-row">51</div>
+                    <div class="math-row">18</div>
+                    <div class="math-line"><span class="math-sign">+</span></div><input type="number" class="ans-input">
+                </div>
+            </div>
+            <div class="question">Rina memiliki 12 permen. Ibu memberi lagi 8 permen. Jumlah permen Rina adalah <input
+                    type="number" style="width: 70px;">.</div>
+        </section>
+
+        <section>
+            <h2>Materi: Pengurangan Bersusun</h2>
+            <div class="math-wrapper">
+                <div class="math-box">
+                    <div class="math-row">45</div>
+                    <div class="math-row">12</div>
+                    <div class="math-line"><span class="math-sign">-</span></div><input type="number" class="ans-input">
+                </div>
+                <div class="math-box">
+                    <div class="math-row">50</div>
+                    <div class="math-row">25</div>
+                    <div class="math-line"><span class="math-sign">-</span></div><input type="number" class="ans-input">
+                </div>
+                <div class="math-box">
+                    <div class="math-row">38</div>
+                    <div class="math-row">16</div>
+                    <div class="math-line"><span class="math-sign">-</span></div><input type="number" class="ans-input">
+                </div>
+                <div class="math-box">
+                    <div class="math-row">29</div>
+                    <div class="math-row">14</div>
+                    <div class="math-line"><span class="math-sign">-</span></div><input type="number" class="ans-input">
+                </div>
+            </div>
+            <div class="question">Rudi memiliki 30 kelereng. Diberikan ke teman 10 kelereng. Sisa kelereng Rudi adalah
+                <input type="number" style="width: 70px;">.</div>
+        </section>
+
+        <section>
+            <h2>Materi: Operasi Dasar & Waktu</h2>
+
+            <h3>A. Perkalian & Pembagian Dasar</h3>
+            <div class="question">1. Penjumlahan berulang: 3 + 3 + 3 = 3 x 3 = <input type="number"
+                    style="width: 70px;"></div>
+            <div class="question">2. Ada 4 kotak pensil, tiap kotak isi 2 pensil. Total pensil = 4 x 2 = <input
+                    type="number" style="width: 70px;"></div>
+            <div class="question">3. 12 kue dibagi kepada 3 anak sama banyak. Tiap anak dapat <input type="number"
+                    style="width: 70px;"> kue.</div>
+
+            <h3>B. Membaca Jam</h3>
+
+            <div class="question">1. Jarum pendek di angka 5, jarum panjang di angka 12. Pukul <input type="text"
+                    style="width: 100px;"></div>
+
+            <div class="question">2. Jarum pendek di angka 8, jarum panjang di angka 6. Pukul <input type="text"
+                    style="width: 120px;"> lewat setengah.</div>
+
+            <h3>C. Soal Logika (Selisih)</h3>
+            <div class="question">Anita memiliki 15 apel. Arkana memiliki 20 apel. Berapa <b>lebihnya</b> apel Arkana
+                daripada Anita? <input type="number" style="width: 70px;"> apel.</div>
+        </section>
+
+        <button class="btn-submit" onclick="finishQuiz()">Selesai & Cek Jawaban ✅</button>
     </div>
 
-    <div id="result-page">
-        <h2 id="result-title">Assessment Complete</h2>
-        <div class="score-circle" id="score-display">0/15</div>
-        <p id="feedback-text"></p>
-        <button class="btn-main" onclick="location.reload()">Restart Challenge</button>
-    </div>
-</div>
-
-<script>
-    const quizData = [
-        // STAGE 1: FOUNDATION (Unit Prices & Basic Speed)
-        { d: "easy", q: "A supermarket sells 2.5 kg of flour for $5.00. What is the cost per kilogram of flour?", a: ["$1.25", "$2.00", "$2.50", "$0.50"], c: 1 },
-        { d: "easy", q: "A cyclist travels 15 kilometers in 30 minutes. What is the cyclist's speed in km/h?", a: ["15 km/h", "30 km/h", "45 km/h", "60 km/h"], c: 1 },
-        { d: "easy", q: "A machine can label 120 bottles in 4 minutes. How many bottles can it label per minute?", a: ["25", "30", "40", "60"], c: 1 },
-        { d: "easy", q: "The exchange rate is 1 USD = 0.85 EUR. If you exchange 200 USD, how many Euros will you receive?", a: ["170 EUR", "235 EUR", "185 EUR", "160 EUR"], c: 0 },
-        { d: "easy", q: "An athlete runs 400 meters in 80 seconds. What is their rate of speed in meters per second?", a: ["4 m/s", "5 m/s", "8 m/s", "10 m/s"], c: 1 },
-        
-        // STAGE 2: APPLICATION (Reasoning & Comparison)
-        { d: "medium", q: "Shop A sells 4 pens for $6.00. Shop B sells 6 pens for $8.40. Which shop offers a cheaper price per pen and by how much?", a: ["Shop A is $0.10 cheaper", "Shop B is $0.10 cheaper", "Shop B is $0.20 cheaper", "Both are the same"], c: 1 },
-        { d: "medium", q: "A car travels 90 km in 1.5 hours. At this same rate, how far will the car travel in 4 hours?", a: ["240 km", "270 km", "300 km", "360 km"], c: 0 },
-        { d: "medium", q: "A water tank fills at a rate of 12 liters per minute. How long (in minutes and seconds) will it take to fill a 150-liter tank?", a: ["12m 15s", "12m 30s", "10m 50s", "15m 00s"], c: 1 },
-        { d: "medium", q: "A printer can print 15 pages every 20 seconds. How many pages can it print in 5 minutes?", a: ["150 pages", "225 pages", "300 pages", "450 pages"], c: 1 },
-        { d: "medium", q: "12 identical books weigh a total of 9 kg. What is the weight of 20 of these books in kilograms?", a: ["12 kg", "15 kg", "18 kg", "20 kg"], c: 1 },
-
-        // STAGE 3: MASTERY (Combined Rates & Conversion)
-        { d: "hard", q: "Pipe A fills a pool in 6 hours. Pipe B fills the same pool in 3 hours. If both pipes are turned on at the same time, how many hours will it take to fill the pool?", a: ["2 hours", "4.5 hours", "1.5 hours", "9 hours"], c: 0 },
-        { d: "hard", q: "A runner completes a 10 km race. They run the first 4 km at 8 km/h and the remaining 6 km at 12 km/h. What is the total time taken in minutes?", a: ["50 minutes", "60 minutes", "75 minutes", "80 minutes"], c: 1 },
-        { d: "hard", q: "A garden hose has a flow rate of 250 ml per second. How many liters of water will it produce if it runs for 12 minutes?", a: ["120 L", "150 L", "180 L", "200 L"], c: 2 },
-        { d: "hard", q: "A factory produces 45 items every 15 minutes. Due to a power cut, the rate drops by 20%. How many items will be produced in the next 2 hours?", a: ["288 items", "360 items", "240 items", "300 items"], c: 0 },
-        { d: "hard", q: "Currency X: 1 USD = 1.25 CAD. Currency Y: 1 CAD = 0.80 EUR. If you have 100 USD, how many Euros can you get by converting through CAD?", a: ["100 EUR", "80 EUR", "125 EUR", "110 EUR"], c: 0 }
-    ];
-
-    let currentQ = 0;
-    let score = 0;
-
-    function startQuiz() {
-        document.getElementById('landing-page').style.display = 'none';
-        document.getElementById('quiz-page').style.display = 'block';
-        showQuestion();
-    }
-
-    function showQuestion() {
-        const data = quizData[currentQ];
-        document.getElementById('q-count').innerText = `Question ${currentQ + 1}/15`;
-        document.getElementById('diff-tag').innerText = data.d;
-        document.getElementById('diff-tag').className = `difficulty-indicator ${data.d}`;
-        document.getElementById('question-box').innerText = data.q;
-        document.getElementById('p-fill').style.width = `${(currentQ / 15) * 100}%`;
-
-        const optionsBox = document.getElementById('options-box');
-        optionsBox.innerHTML = '';
-        data.a.forEach((ans, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'opt-btn';
-            btn.innerText = ans;
-            btn.onclick = () => checkAnswer(i);
-            optionsBox.appendChild(btn);
-        });
-    }
-
-    function checkAnswer(i) {
-        if (i === quizData[currentQ].c) score++;
-        currentQ++;
-        if (currentQ < quizData.length) {
-            showQuestion();
-        } else {
-            showResult();
+    <script>
+        function startQuiz() {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            window.scrollTo(0, 0);
         }
-    }
-
-    function showResult() {
-        document.getElementById('quiz-page').style.display = 'none';
-        document.getElementById('result-page').style.display = 'block';
-        document.getElementById('score-display').innerText = `${score}/15`;
-        
-        let feedback = "";
-        if (score === 15) feedback = "Outstanding! You've mastered the Global Standard for Rates.";
-        else if (score >= 11) feedback = "Great work! You have a very strong grasp of complex rate problems.";
-        else if (score >= 7) feedback = "Good effort! Try reviewing unit conversions to improve your score.";
-        else feedback = "Keep practicing! Focus on understanding 'Unit Rates' before moving to complex problems.";
-        
-        document.getElementById('feedback-text').innerText = feedback;
-    }
-</script>
+        function finishQuiz() {
+            alert("Hebat sekali! Kamu sudah menyelesaikan latihan matematika hari ini. Ayo periksa lagi bersama gurumu!");
+        }
+    </script>
 </body>
+
 </html>
