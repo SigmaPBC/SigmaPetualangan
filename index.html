@@ -1,10 +1,17 @@
-<!DOCTYPE html>
+Put your HTML text here<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wheel of Challenges - Fixed</title>
+    <title>Interactive Challenge Wheel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --accent: #00f2fe;
+        }
+
         body {
             display: flex;
             flex-direction: column;
@@ -12,163 +19,200 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #1a1a2e;
-            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-color);
+            font-family: 'Montserrat', sans-serif;
             color: white;
         }
 
-        .wheel-box {
+        .main-container {
             position: relative;
-            width: 450px;
-            height: 450px;
+            background: var(--panel-bg);
+            padding: 40px;
+            border-radius: 50px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
-        /* Panah Penunjuk */
+        /* Penunjuk Panah */
         .arrow {
             position: absolute;
-            top: -10px;
+            top: 25px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-top: 40px solid #ff4757;
-            z-index: 10;
+            border-top: 40px solid #ff0055;
+            z-index: 100;
+            filter: drop-shadow(0 0 10px #ff0055);
+        }
+
+        .wheel-box {
+            position: relative;
+            width: 420px;
+            height: 420px;
+            margin-bottom: 30px;
         }
 
         #wheel-svg {
             width: 100%;
             height: 100%;
             transform: rotate(0deg);
-            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+            transition: transform 6s cubic-bezier(0.15, 0, 0.15, 1);
         }
 
-        .segment-text {
+        .seg-text {
             fill: white;
-            font-size: 12px;
-            font-weight: bold;
-            pointer-events: none;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
+            pointer-events: none;
+            letter-spacing: 0.5px;
         }
 
+        /* Tombol & Result */
         #spin-btn {
-            margin-top: 30px;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            background: #00d2d3;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
             border: none;
-            border-radius: 30px;
-            color: #1a1a2e;
-            transition: 0.2s;
-            box-shadow: 0 4px 15px rgba(0, 210, 211, 0.3);
+            padding: 15px 50px;
+            font-size: 18px;
+            font-weight: 900;
+            color: #0f172a;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);
+            letter-spacing: 2px;
         }
 
-        #spin-btn:hover { background: #01a3a4; }
-        #spin-btn:active { transform: scale(0.95); }
+        #spin-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 242, 254, 0.5);
+        }
 
-        #result-text {
+        #spin-btn:disabled {
+            background: #475569;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        #result-display {
             margin-top: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #feca57;
-            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
             min-height: 30px;
+        }
+
+        .center-dot {
+            fill: #0f172a;
+            stroke: var(--accent);
+            stroke-width: 4;
         }
     </style>
 </head>
 <body>
 
-    <div class="wheel-box">
+    <div class="main-container">
         <div class="arrow"></div>
-        <svg id="wheel-svg" viewBox="0 0 400 400">
-            <g id="wheel-group"></g>
-        </svg>
-    </div>
+        <div class="wheel-box">
+            <svg id="wheel-svg" viewBox="0 0 400 400">
+                <g id="wheel-group"></g>
+                <circle cx="200" cy="200" r="20" class="center-dot" />
+            </svg>
+        </div>
 
-    <button id="spin-btn">PUTAR SEKARANG</button>
-    <div id="result-text">Klik untuk main!</div>
+        <button id="spin-btn">PUTAR RODA</button>
+        <div id="result-display">Siap Bermain?</div>
+    </div>
 
     <script>
         const categories = [
-            "Nama Pahlawan 🇮🇩",
-            "Ilmu Pengetahuan Umum 🧠",
-            "Tebak Judul Lagu 🎵",
-            "Memory 🧩",
-            "Tebak Arti Bhs Bugis 🗣️",
-            "Tebak Jumlah Keluarga 👨‍👩‍👧",
-            "Tebak Gambar / Emoji 🎨",
-            "Sambung Kata 🔤"
+            "Ilmu Pengetahuan Umum",
+            "Tebak Judul Lagu",
+            "Memori",
+            "Tebak Arti Bugis",
+            "Tebak Suara",
+            "Tebak Gambar/Emoji",
+            "Sambung Kata",
+            "Bonus"
         ];
 
-        const colors = ["#ff6b6b", "#4834d4", "#686de0", "#6ab04c", "#f9ca24", "#f0932b", "#eb4d4b", "#130f40"];
+        const colors = [
+            "#6366f1", "#a855f7", "#ec4899", "#ef4444",
+            "#f59e0b", "#10b981", "#06b6d4", "#3b82f6"
+        ];
+
         const wheelGroup = document.getElementById('wheel-group');
         const wheelSvg = document.getElementById('wheel-svg');
-        const resultText = document.getElementById('result-text');
         const spinBtn = document.getElementById('spin-btn');
+        const resultText = document.getElementById('result-display');
 
-        // Buat segmen dan teks menggunakan SVG
+        // Render Segmen Roda
         categories.forEach((name, i) => {
             const angle = 360 / categories.length;
             const startAngle = i * angle;
             const endAngle = (i + 1) * angle;
             
-            // Logika menggambar busur (arc) SVG
-            const x1 = 200 + 180 * Math.cos(Math.PI * startAngle / 180);
-            const y1 = 200 + 180 * Math.sin(Math.PI * startAngle / 180);
-            const x2 = 200 + 180 * Math.cos(Math.PI * endAngle / 180);
-            const y2 = 200 + 180 * Math.sin(Math.PI * endAngle / 180);
+            // Path Segmen
+            const x1 = 200 + 190 * Math.cos(Math.PI * startAngle / 180);
+            const y1 = 200 + 190 * Math.sin(Math.PI * startAngle / 180);
+            const x2 = 200 + 190 * Math.cos(Math.PI * endAngle / 180);
+            const y2 = 200 + 190 * Math.sin(Math.PI * endAngle / 180);
 
-            const pathData = `M 200 200 L ${x1} ${y1} A 180 180 0 0 1 ${x2} ${y2} Z`;
-            
-            // Buat Path Segmen
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("d", pathData);
+            path.setAttribute("d", `M 200 200 L ${x1} ${y1} A 190 190 0 0 1 ${x2} ${y2} Z`);
             path.setAttribute("fill", colors[i]);
-            path.setAttribute("stroke", "#ffffff");
+            path.setAttribute("stroke", "#0f172a");
             path.setAttribute("stroke-width", "2");
             wheelGroup.appendChild(path);
 
-            // Buat Teks
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            // Teks Segmen
             const textAngle = startAngle + (angle / 2);
-            const textX = 200 + 100 * Math.cos(Math.PI * textAngle / 180);
-            const textY = 200 + 100 * Math.sin(Math.PI * textAngle / 180);
+            const textX = 200 + 130 * Math.cos(Math.PI * textAngle / 180);
+            const textY = 200 + 130 * Math.sin(Math.PI * textAngle / 180);
             
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text.setAttribute("x", textX);
             text.setAttribute("y", textY);
-            text.setAttribute("fill", "white");
-            text.setAttribute("font-size", "10px");
             text.setAttribute("text-anchor", "middle");
+            text.setAttribute("dominant-baseline", "middle");
+            text.setAttribute("class", "seg-text");
             text.setAttribute("transform", `rotate(${textAngle}, ${textX}, ${textY})`);
-            text.textContent = name;
-            text.setAttribute("class", "segment-text");
+            
+            // Bungkus teks jika terlalu panjang
+            const words = name.split(" ");
+            if(words.length > 2) {
+                text.innerHTML = `<tspan x="${textX}" dy="-5">${words[0]} ${words[1]}</tspan>
+                                  <tspan x="${textX}" dy="12">${words.slice(2).join(" ")}</tspan>`;
+            } else {
+                text.textContent = name;
+            }
+            
             wheelGroup.appendChild(text);
         });
 
-        let rotation = 0;
+        let currentRotation = 0;
 
         spinBtn.onclick = () => {
             spinBtn.disabled = true;
-            resultText.innerText = "Sedang berputar...";
+            resultText.innerText = "🎡 Memutar...";
             
-            const extraDeg = Math.floor(Math.random() * 360) + 3600; // 10 putaran penuh + random
-            rotation += extraDeg;
+            const extraDeg = Math.floor(Math.random() * 360) + 3600; 
+            currentRotation += extraDeg;
             
-            wheelSvg.style.transform = `rotate(${rotation}deg)`;
+            wheelSvg.style.transform = `rotate(${currentRotation}deg)`;
 
             setTimeout(() => {
                 spinBtn.disabled = false;
-                
-                // Kalkulasi hasil (disesuaikan dengan posisi awal SVG)
-                const currentDeg = rotation % 360;
-                // Offset 90 derajat karena panah ada di atas (posisi 12 siang)
-                const winningIndex = Math.floor((360 - (currentDeg % 360) + 270) % 360 / 45);
-                
-                resultText.innerText = "🎯 " + categories[winningIndex];
-            }, 5000);
+                const actualDeg = currentRotation % 360;
+                // Offset 270 derajat karena panah ada di posisi jam 12 (atas)
+                const winIndex = Math.floor((360 - (actualDeg % 360) + 270) % 360 / 45);
+                resultText.innerText = "🎯 " + categories[winIndex];
+            }, 6000);
         };
     </script>
 </body>
