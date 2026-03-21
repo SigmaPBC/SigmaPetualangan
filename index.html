@@ -1,315 +1,175 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Persiapan Ulangan Matematika - Les Privat Sigma</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap"
-        rel="stylesheet">
+    <title>Wheel of Challenges - Fixed</title>
     <style>
-        :root {
-            --primary: #4A90E2;
-            --secondary: #FF6F61;
-            --accent: #FFD166;
-            --success: #06D6A0;
-            --bg: #F8F9FE;
-        }
-
         body {
-            font-family: 'Quicksand', sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        #landing-page {
-            text-align: center;
-            background: white;
-            padding: 50px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            border-bottom: 8px solid var(--primary);
-            margin-top: 50px;
-        }
-
-        .btn-start {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.5rem;
-            font-family: 'Fredoka', sans-serif;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 111, 97, 0.4);
-        }
-
-        #quiz-container {
-            display: none;
-            max-width: 850px;
-            width: 100%;
-            background: white;
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        }
-
-        h2 {
-            font-family: 'Fredoka', sans-serif;
-            color: var(--primary);
-            border-bottom: 3px dashed var(--accent);
-            padding-bottom: 10px;
-            margin-top: 40px;
-        }
-
-        h3 {
-            color: #555;
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .question {
-            margin: 20px 0;
-            font-size: 1.2rem;
-            line-height: 1.8;
-        }
-
-        .hint {
-            display: inline-block;
-            background: #fff9c4;
-            padding: 2px 10px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            color: #f57f17;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        input[type="number"],
-        input[type="text"] {
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            padding: 8px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.1rem;
-            text-align: center;
-        }
-
-        /* MATH BERSUSUN STYLE */
-        .math-wrapper {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 30px;
-            margin: 25px 0;
-        }
-
-        .math-box {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            width: 85px;
-            background: #fafafa;
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        .math-row {
-            font-family: 'monospace';
-            font-size: 2rem;
-            letter-spacing: 12px;
-            padding-right: 5px;
-        }
-
-        .math-line {
-            width: 100%;
-            border-bottom: 4px solid #333;
-            margin: 5px 0;
-            position: relative;
-        }
-
-        .math-sign {
-            position: absolute;
-            left: -25px;
-            bottom: -15px;
-            font-family: sans-serif;
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .ans-input {
-            width: 100% !important;
-            font-size: 1.8rem !important;
-            height: 50px;
-            margin-top: 5px;
-            border: 2px solid var(--primary) !important;
-        }
-
-        .btn-submit {
-            background-color: var(--success);
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a2e;
+            font-family: 'Segoe UI', sans-serif;
             color: white;
+        }
+
+        .wheel-box {
+            position: relative;
+            width: 450px;
+            height: 450px;
+        }
+
+        /* Panah Penunjuk */
+        .arrow {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ff4757;
+            z-index: 10;
+        }
+
+        #wheel-svg {
             width: 100%;
-            padding: 20px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.5rem;
-            font-family: 'Fredoka', sans-serif;
+            height: 100%;
+            transform: rotate(0deg);
+            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+        }
+
+        .segment-text {
+            fill: white;
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
+        #spin-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 50px;
+            background: #00d2d3;
+            border: none;
+            border-radius: 30px;
+            color: #1a1a2e;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 210, 211, 0.3);
+        }
+
+        #spin-btn:hover { background: #01a3a4; }
+        #spin-btn:active { transform: scale(0.95); }
+
+        #result-text {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #feca57;
+            text-align: center;
+            min-height: 30px;
         }
     </style>
 </head>
-
 <body>
 
-    <div id="landing-page">
-        <div style="font-size: 80px;">🎒</div>
-        <h1>Les Privat Sigma</h1>
-        <p>Persiapan Ulangan Matematika<br><b>Kelas 1 SD</b></p>
-        <button class="btn-start" onclick="startQuiz()">Mulai Belajar 🚀</button>
+    <div class="wheel-box">
+        <div class="arrow"></div>
+        <svg id="wheel-svg" viewBox="0 0 400 400">
+            <g id="wheel-group"></g>
+        </svg>
     </div>
 
-    <div id="quiz-container">
-        <h1 style="text-align:center; color: var(--secondary); font-family: 'Fredoka';">Latihan Soal Matematika</h1>
-
-        <section>
-            <h2>Materi: Bilangan Cacah</h2>
-
-            <h3>A. Nilai Tempat</h3>
-            <div class="question">1. Bilangan 56 terdiri dari <input type="number" style="width: 60px;"> puluhan dan
-                <input type="number" style="width: 60px;"> satuan.</div>
-            <div class="question">2. Bilangan yang memiliki 4 puluhan dan 3 satuan adalah <input type="number"
-                    style="width: 70px;">.</div>
-            <div class="question">3. Manakah bilangan yang memiliki 7 puluhan?<br>
-                <input type="radio" name="q3"> a. 17 &nbsp; <input type="radio" name="q3"> b. 70 &nbsp; <input
-                    type="radio" name="q3"> c. 27
-            </div>
-
-            <h3>B. Urutan Bilangan</h3>
-            <div class="question">1. Urutkan dari yang <b>terkecil</b>: 45, 28, 31, 19<br>👉 <input type="text"
-                    style="width: 200px;"></div>
-            <div class="question">2. Urutkan dari yang <b>terbesar</b>: 67, 54, 72, 49<br>👉 <input type="text"
-                    style="width: 200px;"></div>
-
-            <h3>C. Perbandingan Bilangan</h3>
-            <div class="question">1. Isi dengan <b>&gt; , &lt; , atau =</b> <br>
-                45 <input type="text" style="width: 50px;"> 54 &nbsp; | &nbsp;
-                63 <input type="text" style="width: 50px;"> 36 &nbsp; | &nbsp;
-                40 <input type="text" style="width: 50px;"> 40
-            </div>
-            <div class="question">2. Bilangan yang lebih besar dari 58 tetapi lebih kecil dari 60 adalah <input
-                    type="number" style="width: 70px;">.</div>
-        </section>
-
-        <section>
-            <h2>Materi: Pola Bilangan</h2>
-            <div class="question">1. 2, 4, 6, <input type="number" style="width: 60px;">, <input type="number"
-                    style="width: 60px;"> <span class="hint">Loncat 2</span></div>
-            <div class="question">2. 5, 10, 15, <input type="number" style="width: 60px;">, <input type="number"
-                    style="width: 60px;"> <span class="hint">Loncat 5</span></div>
-            <div class="question">3. 3, 6, 9, <input type="number" style="width: 60px;">, <input type="number"
-                    style="width: 60px;"> <span class="hint">Loncat 3</span></div>
-            <div class="question">4. 20, 18, 16, <input type="number" style="width: 60px;">, <input type="number"
-                    style="width: 60px;"> <span class="hint">Mundur 2</span></div>
-        </section>
-
-        <section>
-            <h2>Materi: Penjumlahan Bersusun</h2>
-            <div class="math-wrapper">
-                <div class="math-box">
-                    <div class="math-row">23</div>
-                    <div class="math-row">15</div>
-                    <div class="math-line"><span class="math-sign">+</span></div><input type="number" class="ans-input">
-                </div>
-                <div class="math-box">
-                    <div class="math-row">34</div>
-                    <div class="math-row">24</div>
-                    <div class="math-line"><span class="math-sign">+</span></div><input type="number" class="ans-input">
-                </div>
-                <div class="math-box">
-                    <div class="math-row">12</div>
-                    <div class="math-row">46</div>
-                    <div class="math-line"><span class="math-sign">+</span></div><input type="number" class="ans-input">
-                </div>
-                <div class="math-box">
-                    <div class="math-row">51</div>
-                    <div class="math-row">18</div>
-                    <div class="math-line"><span class="math-sign">+</span></div><input type="number" class="ans-input">
-                </div>
-            </div>
-            <div class="question">Rina memiliki 12 permen. Ibu memberi lagi 8 permen. Jumlah permen Rina adalah <input
-                    type="number" style="width: 70px;">.</div>
-        </section>
-
-        <section>
-            <h2>Materi: Pengurangan Bersusun</h2>
-            <div class="math-wrapper">
-                <div class="math-box">
-                    <div class="math-row">45</div>
-                    <div class="math-row">12</div>
-                    <div class="math-line"><span class="math-sign">-</span></div><input type="number" class="ans-input">
-                </div>
-                <div class="math-box">
-                    <div class="math-row">50</div>
-                    <div class="math-row">25</div>
-                    <div class="math-line"><span class="math-sign">-</span></div><input type="number" class="ans-input">
-                </div>
-                <div class="math-box">
-                    <div class="math-row">38</div>
-                    <div class="math-row">16</div>
-                    <div class="math-line"><span class="math-sign">-</span></div><input type="number" class="ans-input">
-                </div>
-                <div class="math-box">
-                    <div class="math-row">29</div>
-                    <div class="math-row">14</div>
-                    <div class="math-line"><span class="math-sign">-</span></div><input type="number" class="ans-input">
-                </div>
-            </div>
-            <div class="question">Rudi memiliki 30 kelereng. Diberikan ke teman 10 kelereng. Sisa kelereng Rudi adalah
-                <input type="number" style="width: 70px;">.</div>
-        </section>
-
-        <section>
-            <h2>Materi: Operasi Dasar & Waktu</h2>
-
-            <h3>A. Perkalian & Pembagian Dasar</h3>
-            <div class="question">1. Penjumlahan berulang: 3 + 3 + 3 = 3 x 3 = <input type="number"
-                    style="width: 70px;"></div>
-            <div class="question">2. Ada 4 kotak pensil, tiap kotak isi 2 pensil. Total pensil = 4 x 2 = <input
-                    type="number" style="width: 70px;"></div>
-            <div class="question">3. 12 kue dibagi kepada 3 anak sama banyak. Tiap anak dapat <input type="number"
-                    style="width: 70px;"> kue.</div>
-
-            <h3>B. Membaca Jam</h3>
-
-            <div class="question">1. Jarum pendek di angka 5, jarum panjang di angka 12. Pukul <input type="text"
-                    style="width: 100px;"></div>
-
-            <div class="question">2. Jarum pendek di angka 8, jarum panjang di angka 6. Pukul <input type="text"
-                    style="width: 120px;"> lewat setengah.</div>
-
-            <h3>C. Soal Logika (Selisih)</h3>
-            <div class="question">Anita memiliki 15 apel. Arkana memiliki 20 apel. Berapa <b>lebihnya</b> apel Arkana
-                daripada Anita? <input type="number" style="width: 70px;"> apel.</div>
-        </section>
-
-        <button class="btn-submit" onclick="finishQuiz()">Selesai & Cek Jawaban ✅</button>
-    </div>
+    <button id="spin-btn">PUTAR SEKARANG</button>
+    <div id="result-text">Klik untuk main!</div>
 
     <script>
-        function startQuiz() {
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('quiz-container').style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-        function finishQuiz() {
-            alert("Hebat sekali! Kamu sudah menyelesaikan latihan matematika hari ini. Ayo periksa lagi bersama gurumu!");
-        }
+        const categories = [
+            "Nama Pahlawan 🇮🇩",
+            "Ilmu Pengetahuan Umum 🧠",
+            "Tebak Judul Lagu 🎵",
+            "Memory 🧩",
+            "Tebak Arti Bhs Bugis 🗣️",
+            "Tebak Jumlah Keluarga 👨‍👩‍👧",
+            "Tebak Gambar / Emoji 🎨",
+            "Sambung Kata 🔤"
+        ];
+
+        const colors = ["#ff6b6b", "#4834d4", "#686de0", "#6ab04c", "#f9ca24", "#f0932b", "#eb4d4b", "#130f40"];
+        const wheelGroup = document.getElementById('wheel-group');
+        const wheelSvg = document.getElementById('wheel-svg');
+        const resultText = document.getElementById('result-text');
+        const spinBtn = document.getElementById('spin-btn');
+
+        // Buat segmen dan teks menggunakan SVG
+        categories.forEach((name, i) => {
+            const angle = 360 / categories.length;
+            const startAngle = i * angle;
+            const endAngle = (i + 1) * angle;
+            
+            // Logika menggambar busur (arc) SVG
+            const x1 = 200 + 180 * Math.cos(Math.PI * startAngle / 180);
+            const y1 = 200 + 180 * Math.sin(Math.PI * startAngle / 180);
+            const x2 = 200 + 180 * Math.cos(Math.PI * endAngle / 180);
+            const y2 = 200 + 180 * Math.sin(Math.PI * endAngle / 180);
+
+            const pathData = `M 200 200 L ${x1} ${y1} A 180 180 0 0 1 ${x2} ${y2} Z`;
+            
+            // Buat Path Segmen
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", pathData);
+            path.setAttribute("fill", colors[i]);
+            path.setAttribute("stroke", "#ffffff");
+            path.setAttribute("stroke-width", "2");
+            wheelGroup.appendChild(path);
+
+            // Buat Teks
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            const textAngle = startAngle + (angle / 2);
+            const textX = 200 + 100 * Math.cos(Math.PI * textAngle / 180);
+            const textY = 200 + 100 * Math.sin(Math.PI * textAngle / 180);
+            
+            text.setAttribute("x", textX);
+            text.setAttribute("y", textY);
+            text.setAttribute("fill", "white");
+            text.setAttribute("font-size", "10px");
+            text.setAttribute("text-anchor", "middle");
+            text.setAttribute("transform", `rotate(${textAngle}, ${textX}, ${textY})`);
+            text.textContent = name;
+            text.setAttribute("class", "segment-text");
+            wheelGroup.appendChild(text);
+        });
+
+        let rotation = 0;
+
+        spinBtn.onclick = () => {
+            spinBtn.disabled = true;
+            resultText.innerText = "Sedang berputar...";
+            
+            const extraDeg = Math.floor(Math.random() * 360) + 3600; // 10 putaran penuh + random
+            rotation += extraDeg;
+            
+            wheelSvg.style.transform = `rotate(${rotation}deg)`;
+
+            setTimeout(() => {
+                spinBtn.disabled = false;
+                
+                // Kalkulasi hasil (disesuaikan dengan posisi awal SVG)
+                const currentDeg = rotation % 360;
+                // Offset 90 derajat karena panah ada di atas (posisi 12 siang)
+                const winningIndex = Math.floor((360 - (currentDeg % 360) + 270) % 360 / 45);
+                
+                resultText.innerText = "🎯 " + categories[winningIndex];
+            }, 5000);
+        };
     </script>
 </body>
-
 </html>
