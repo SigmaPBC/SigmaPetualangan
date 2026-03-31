@@ -1,219 +1,542 @@
-Put your HTML text here<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Challenge Wheel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --panel-bg: rgba(30, 41, 59, 0.7);
-            --accent: #00f2fe;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Challenge - Satuan Berat Kelas 4 SD</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", Arial, sans-serif;
+    }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            background: var(--bg-color);
-            font-family: 'Montserrat', sans-serif;
-            color: white;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #dff7f0, #f7fcfb);
+      color: #23413b;
+    }
 
-        .main-container {
-            position: relative;
-            background: var(--panel-bg);
-            padding: 40px;
-            border-radius: 50px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            text-align: center;
-        }
+    .screen {
+      display: none;
+      min-height: 100vh;
+      padding: 24px;
+    }
 
-        /* Penunjuk Panah */
-        .arrow {
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 40px solid #ff0055;
-            z-index: 100;
-            filter: drop-shadow(0 0 10px #ff0055);
-        }
+    .screen.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .wheel-box {
-            position: relative;
-            width: 420px;
-            height: 420px;
-            margin-bottom: 30px;
-        }
+    .card {
+      background: white;
+      width: 100%;
+      max-width: 950px;
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
 
-        #wheel-svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(0deg);
-            transition: transform 6s cubic-bezier(0.15, 0, 0.15, 1);
-        }
+    .hero {
+      text-align: center;
+      padding: 20px 10px;
+    }
 
-        .seg-text {
-            fill: white;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            pointer-events: none;
-            letter-spacing: 0.5px;
-        }
+    .hero h1 {
+      font-size: 2.3rem;
+      margin-bottom: 10px;
+      color: #14866f;
+    }
 
-        /* Tombol & Result */
-        #spin-btn {
-            background: linear-gradient(45deg, #00f2fe, #4facfe);
-            border: none;
-            padding: 15px 50px;
-            font-size: 18px;
-            font-weight: 900;
-            color: #0f172a;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);
-            letter-spacing: 2px;
-        }
+    .hero p {
+      color: #5d726d;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
 
-        #spin-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(0, 242, 254, 0.5);
-        }
+    .hero-badge {
+      display: inline-block;
+      background: #e9fffa;
+      color: #14947a;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
 
-        #spin-btn:disabled {
-            background: #475569;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
+    .btn {
+      border: none;
+      padding: 14px 24px;
+      border-radius: 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      margin-top: 12px;
+    }
 
-        #result-display {
-            margin-top: 20px;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--accent);
-            min-height: 30px;
-        }
+    .btn-primary {
+      background: #1fb391;
+      color: white;
+      box-shadow: 0 10px 22px rgba(31,179,145,0.25);
+    }
 
-        .center-dot {
-            fill: #0f172a;
-            stroke: var(--accent);
-            stroke-width: 4;
-        }
-    </style>
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      background: #16977a;
+    }
+
+    .btn-secondary {
+      background: #eef8f5;
+      color: #256d5f;
+      margin-left: 10px;
+    }
+
+    .btn-secondary:hover {
+      background: #dff2ec;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #15846d;
+    }
+
+    .pill {
+      background: #f2fffb;
+      border: 1px solid #d6f1ea;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      color: #2d6e61;
+    }
+
+    .progress-wrap {
+      margin: 18px 0 28px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 14px;
+      background: #e8f4f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #22b99a, #7ae2c7);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .section-card {
+      background: #fbfffe;
+      border: 2px solid #e1f4ee;
+      border-radius: 22px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .section-card h2 {
+      margin-top: 0;
+      color: #166f5d;
+    }
+
+    .ladder {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    .step {
+      background: #22b99a;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 16px;
+      min-width: 70px;
+      text-align: center;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(34,185,154,0.22);
+    }
+
+    .question-box {
+      background: white;
+      border: 2px solid #e5f3ef;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    }
+
+    .question-number {
+      display: inline-block;
+      background: #eafff8;
+      color: #178f7a;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #d7ece7;
+      border-radius: 16px;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 18px;
+    }
+
+    .feedback {
+      min-height: 32px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feedback.correct {
+      color: #11814f;
+    }
+
+    .feedback.wrong {
+      color: #cf3f47;
+    }
+
+    .stars {
+      font-size: 1.3rem;
+      margin-top: 10px;
+    }
+
+    .result-box {
+      text-align: center;
+      padding: 10px;
+    }
+
+    .result-score {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #15846d;
+      margin-bottom: 12px;
+    }
+
+    .result-message {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #516663;
+    }
+
+    .answer-list {
+      text-align: left;
+      margin-top: 24px;
+      background: #f9fffd;
+      border: 1px solid #dcefeb;
+      border-radius: 20px;
+      padding: 18px;
+      line-height: 1.9;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+      .title {
+        font-size: 1.3rem;
+      }
+      .question-text {
+        font-size: 1.05rem;
+      }
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <div class="arrow"></div>
-        <div class="wheel-box">
-            <svg id="wheel-svg" viewBox="0 0 400 400">
-                <g id="wheel-group"></g>
-                <circle cx="200" cy="200" r="20" class="center-dot" />
-            </svg>
+  <!-- START SCREEN -->
+  <section class="screen active" id="startScreen">
+    <div class="card hero">
+      <div class="hero-badge">🎯 Math Challenge Interaktif</div>
+      <h1>Belajar Satuan Berat Jadi Lebih Seru!</h1>
+      <p>
+        Yuk belajar Matematika kelas 4 SD dengan cara yang menyenangkan!  
+        Di sini kamu akan mengerjakan soal tentang <strong>satuan berat</strong> seperti
+        <strong>kg, hg, dag, g, dg, cg, dan mg</strong>.
+      </p>
+      <button class="btn btn-primary" onclick="startLearning()">Mulai Belajar 🚀</button>
+    </div>
+  </section>
+
+  <!-- LEARNING SCREEN -->
+  <section class="screen" id="learningScreen">
+    <div class="card">
+      <div class="topbar">
+        <div class="title">📘 Materi Singkat: Satuan Berat</div>
+        <div class="pill">Kelas 4 SD</div>
+      </div>
+
+      <div class="section-card">
+        <h2>🪜 Tangga Satuan Berat</h2>
+        <p>
+          Ingat urutan tangga satuan berat berikut:
+        </p>
+
+        <div class="ladder">
+          <div class="step">kg</div>
+          <div class="step">hg</div>
+          <div class="step">dag</div>
+          <div class="step">g</div>
+          <div class="step">dg</div>
+          <div class="step">cg</div>
+          <div class="step">mg</div>
         </div>
 
-        <button id="spin-btn">PUTAR RODA</button>
-        <div id="result-display">Siap Bermain?</div>
+        <p style="margin-top:18px; line-height:1.8;">
+          <strong>Aturan mudah:</strong><br>
+          🔽 Turun 1 tangga = ×10 <br>
+          🔼 Naik 1 tangga = ÷10
+        </p>
+      </div>
+
+      <div style="text-align:center;">
+        <button class="btn btn-primary" onclick="startQuiz()">Mulai Soal ✍️</button>
+      </div>
     </div>
+  </section>
 
-    <script>
-        const categories = [
-            "Ilmu Pengetahuan Umum",
-            "Tebak Judul Lagu",
-            "Memori",
-            "Tebak Arti Bugis",
-            "Tebak Suara",
-            "Tebak Gambar/Emoji",
-            "Sambung Kata",
-            "Bonus"
-        ];
+  <!-- QUIZ SCREEN -->
+  <section class="screen" id="quizScreen">
+    <div class="card">
+      <div class="topbar">
+        <div class="title">📝 Latihan Interaktif</div>
+        <div class="pill" id="scorePill">Skor: 0</div>
+      </div>
 
-        const colors = [
-            "#6366f1", "#a855f7", "#ec4899", "#ef4444",
-            "#f59e0b", "#10b981", "#06b6d4", "#3b82f6"
-        ];
+      <div class="progress-wrap">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
 
-        const wheelGroup = document.getElementById('wheel-group');
-        const wheelSvg = document.getElementById('wheel-svg');
-        const spinBtn = document.getElementById('spin-btn');
-        const resultText = document.getElementById('result-display');
+      <div class="question-box" id="questionBox">
+        <div class="question-number" id="questionNumber">Soal 1 dari 20</div>
+        <div class="question-text" id="questionText"></div>
+        <input type="text" id="answerInput" placeholder="Tulis jawabanmu di sini..." />
+        <div class="feedback" id="feedbackText"></div>
+        <button class="btn btn-primary" onclick="submitAnswer()">Cek Jawaban</button>
+      </div>
+    </div>
+  </section>
 
-        // Render Segmen Roda
-        categories.forEach((name, i) => {
-            const angle = 360 / categories.length;
-            const startAngle = i * angle;
-            const endAngle = (i + 1) * angle;
-            
-            // Path Segmen
-            const x1 = 200 + 190 * Math.cos(Math.PI * startAngle / 180);
-            const y1 = 200 + 190 * Math.sin(Math.PI * startAngle / 180);
-            const x2 = 200 + 190 * Math.cos(Math.PI * endAngle / 180);
-            const y2 = 200 + 190 * Math.sin(Math.PI * endAngle / 180);
+  <!-- RESULT SCREEN -->
+  <section class="screen" id="resultScreen">
+    <div class="card">
+      <div class="result-box">
+        <div class="hero-badge">🎉 Selesai!</div>
+        <div class="result-score" id="finalScore">Nilai: 0 / 20</div>
+        <div class="stars" id="starReward">⭐</div>
+        <div class="result-message" id="resultMessage"></div>
 
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("d", `M 200 200 L ${x1} ${y1} A 190 190 0 0 1 ${x2} ${y2} Z`);
-            path.setAttribute("fill", colors[i]);
-            path.setAttribute("stroke", "#0f172a");
-            path.setAttribute("stroke-width", "2");
-            wheelGroup.appendChild(path);
+        <div class="answer-list" id="answerSummary"></div>
 
-            // Teks Segmen
-            const textAngle = startAngle + (angle / 2);
-            const textX = 200 + 130 * Math.cos(Math.PI * textAngle / 180);
-            const textY = 200 + 130 * Math.sin(Math.PI * textAngle / 180);
-            
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", textX);
-            text.setAttribute("y", textY);
-            text.setAttribute("text-anchor", "middle");
-            text.setAttribute("dominant-baseline", "middle");
-            text.setAttribute("class", "seg-text");
-            text.setAttribute("transform", `rotate(${textAngle}, ${textX}, ${textY})`);
-            
-            // Bungkus teks jika terlalu panjang
-            const words = name.split(" ");
-            if(words.length > 2) {
-                text.innerHTML = `<tspan x="${textX}" dy="-5">${words[0]} ${words[1]}</tspan>
-                                  <tspan x="${textX}" dy="12">${words.slice(2).join(" ")}</tspan>`;
-            } else {
-                text.textContent = name;
-            }
-            
-            wheelGroup.appendChild(text);
-        });
+        <div style="margin-top:24px;">
+          <button class="btn btn-primary" onclick="restartQuiz()">Main Lagi 🔄</button>
+          <button class="btn btn-secondary" onclick="backToStart()">Kembali ke Awal</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        let currentRotation = 0;
+  <script>
+    const questions = [
+      { q: "3 kg = ... g", a: ["3000", "3.000"] },
+      { q: "5 hg = ... g", a: ["500"] },
+      { q: "4 dag = ... g", a: ["40"] },
+      { q: "2.000 g = ... kg", a: ["2"] },
+      { q: "7.000 mg = ... g", a: ["7"] },
+      { q: "6 kg = ... g", a: ["6000", "6.000"] },
+      { q: "Berapa kali turun tangga dari kg ke g?", a: ["3", "3 kali"] },
+      { q: "Berapa kali naik tangga dari mg ke hg?", a: ["5", "5 kali"] },
+      { q: "Satuan apa yang terletak setelah dag pada tangga satuan berat?", a: ["g"] },
+      { q: "Manakah yang lebih besar: 2 kg atau 1.500 g?", a: ["2 kg", "2kg"] },
+      { q: "Manakah yang lebih kecil: 8 hg atau 900 g?", a: ["8 hg", "8hg"] },
+      { q: "Urutkan dari yang terkecil ke terbesar: 500 g, 2 kg, 1.500 g", a: ["500 g, 1.500 g, 2 kg", "500g,1.500g,2kg", "500 g 1.500 g 2 kg"] },
+      { q: "Ibu membeli 2 kg apel dan 1 kg jeruk. Berat seluruh buah adalah ...", a: ["3 kg", "3kg"] },
+      { q: "Ayah membeli 3 kg beras dan 500 g gula. Berat semuanya dalam gram adalah ...", a: ["3500 g", "3.500 g", "3500", "3.500"] },
+      { q: "Di dapur ada 1 kg tepung. Lalu Ibu membeli lagi 2 kg. Berat tepung sekarang adalah ...", a: ["3 kg", "3kg"] },
+      { q: "Rina membeli 500 g mentega dan 250 g keju. Jumlah berat semuanya adalah ...", a: ["750 g", "750g"] },
+      { q: "2 kg + 500 g = ... g", a: ["2500", "2.500"] },
+      { q: "3.000 g − 1 kg = ... g", a: ["2000", "2.000"] },
+      { q: "4 kg 500 g − 1 kg = ...", a: ["3 kg 500 g", "3kg 500g"] },
+      { q: "Sebutkan urutan tangga satuan berat dari terbesar ke terkecil!", a: ["kg hg dag g dg cg mg", "kg, hg, dag, g, dg, cg, mg"] }
+    ];
 
-        spinBtn.onclick = () => {
-            spinBtn.disabled = true;
-            resultText.innerText = "🎡 Memutar...";
-            
-            const extraDeg = Math.floor(Math.random() * 360) + 3600; 
-            currentRotation += extraDeg;
-            
-            wheelSvg.style.transform = `rotate(${currentRotation}deg)`;
+    let currentQuestion = 0;
+    let score = 0;
+    let summary = [];
 
-            setTimeout(() => {
-                spinBtn.disabled = false;
-                const actualDeg = currentRotation % 360;
-                // Offset 270 derajat karena panah ada di posisi jam 12 (atas)
-                const winIndex = Math.floor((360 - (actualDeg % 360) + 270) % 360 / 45);
-                resultText.innerText = "🎯 " + categories[winIndex];
-            }, 6000);
-        };
-    </script>
+    function normalize(text) {
+      return text.toLowerCase().replace(/\./g, "").replace(/\s+/g, " ").trim();
+    }
+
+    function playBeep(type = "correct") {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      if (type === "correct") {
+        oscillator.frequency.value = 660;
+      } else {
+        oscillator.frequency.value = 220;
+      }
+
+      oscillator.type = "sine";
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+
+      oscillator.start();
+      oscillator.stop(ctx.currentTime + 0.18);
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function startLearning() {
+      showScreen("learningScreen");
+    }
+
+    function startQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      summary = [];
+      document.getElementById("scorePill").innerText = "Skor: 0";
+      showScreen("quizScreen");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("questionNumber").innerText = `Soal ${currentQuestion + 1} dari ${questions.length}`;
+      document.getElementById("questionText").innerText = q.q;
+      document.getElementById("answerInput").value = "";
+      document.getElementById("feedbackText").innerText = "";
+      document.getElementById("feedbackText").className = "feedback";
+      document.getElementById("progressFill").style.width = `${(currentQuestion / questions.length) * 100}%`;
+    }
+
+    function submitAnswer() {
+      const input = document.getElementById("answerInput").value;
+      const normalizedInput = normalize(input);
+      const q = questions[currentQuestion];
+      const isCorrect = q.a.some(ans => normalize(ans) === normalizedInput);
+
+      const feedback = document.getElementById("feedbackText");
+
+      if (isCorrect) {
+        score++;
+        feedback.innerText = "✔ Jawaban benar! Hebat!";
+        feedback.classList.add("correct");
+        playBeep("correct");
+      } else {
+        feedback.innerText = `✘ Belum tepat. Jawaban benar: ${q.a[0]}`;
+        feedback.classList.add("wrong");
+        playBeep("wrong");
+      }
+
+      summary.push({
+        soal: q.q,
+        user: input || "(kosong)",
+        benar: q.a[0],
+        status: isCorrect
+      });
+
+      document.getElementById("scorePill").innerText = `Skor: ${score}`;
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          loadQuestion();
+        } else {
+          showResult();
+        }
+      }, 1400);
+    }
+
+    function showResult() {
+      showScreen("resultScreen");
+      document.getElementById("finalScore").innerText = `Nilai: ${score} / ${questions.length}`;
+
+      let message = "";
+      let stars = "⭐";
+
+      if (score >= 17) {
+        message = "🌟 Luar biasa! Kamu sangat paham materi satuan berat. Pertahankan ya!";
+        stars = "⭐⭐⭐";
+      } else if (score >= 13) {
+        message = "👏 Bagus sekali! Kamu sudah memahami sebagian besar materi dengan baik.";
+        stars = "⭐⭐";
+      } else if (score >= 9) {
+        message = "💪 Semangat! Kamu sudah berusaha dengan baik. Yuk latihan lagi agar makin jago!";
+        stars = "⭐";
+      } else {
+        message = "📚 Jangan menyerah ya! Belajar sedikit demi sedikit pasti bisa.";
+        stars = "⭐";
+      }
+
+      document.getElementById("starReward").innerText = stars;
+      document.getElementById("resultMessage").innerText = message;
+
+      let html = "<h3>📌 Ringkasan Jawaban</h3>";
+      summary.forEach((item, i) => {
+        html += `
+          <p style="margin-bottom:12px;">
+            <strong>${i + 1}. ${item.soal}</strong><br>
+            Jawaban kamu: <span style="color:${item.status ? '#11814f' : '#cf3f47'}; font-weight:700;">${item.user}</span><br>
+            Jawaban benar: <strong>${item.benar}</strong>
+          </p>
+        `;
+      });
+
+      document.getElementById("answerSummary").innerHTML = html;
+      document.getElementById("progressFill").style.width = "100%";
+    }
+
+    function restartQuiz() {
+      startQuiz();
+    }
+
+    function backToStart() {
+      showScreen("startScreen");
+    }
+  </script>
 </body>
 </html>
