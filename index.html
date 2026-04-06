@@ -1,732 +1,229 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bahan Ajar Interaktif Matematika</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Adventure: Average Master</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --success: #00b894;
+            --danger: #d63031;
+            --bg: #f0f3f7;
+        }
 
-    body {
-      background: linear-gradient(180deg, #f8fbff, #eef7ff);
-      color: #1f2d3d;
-      line-height: 1.6;
-    }
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
 
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 20px;
-    }
+        .quiz-card {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .hero {
-      background: linear-gradient(135deg, #5fb0ff, #7ad7c9);
-      color: white;
-      padding: 40px 25px;
-      border-radius: 28px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.08);
-      margin-bottom: 28px;
-      text-align: center;
-    }
+        /* Welcome Screen */
+        #welcome-screen img { width: 150px; margin-bottom: 20px; }
+        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 10px; }
+        p.intro-text { color: #636e72; font-size: 1.1rem; margin-bottom: 30px; }
 
-    .hero h1 {
-      font-size: 2.2rem;
-      margin-bottom: 12px;
-    }
+        /* Quiz Screen */
+        #quiz-screen { display: none; text-align: left; }
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #dfe6e9;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 5px;
+            transition: 0.3s;
+        }
 
-    .hero p {
-      font-size: 1.05rem;
-      opacity: 0.98;
-      max-width: 780px;
-      margin: auto;
-    }
+        .question-box h2 { color: #2d3436; font-size: 1.3rem; margin-bottom: 20px; line-height: 1.5; }
+        .input-wrapper { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        
+        input {
+            padding: 12px;
+            font-size: 1.2rem;
+            border: 3px solid #dfe6e9;
+            border-radius: 10px;
+            width: 120px;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--secondary); }
 
-    .section {
-      background: white;
-      border-radius: 24px;
-      padding: 28px 22px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.05);
-    }
+        /* Buttons */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-weight: bold;
+        }
+        .btn:hover { background: var(--secondary); transform: scale(1.05); }
+        .btn-next { float: right; }
 
-    .section h2 {
-      color: #235789;
-      margin-bottom: 16px;
-      font-size: 1.7rem;
-    }
+        /* Results */
+        #result-screen { display: none; }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            line-height: 150px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 3rem;
+            margin: 20px auto;
+            font-weight: bold;
+        }
 
-    .section h3 {
-      color: #2f6f9f;
-      margin: 18px 0 10px;
-      font-size: 1.2rem;
-    }
-
-    .desc {
-      color: #506070;
-      margin-bottom: 16px;
-    }
-
-    .btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    button {
-      border: none;
-      background: #4fa3ff;
-      color: white;
-      padding: 12px 18px;
-      border-radius: 14px;
-      cursor: pointer;
-      font-size: 0.97rem;
-      font-weight: 600;
-      transition: 0.2s ease;
-      box-shadow: 0 8px 18px rgba(79,163,255,0.18);
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      background: #318df1;
-    }
-
-    .roadmap {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 18px;
-    }
-
-    .step {
-      background: linear-gradient(180deg, #f7fcff, #edf8ff);
-      border: 2px solid #d7ecff;
-      border-radius: 22px;
-      padding: 18px;
-      text-align: center;
-      transition: 0.2s ease;
-    }
-
-    .step:hover {
-      transform: translateY(-4px);
-    }
-
-    .step .emoji {
-      font-size: 2rem;
-      margin-bottom: 8px;
-    }
-
-    .step h4 {
-      color: #245b7c;
-      margin-bottom: 8px;
-    }
-
-    .mindmap {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .bubble {
-      background: #f8fbff;
-      border: 2px dashed #bfe1ff;
-      border-radius: 20px;
-      padding: 16px;
-    }
-
-    .bubble h4 {
-      color: #1f5d8d;
-      margin-bottom: 8px;
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .card {
-      background: #fcfeff;
-      border: 1px solid #e3eef9;
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.03);
-    }
-
-    .highlight {
-      background: #fff8dd;
-      border-left: 6px solid #ffcf5a;
-      padding: 14px 16px;
-      border-radius: 16px;
-      margin-top: 14px;
-    }
-
-    ul {
-      padding-left: 18px;
-      margin-top: 10px;
-    }
-
-    li {
-      margin-bottom: 8px;
-    }
-
-    .material-buttons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .material-btn {
-      background: linear-gradient(135deg, #6cc4ff, #88e0d1);
-      color: white;
-      border-radius: 20px;
-      padding: 18px;
-      text-align: center;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.08);
-      transition: 0.2s ease;
-    }
-
-    .material-btn:hover {
-      transform: scale(1.02);
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .question-box {
-      background: #f8fbff;
-      border: 2px solid #d9ebff;
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 18px;
-    }
-
-    .question-box p {
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-
-    .option {
-      display: block;
-      background: white;
-      border: 1.5px solid #dcecff;
-      padding: 12px 14px;
-      border-radius: 14px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .option:hover {
-      background: #f1f8ff;
-    }
-
-    .worksheet {
-      display: grid;
-      gap: 14px;
-      margin-top: 16px;
-    }
-
-    .worksheet-item {
-      background: #fbfdff;
-      border: 1px solid #e1edf9;
-      border-radius: 18px;
-      padding: 16px;
-    }
-
-    .answer-line {
-      margin-top: 12px;
-      border-bottom: 2px dashed #c7dff7;
-      height: 22px;
-    }
-
-    .score-box {
-      background: linear-gradient(135deg, #dff7ff, #e9fff6);
-      border: 2px solid #bcefe4;
-      border-radius: 22px;
-      padding: 20px;
-      margin-top: 20px;
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #1f5d57;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: #eef7ff;
-      color: #2a6f9b;
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 12px;
-    }
-
-    .footer {
-      text-align: center;
-      color: #7d8da1;
-      padding: 18px 0 30px;
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 600px) {
-      .hero h1 {
-        font-size: 1.7rem;
-      }
-
-      .section {
-        padding: 22px 16px;
-      }
-
-      button {
-        width: 100%;
-      }
-    }
-  </style>
+        .feedback-icon { font-size: 4rem; margin-bottom: 10px; }
+    </style>
 </head>
 <body>
-  <div class="container">
 
-    <!-- HERO -->
-    <section class="hero">
-      <h1>📘 Bahan Ajar Interaktif Matematika</h1>
-      <p>
-        Belajar alat ukur, satuan panjang, satuan berat, dan konversi satuan
-        dengan cara yang seru, rapi, modern, dan mudah dipahami.
-      </p>
-      <div class="btn-group" style="justify-content:center;">
-        <button onclick="scrollToSection('roadmap')">Mulai Belajar</button>
-        <button onclick="scrollToSection('materi-menu')">Pilih Materi</button>
-        <button onclick="scrollToSection('quiz')">Langsung Quiz</button>
-      </div>
-    </section>
-
-    <!-- ROADMAP -->
-    <section class="section" id="roadmap">
-      <div class="badge">ROADMAP PEMBELAJARAN</div>
-      <h2>🗺️ Peta Perjalanan Belajar</h2>
-      <p class="desc">
-        Kita akan belajar bertahap dari mengenal alat ukur, memahami satuan,
-        hingga mengubah satuan dan menggunakannya dalam kehidupan sehari-hari.
-      </p>
-
-      <div class="roadmap">
-        <div class="step">
-          <div class="emoji">📏</div>
-          <h4>1. Alat Ukur Panjang</h4>
-          <p>Mengenal alat untuk mengukur panjang benda.</p>
-        </div>
-        <div class="step">
-          <div class="emoji">📐</div>
-          <h4>2. Satuan Panjang</h4>
-          <p>Belajar km, hm, dam, m, dm, cm, mm.</p>
-        </div>
-        <div class="step">
-          <div class="emoji">🔁</div>
-          <h4>3. Konversi Panjang</h4>
-          <p>Mengubah satuan panjang dengan tangga satuan.</p>
-        </div>
-        <div class="step">
-          <div class="emoji">⚖️</div>
-          <h4>4. Alat Ukur Berat</h4>
-          <p>Mengenal timbangan dan penggunaannya.</p>
-        </div>
-        <div class="step">
-          <div class="emoji">🧂</div>
-          <h4>5. Satuan Berat</h4>
-          <p>Belajar kg, hg, dag, g, dg, cg, mg.</p>
-        </div>
-        <div class="step">
-          <div class="emoji">🛒</div>
-          <h4>6. Penerapan Sehari-hari</h4>
-          <p>Menggunakan satuan panjang & berat dalam kehidupan.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- MIND MAP -->
-    <section class="section">
-      <div class="badge">MIND MAP KONSEP</div>
-      <h2>🧠 Gambaran Besar Materi</h2>
-      <div class="mindmap">
-        <div class="bubble">
-          <h4>📏 Panjang</h4>
-          <p>Diukur dengan penggaris, meteran, rol meter, pita ukur.</p>
-        </div>
-        <div class="bubble">
-          <h4>📐 Tangga Panjang</h4>
-          <p>km → hm → dam → m → dm → cm → mm</p>
-        </div>
-        <div class="bubble">
-          <h4>⚖️ Berat</h4>
-          <p>Diukur dengan timbangan badan, timbangan dapur, neraca.</p>
-        </div>
-        <div class="bubble">
-          <h4>🧂 Tangga Berat</h4>
-          <p>kg → hg → dag → g → dg → cg → mg</p>
-        </div>
-        <div class="bubble">
-          <h4>🔁 Konversi</h4>
-          <p>Turun tangga ×10, naik tangga ÷10 tiap langkah.</p>
-        </div>
-        <div class="bubble">
-          <h4>🏠 Penerapan</h4>
-          <p>Digunakan saat belanja, memasak, mengukur tinggi, panjang, dan berat benda.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- MENU MATERI -->
-    <section class="section" id="materi-menu">
-      <div class="badge">PILIH MATERI</div>
-      <h2>📚 Klik Materi yang Ingin Dipelajari</h2>
-      <p class="desc">Setiap tombol di bawah ini bisa dipilih dan akan menampilkan materi sesuai topik.</p>
-
-      <div class="material-buttons">
-        <div class="material-btn" onclick="showMaterial('m1')">📏 Alat Ukur Panjang</div>
-        <div class="material-btn" onclick="showMaterial('m2')">📐 Satuan Panjang</div>
-        <div class="material-btn" onclick="showMaterial('m3')">🔁 Konversi Panjang</div>
-        <div class="material-btn" onclick="showMaterial('m4')">⚖️ Alat Ukur Berat</div>
-        <div class="material-btn" onclick="showMaterial('m5')">🧂 Satuan Berat</div>
-        <div class="material-btn" onclick="showMaterial('m6')">🛍️ Penerapan Sehari-hari</div>
-        <div class="material-btn" onclick="showMaterial('campuran')">🎯 Mode Campuran</div>
-      </div>
-
-      <!-- MATERI 1 -->
-      <div id="m1" class="material-content hidden" style="margin-top: 24px;">
-        <h3>📏 Alat Ukur Panjang</h3>
-        <p>Alat ukur panjang digunakan untuk mengetahui panjang suatu benda.</p>
-        <div class="card-grid">
-          <div class="card">
-            <h4>Penggaris</h4>
-            <p>Digunakan untuk mengukur benda kecil seperti buku, pensil, atau penghapus.</p>
-          </div>
-          <div class="card">
-            <h4>Meteran / Pita Ukur</h4>
-            <p>Digunakan untuk mengukur kain, badan, atau benda yang lebih panjang.</p>
-          </div>
-          <div class="card">
-            <h4>Rol Meter</h4>
-            <p>Digunakan untuk mengukur ruangan, dinding, atau lapangan.</p>
-          </div>
-        </div>
-        <div class="highlight">
-          <strong>Contoh:</strong> Panjang pensil lebih cocok diukur dengan <b>penggaris</b>.
-        </div>
-      </div>
-
-      <!-- MATERI 2 -->
-      <div id="m2" class="material-content hidden" style="margin-top: 24px;">
-        <h3>📐 Satuan Panjang</h3>
-        <p>Satuan panjang digunakan untuk menyatakan ukuran panjang benda.</p>
-        <div class="card-grid">
-          <div class="card">
-            <h4>Tangga Satuan Panjang</h4>
-            <p><b>km → hm → dam → m → dm → cm → mm</b></p>
-          </div>
-          <div class="card">
-            <h4>Contoh Penggunaan</h4>
-            <ul>
-              <li>Jarak rumah ke sekolah → meter / kilometer</li>
-              <li>Panjang meja → cm</li>
-              <li>Tebal buku → mm</li>
-            </ul>
-          </div>
-        </div>
-        <div class="highlight">
-          <strong>Ingat:</strong> Semakin ke kanan, satuan semakin kecil.
-        </div>
-      </div>
-
-      <!-- MATERI 3 -->
-      <div id="m3" class="material-content hidden" style="margin-top: 24px;">
-        <h3>🔁 Konversi Panjang</h3>
-        <p>Untuk mengubah satuan panjang, gunakan tangga satuan.</p>
-        <div class="card-grid">
-          <div class="card">
-            <h4>Aturan Mudah</h4>
-            <ul>
-              <li>Turun 1 tangga = ×10</li>
-              <li>Naik 1 tangga = ÷10</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h4>Contoh</h4>
-            <ul>
-              <li>3 m = 300 cm</li>
-              <li>700 cm = 7 m</li>
-              <li>5 km = 5000 m</li>
-            </ul>
-          </div>
-        </div>
-        <div class="highlight">
-          <strong>Tips:</strong> Hitung berapa langkah perpindahan satuan dulu, baru kalikan atau bagi.
-        </div>
-      </div>
-
-      <!-- MATERI 4 -->
-      <div id="m4" class="material-content hidden" style="margin-top: 24px;">
-        <h3>⚖️ Alat Ukur Berat</h3>
-        <p>Alat ukur berat digunakan untuk mengetahui berat suatu benda.</p>
-        <div class="card-grid">
-          <div class="card">
-            <h4>Timbangan Badan</h4>
-            <p>Untuk mengukur berat badan manusia.</p>
-          </div>
-          <div class="card">
-            <h4>Timbangan Dapur</h4>
-            <p>Untuk mengukur bahan makanan seperti gula, tepung, dan mentega.</p>
-          </div>
-          <div class="card">
-            <h4>Neraca</h4>
-            <p>Digunakan untuk mengukur benda dengan lebih teliti.</p>
-          </div>
-        </div>
-        <div class="highlight">
-          <strong>Contoh:</strong> Berat beras lebih cocok diukur dengan <b>kilogram</b>.
-        </div>
-      </div>
-
-      <!-- MATERI 5 -->
-      <div id="m5" class="material-content hidden" style="margin-top: 24px;">
-        <h3>🧂 Satuan Berat</h3>
-        <p>Satuan berat digunakan untuk menyatakan berat suatu benda.</p>
-        <div class="card-grid">
-          <div class="card">
-            <h4>Tangga Satuan Berat</h4>
-            <p><b>kg → hg → dag → g → dg → cg → mg</b></p>
-          </div>
-          <div class="card">
-            <h4>Contoh Penggunaan</h4>
-            <ul>
-              <li>Berat beras → kg</li>
-              <li>Berat gula → g</li>
-              <li>Obat bubuk / benda sangat ringan → mg</li>
-            </ul>
-          </div>
-        </div>
-        <div class="highlight">
-          <strong>Ingat:</strong> 1 kg = 1000 g
-        </div>
-      </div>
-
-      <!-- MATERI 6 -->
-      <div id="m6" class="material-content hidden" style="margin-top: 24px;">
-        <h3>🛍️ Penerapan dalam Kehidupan Sehari-hari</h3>
-        <p>Panjang dan berat sangat sering digunakan dalam kehidupan sehari-hari.</p>
-        <div class="card-grid">
-          <div class="card">
-            <h4>Contoh Panjang</h4>
-            <ul>
-              <li>Mengukur tinggi badan</li>
-              <li>Mengukur panjang meja</li>
-              <li>Mengukur jarak perjalanan</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h4>Contoh Berat</h4>
-            <ul>
-              <li>Menimbang buah di pasar</li>
-              <li>Menimbang tepung saat memasak</li>
-              <li>Menimbang berat badan</li>
-            </ul>
-          </div>
-        </div>
-        <div class="highlight">
-          <strong>Kesimpulan:</strong> Kita perlu memilih satuan yang tepat agar hasil pengukuran sesuai.
-        </div>
-      </div>
-
-      <!-- CAMPURAN -->
-      <div id="campuran" class="material-content hidden" style="margin-top: 24px;">
-        <h3>🎯 Mode Campuran</h3>
-        <p>Mode ini menggabungkan semua materi sekaligus.</p>
-        <div class="card-grid">
-          <div class="card">
-            <h4>Yang dipelajari:</h4>
-            <ul>
-              <li>Alat ukur panjang</li>
-              <li>Satuan panjang</li>
-              <li>Konversi panjang</li>
-              <li>Alat ukur berat</li>
-              <li>Satuan berat</li>
-              <li>Penerapan dalam kehidupan sehari-hari</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h4>Tujuan</h4>
-            <p>Melatih siswa agar siap menjawab soal campuran dengan lebih percaya diri.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- WORKSHEET -->
-    <section class="section">
-      <div class="badge">WORKSHEET LATIHAN</div>
-      <h2>📝 Lembar Kerja Siswa</h2>
-      <p class="desc">Kerjakan soal berikut secara mandiri terlebih dahulu.</p>
-
-      <div class="worksheet">
-        <div class="worksheet-item">
-          <strong>1.</strong> Alat yang tepat untuk mengukur panjang buku adalah ...
-          <div class="answer-line"></div>
-        </div>
-        <div class="worksheet-item">
-          <strong>2.</strong> Ubah 4 meter menjadi sentimeter.
-          <div class="answer-line"></div>
-        </div>
-        <div class="worksheet-item">
-          <strong>3.</strong> Ubah 3000 gram menjadi kilogram.
-          <div class="answer-line"></div>
-        </div>
-        <div class="worksheet-item">
-          <strong>4.</strong> Mana yang lebih berat: 2 kg gula atau 1500 g gula?
-          <div class="answer-line"></div>
-        </div>
-        <div class="worksheet-item">
-          <strong>5.</strong> Ibu membeli 5 kg beras dan 2 kg gula. Berapa total berat belanjaan ibu?
-          <div class="answer-line"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- QUIZ -->
-    <section class="section" id="quiz">
-      <div class="badge">QUIZ VISUAL</div>
-      <h2>🎮 Quiz Seru</h2>
-      <p class="desc">Pilih jawaban yang paling tepat. Setelah selesai, klik tombol cek skor.</p>
-
-      <div id="quiz-container"></div>
-      <button onclick="checkScore()">Cek Skor</button>
-      <div id="scoreResult" class="score-box hidden"></div>
-    </section>
-
-    <div class="footer">
-      Dibuat untuk pembelajaran yang lebih interaktif, rapi, dan menyenangkan ✨
+<div class="quiz-card">
+    <!-- 1. WELCOME SCREEN -->
+    <div id="welcome-screen">
+        <div style="font-size: 80px;">📊</div>
+        <h1>Math Adventure</h1>
+        <p class="intro-text">Ready to become an <b>Average Master</b>?<br>Solve 13 fun challenges to win the trophy!</p>
+        <button class="btn" onclick="startQuiz()">START ADVENTURE 🚀</button>
     </div>
-  </div>
 
-  <script>
-    function scrollToSection(id) {
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-    }
+    <!-- 2. QUIZ SCREEN -->
+    <div id="quiz-screen">
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="question-container" class="question-box">
+            <!-- Questions will be injected here by JS -->
+        </div>
+        <div style="margin-top: 30px; overflow: hidden;">
+            <button id="next-btn" class="btn btn-next" onclick="nextQuestion()">Next Question ➔</button>
+        </div>
+    </div>
 
-    function showMaterial(id) {
-      const materials = document.querySelectorAll('.material-content');
-      materials.forEach(item => item.classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    <!-- 3. RESULT SCREEN -->
+    <div id="result-screen">
+        <div id="feedback-emoji" class="feedback-icon">🏆</div>
+        <h2 id="result-title">Amazing Job!</h2>
+        <div class="score-circle" id="final-score">0</div>
+        <p id="result-text">You are officially a Math Superstar!</p>
+        <button class="btn" onclick="location.reload()">Play Again 🔄</button>
+    </div>
+</div>
 
-    const quizData = [
-      {
-        question: "1. Alat yang paling tepat untuk mengukur panjang meja adalah ...",
-        options: ["Timbangan", "Penggaris", "Termometer", "Jam"],
-        answer: 1
-      },
-      {
-        question: "2. Tangga satuan panjang yang benar adalah ...",
-        options: ["kg-hg-dag-g", "km-hm-dam-m-dm-cm-mm", "m-cm-kg-g", "mm-cm-jam-menit"],
-        answer: 1
-      },
-      {
-        question: "3. 5 meter = ... cm",
-        options: ["50", "500", "5000", "5"],
-        answer: 1
-      },
-      {
-        question: "4. Alat untuk mengukur berat badan adalah ...",
-        options: ["Penggaris", "Timbangan badan", "Busur", "Meteran kain"],
-        answer: 1
-      },
-      {
-        question: "5. 2 kg = ... gram",
-        options: ["20", "200", "2000", "20000"],
-        answer: 2
-      },
-      {
-        question: "6. Yang lebih berat adalah ...",
-        options: ["800 g", "1 kg", "500 g", "750 g"],
-        answer: 1
-      },
-      {
-        question: "7. Ibu membeli 3 kg apel. Satuan yang digunakan adalah ...",
-        options: ["Panjang", "Berat", "Waktu", "Luas"],
-        answer: 1
-      },
-      {
-        question: "8. 700 cm = ... meter",
-        options: ["70", "7", "7000", "0,7"],
-        answer: 1
-      }
+<script>
+    const questions = [
+        { q: "Chocolate Bars: 3, 5, 7, 9, and 11.<br>What is the average?", a: "7" },
+        { q: "Daily Steps (in hundreds): 10, 20, 30, 40, 50, and 60.<br>Find the average steps.", a: "35" },
+        { q: "Baskets of Mangoes: 12, 14, 16, 18, and 20.<br>What is the average?", a: "16" },
+        { q: "Points in a Game: 15, 25, 35, 45, and 55.<br>Find the average points.", a: "35" },
+        { q: "Pages Read: 10, 15, 20, 25, 30, 35, and 40.<br>What is the average?", a: "25" },
+        { q: "Fishing Trip: 4, 8, 12, 16, 20, 24, and 28.<br>Find the average catch.", a: "16" },
+        { q: "Saving Money: $2, $4, $6, $8, $10, $12, $14, and $16.<br>What is the average saved?", a: "9" },
+        { q: "The average height of 3 plants is 15 cm.<br>What is the <b>TOTAL</b> height of the 3 plants?", a: "45" },
+        { q: "The average mass of 5 bags is 8 kg.<br>Find the <b>TOTAL</b> mass of the bags.", a: "40" },
+        { q: "The average score of 2 tests is 80. If the first score is 75, what is the second score?", a: "85" },
+        { q: "Rainfall Mon-Fri: 10mm. Saturday: 22mm.<br>What is the new average for 6 days?", a: "12" },
+        { q: "4 players avg 12 pts. A 5th player scores 17 pts.<br>What is the new team average?", a: "13" },
+        { q: "3 pens avg $1.50. Add a 4th pen, avg becomes $1.60.<br>What is the price of the 4th pen?", a: "1.90" }
     ];
 
-    const quizContainer = document.getElementById("quiz-container");
+    let currentIdx = 0;
+    let score = 0;
 
-    quizData.forEach((q, index) => {
-      const box = document.createElement("div");
-      box.className = "question-box";
-
-      let optionsHTML = "";
-      q.options.forEach((opt, i) => {
-        optionsHTML += `
-          <label class="option">
-            <input type="radio" name="q${index}" value="${i}" style="margin-right:10px;">
-            ${opt}
-          </label>
-        `;
-      });
-
-      box.innerHTML = `
-        <p>${q.question}</p>
-        ${optionsHTML}
-      `;
-      quizContainer.appendChild(box);
-    });
-
-    function checkScore() {
-      let score = 0;
-
-      quizData.forEach((q, index) => {
-        const selected = document.querySelector(`input[name="q${index}"]:checked`);
-        if (selected && parseInt(selected.value) === q.answer) {
-          score++;
-        }
-      });
-
-      const result = document.getElementById("scoreResult");
-      result.classList.remove("hidden");
-
-      let message = "";
-      if (score === 8) {
-        message = "🌟 Hebat sekali! Nilaimu sempurna!";
-      } else if (score >= 6) {
-        message = "👏 Bagus! Kamu sudah memahami sebagian besar materi.";
-      } else if (score >= 4) {
-        message = "👍 Lumayan! Yuk latihan lagi supaya makin jago.";
-      } else {
-        message = "💪 Semangat! Coba pelajari lagi materinya lalu ulangi quiz.";
-      }
-
-      result.innerHTML = `
-        Skor kamu: <strong>${score} / 8</strong><br><br>
-        ${message}
-      `;
-      result.scrollIntoView({ behavior: 'smooth' });
+    function startQuiz() {
+        document.getElementById('welcome-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        showQuestion();
     }
-  </script>
+
+    function showQuestion() {
+        const q = questions[currentIdx];
+        const container = document.getElementById('question-container');
+        const progress = ((currentIdx) / questions.length) * 100;
+        document.getElementById('progress-bar').style.width = progress + "%";
+
+        container.innerHTML = `
+            <p style="color: var(--primary); font-weight: bold;">Question ${currentIdx + 1} of ${questions.length}</p>
+            <h2>${q.q}</h2>
+            <div class="input-wrapper">
+                <input type="text" id="user-answer" placeholder="Result..." autocomplete="off">
+            </div>
+        `;
+        document.getElementById('user-answer').focus();
+    }
+
+    function nextQuestion() {
+        const userVal = document.getElementById('user-answer').value.trim();
+        
+        if (userVal === "") {
+            alert("Please enter an answer first!");
+            return;
+        }
+
+        if (userVal === questions[currentIdx].a) {
+            score++;
+        }
+
+        currentIdx++;
+
+        if (currentIdx < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('final-score').innerText = score;
+
+        const title = document.getElementById('result-title');
+        const text = document.getElementById('result-text');
+        const emoji = document.getElementById('feedback-emoji');
+
+        if (score === questions.length) {
+            title.innerText = "Perfect Score!";
+            emoji.innerText = "🏆";
+            text.innerText = "You are a true Average Master!";
+        } else if (score >= 7) {
+            title.innerText = "Great Job!";
+            emoji.innerText = "🌟";
+            text.innerText = "You have a solid understanding of averages!";
+        } else {
+            title.innerText = "Keep Practicing!";
+            emoji.innerText = "💪";
+            text.innerText = "Review the material and try again to get a higher score!";
+        }
+    }
+</script>
+
 </body>
 </html>
