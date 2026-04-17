@@ -1,261 +1,308 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Average Challenge - Grade 5</title>
+    <title>Petualangan Bangun Datar - Media Belajar SD</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+
         :root {
-            --pink: #FFD1DC;
-            --blue: #AEC6CF;
-            --mint: #B3FBDE;
-            --dark: #444;
-            --white: #ffffff;
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --bg: #F7FFF7;
+            --text: #2F2F2F;
+            --white: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--blue);
-            color: var(--dark);
             margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        #app {
-            background: var(--white);
+        #game-container {
             width: 95%;
-            max-width: 750px;
-            border-radius: 20px;
+            max-width: 800px;
+            background: var(--white);
             padding: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
-        }
-
-        .screen { display: none; animation: slideUp 0.4s ease; }
-        .active { display: block; }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* UI Elements */
-        .btn {
-            background: var(--pink);
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px #e0b1bc;
-            margin: 10px;
-            transition: 0.2s;
-        }
-        .btn:hover { transform: scale(1.05); }
-        .btn:active { transform: translateY(2px); box-shadow: 0 2px #e0b1bc; }
-        .btn-blue { background: var(--blue); box-shadow: 0 4px #8ca4ad; }
-
-        #progress-bar {
-            width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-bottom: 20px;
-        }
-        #progress-fill {
-            width: 0%; height: 100%; background: var(--mint); border-radius: 10px; transition: 0.3s;
-        }
-
-        /* Visuals */
-        .visual-container {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            min-height: 120px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 15px;
-        }
-
-        .bar {
-            width: 40px;
-            background: var(--pink);
-            border-radius: 5px 5px 0 0;
             position: relative;
-            display: flex;
-            justify-content: center;
-            color: #555;
-            font-size: 0.8rem;
-            font-weight: bold;
         }
 
-        .bar-label {
-            position: absolute;
-            bottom: -25px;
-            font-size: 0.7rem;
-            white-space: nowrap;
+        .hidden { display: none !important; }
+
+        /* Typography */
+        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 10px; }
+        p { font-size: 1.1rem; line-height: 1.6; }
+
+        /* Buttons */
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            margin: 10px;
+            box-shadow: 0 5px 0 #36b1a8;
         }
 
-        /* Options */
+        .btn:hover { transform: translateY(-3px); background: #45b7af; }
+        .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #36b1a8; }
+        .btn-primary { background: var(--primary); box-shadow: 0 5px 0 #e65b5b; }
+
+        /* Materi Cards */
+        .materi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--bg);
+            border: 2px solid var(--secondary);
+            border-radius: 20px;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .card:hover { transform: scale(1.05); background: var(--accent); }
+        .card svg { width: 60px; height: 60px; margin-bottom: 10px; }
+
+        /* Quiz Area */
+        .quiz-img { margin: 20px auto; height: 150px; display: flex; justify-content: center; align-items: center; }
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .opt {
-            padding: 15px;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .opt:hover { border-color: var(--blue); background: #f0f7f9; }
-
-        .feedback {
+            gap: 15px;
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 12px;
-            display: none;
-            text-align: left;
         }
+
+        .opt-btn {
+            background: white;
+            border: 3px solid #ddd;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .opt-btn:hover { border-color: var(--secondary); background: #f0fdfc; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+
+        /* Progress Bar */
+        .progress-container { width: 100%; background: #eee; height: 10px; border-radius: 10px; margin-bottom: 20px; }
+        #progress-bar { width: 0%; height: 100%; background: var(--secondary); border-radius: 10px; transition: 0.5s; }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce { animation: bounce 1s infinite; }
     </style>
 </head>
 <body>
 
-<div id="app">
-    <!-- Screen 1: Welcome -->
-    <div id="welcome" class="screen active">
-        <div style="font-size: 50px;">📈</div>
-        <h1>Solve the Average Questions</h1>
-        <p>Advanced Level: Bar Charts, Line Graphs, and Missing Numbers!</p>
-        <button class="btn" onclick="startQuiz()">Start Challenge</button>
-    </div>
-
-    <!-- Screen 2: Quiz -->
-    <div id="quiz" class="screen">
-        <div id="progress-bar"><div id="progress-fill"></div></div>
-        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold;">
-            <span id="q-idx">Question 1/15</span>
-            <span id="score-val">Score: 0</span>
-        </div>
-
-        <h3 id="q-text"></h3>
-        <div id="visual" class="visual-container"></div>
-
-        <div class="options-grid" id="opts"></div>
-
-        <div id="feedback" class="feedback">
-            <div id="status"></div>
-            <div id="exp" style="font-size: 0.85rem; margin-top: 5px; color: #666;"></div>
-            <button class="btn btn-blue" style="width:100%; margin: 15px 0 0 0;" onclick="nextQ()">Next Question ➔</button>
+<div id="game-container">
+    <div id="screen-menu">
+        <div class="animate-bounce" style="font-size: 50px;">📐</div>
+        <h1>Petualangan Bangun Datar</h1>
+        <p>Halo Sahabat Pintar! Mari belajar mengenal bentuk-bentuk di sekitar kita dengan cara yang seru!</p>
+        <div style="margin-top: 30px;">
+            <button class="btn" onclick="showScreen('screen-materi')">📖 Mulai Belajar</button>
+            <button class="btn btn-primary" onclick="startQuiz()">🎮 Mulai Kuis</button>
         </div>
     </div>
 
-    <!-- Screen 3: Result -->
-    <div id="result" class="screen">
-        <h1>Challenge Complete!</h1>
-        <div id="final-score" style="font-size: 3.5rem; margin: 15px 0;">0</div>
-        <p id="final-msg"></p>
-        <button class="btn" onclick="location.reload()">Restart</button>
+    <div id="screen-materi" class="hidden">
+        <button class="btn" style="padding: 5px 20px; font-size: 1rem;" onclick="showScreen('screen-menu')">⬅ Kembali</button>
+        <h2>Kenali Bangun Datar</h2>
+        <p>Klik salah satu bentuk untuk melihat ciri-cirinya!</p>
+        <div class="materi-grid" id="materi-list">
+            </div>
+        <div id="materi-detail" style="margin-top: 20px; padding: 20px; border-top: 2px dashed #ccc;" class="hidden">
+            <h3 id="detail-title" style="color: var(--primary);"></h3>
+            <p id="detail-desc"></p>
+        </div>
+    </div>
+
+    <div id="screen-quiz" class="hidden">
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        <div id="question-number" style="font-weight: bold; color: var(--secondary);">Soal 1 dari 10</div>
+        <div class="quiz-img" id="quiz-visual"></div>
+        <h3 id="question-text">Memuat soal...</h3>
+        <div class="options-grid" id="options-container">
+            </div>
+    </div>
+
+    <div id="screen-result" class="hidden">
+        <h1 id="result-title">Hebat!</h1>
+        <div id="result-score" style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 20px 0;">0</div>
+        <p id="result-message"></p>
+        <button class="btn btn-primary" onclick="showScreen('screen-menu')">🏠 Menu Utama</button>
+        <button class="btn" onclick="startQuiz()">🔄 Main Lagi</button>
     </div>
 </div>
 
 <script>
-    const data = [
-        { q: "A bar chart shows sales: Mon (15), Tue (25), Wed (20). Find the average.", type: "chart", val: [15, 25, 20], labs: ["Mon", "Tue", "Wed"], ans: [18, 20, 22, 25], correct: 1, exp: "(15+25+20) = 60. 60 ÷ 3 = 20." },
-        { q: "Rainfall for 4 days: 4mm, 8mm, 0mm, 12mm. What is the average?", type: "chart", val: [4, 8, 0, 12], labs: ["D1", "D2", "D3", "D4"], ans: [4, 6, 8, 12], correct: 1, exp: "Total: 24. Divide by 4 days: 24 ÷ 4 = 6." },
-        { q: "The average of 3 numbers is 10. If two numbers are 8 and 12, what is the third?", type: "missing", val: [8, 12, "?"], ans: [8, 10, 12, 14], correct: 1, exp: "Total must be 30 (10x3). 30 - 8 - 12 = 10." },
-        { q: "Average scores of 5 students: 70, 80, 90, 80, 80. Find the average.", type: "chart", val: [70, 80, 90, 80, 80], labs: ["A", "B", "C", "D", "E"], ans: [75, 80, 85, 90], correct: 1, exp: "Total: 400. 400 ÷ 5 = 80." },
-        { q: "Average of 4 numbers is 12. Three numbers are 10, 11, 15. Find the 4th.", type: "missing", val: [10, 11, 15, "?"], ans: [10, 11, 12, 13], correct: 2, exp: "Total needed: 48 (12x4). 48 - (10+11+15) = 12." },
-        { q: "Look at the chart. What is the average temperature?", type: "chart", val: [22, 26, 30], labs: ["8am", "10am", "12pm"], ans: [24, 26, 28, 30], correct: 1, exp: "Total: 78. 78 ÷ 3 = 26." },
-        { q: "A library borrows: Mon (30), Tue (50), Wed (40), Thu (0). Average per day?", type: "chart", val: [30, 50, 40, 0], labs: ["M", "T", "W", "Th"], ans: [30, 40, 25, 35], correct: 0, exp: "Total: 120. Divide by 4 days (including zero): 120 ÷ 4 = 30." },
-        { q: "Average of 3 test scores is 85. Two scores are 80 and 85. What is the 3rd?", type: "missing", val: [80, 85, "?"], ans: [85, 90, 95, 80], correct: 1, exp: "Total needed: 255 (85x3). 255 - 165 = 90." },
-        { q: "Five boxes weigh: 10kg, 12kg, 8kg, 15kg, 5kg. Average weight?", type: "chart", val: [10, 12, 8, 15, 5], labs: ["B1", "B2", "B3", "B4", "B5"], ans: [8, 9, 10, 11], correct: 2, exp: "Total: 50. 50 ÷ 5 = 10." },
-        { q: "If average of 2 numbers is 50, and one is 40, what is the other?", type: "missing", val: [40, "?"], ans: [50, 60, 40, 70], correct: 1, exp: "Total: 100 (50x2). 100 - 40 = 60." },
-        { q: "Plant growth (cm): Week 1 (5), Week 2 (9), Week 3 (10). Average?", type: "chart", val: [5, 9, 10], labs: ["W1", "W2", "W3"], ans: [6, 7, 8, 9], correct: 2, exp: "Total: 24. 24 ÷ 3 weeks = 8." },
-        { q: "Money saved: $10, $15, $5, $10. Find the weekly average.", type: "chart", val: [10, 15, 5, 10], labs: ["W1", "W2", "W3", "W4"], ans: ["$8", "$10", "$12", "$15"], correct: 1, exp: "Total: 40. 40 ÷ 4 weeks = 10." },
-        { q: "A car travels 40km, 60km, and 80km in 3 hours. Average speed?", type: "chart", val: [40, 60, 80], labs: ["H1", "H2", "H3"], ans: ["50km/h", "60km/h", "70km/h", "80km/h"], correct: 1, exp: "Total: 180. 180 ÷ 3 hours = 60." },
-        { q: "Average of 4 friends' ages is 11. Three are 10, 12, 11. How old is the 4th?", type: "missing", val: [10, 12, 11, "?"], ans: [10, 11, 12, 13], correct: 1, exp: "Total: 44. 44 - 33 = 11." },
-        { q: "Final: Average of 100, 200, 300, 400. Find it!", type: "chart", val: [10, 20, 30, 40], labs: ["100", "200", "300", "400"], ans: [200, 250, 300, 350], correct: 1, exp: "Total: 1000. 1000 ÷ 4 = 250." }
+    // Konfigurasi Data Materi
+    const dataBangun = {
+        'Persegi': { desc: 'Punya 4 sisi yang sama panjang dan 4 sudut siku-siku.', color: '#FF6B6B', svg: '<rect x="10" y="10" width="80" height="80" fill="currentColor"/>' },
+        'Persegi Panjang': { desc: 'Punya 2 pasang sisi sejajar yang sama panjang dan 4 sudut siku-siku.', color: '#4ECDC4', svg: '<rect x="5" y="25" width="90" height="50" fill="currentColor"/>' },
+        'Segitiga': { desc: 'Bangun datar yang dibatasi oleh 3 buah sisi dan punya 3 buah titik sudut.', color: '#FFE66D', svg: '<polygon points="50,10 90,90 10,90" fill="currentColor"/>' },
+        'Lingkaran': { desc: 'Hanya memiliki 1 sisi melengkung yang saling bertemu dan tidak punya sudut.', color: '#FF9F43', svg: '<circle cx="50" cy="50" r="40" fill="currentColor"/>' },
+        'Jajar Genjang': { desc: 'Punya 2 pasang sisi sejajar, tapi sudutnya bukan siku-siku.', color: '#1dd1a1', svg: '<polygon points="30,20 95,20 70,80 5,80" fill="currentColor"/>' },
+        'Layang-layang': { desc: 'Punya 2 pasang sisi sama panjang dan diagonalnya berpotongan tegak lurus.', color: '#5f27cd', svg: '<polygon points="50,5 90,40 50,95 10,40" fill="currentColor"/>' },
+        'Belah Ketupat': { desc: 'Semua sisinya sama panjang dan kedua diagonalnya saling tegak lurus.', color: '#54a0ff', svg: '<polygon points="50,5 90,50 50,95 10,50" fill="currentColor"/>' },
+        'Segi Lima': { desc: 'Memiliki 5 sisi dan 5 titik sudut. Sering disebut Pentagon.', color: '#ee5253', svg: '<polygon points="50,5 95,38 78,92 22,92 5,38" fill="currentColor"/>' }
+    };
+
+    // Data Kuis
+    const questions = [
+        { q: "Aku punya 4 sisi sama panjang dan 4 sudut siku-siku. Siapakah aku?", a: "Persegi", options: ["Persegi", "Persegi Panjang", "Segitiga", "Lingkaran"], type: "Persegi" },
+        { q: "Berapakah jumlah titik sudut pada bangun Segitiga?", a: "3", options: ["3", "4", "5", "6"], type: "Segitiga" },
+        { q: "Aku tidak punya sudut dan hanya punya satu sisi melengkung. Aku adalah...", a: "Lingkaran", options: ["Oval", "Segi Lima", "Lingkaran", "Belah Ketupat"], type: "Lingkaran" },
+        { q: "Bangun datar yang punya 2 pasang sisi sejajar tapi tidak punya sudut siku-siku adalah...", a: "Jajar Genjang", options: ["Persegi", "Jajar Genjang", "Segitiga", "Persegi Panjang"], type: "Jajar Genjang" },
+        { q: "Berapa banyak sisi yang dimiliki oleh bangun Segi Lima?", a: "5", options: ["4", "5", "6", "8"], type: "Segi Lima" },
+        { q: "Aku mirip persegi tapi miring, keempat sisiku sama panjang. Aku adalah...", a: "Belah Ketupat", options: ["Jajar Genjang", "Layang-layang", "Belah Ketupat", "Lingkaran"], type: "Belah Ketupat" },
+        { q: "Bangun yang bentuknya seperti mainan yang ditarik benang di udara adalah...", a: "Layang-layang", options: ["Segitiga", "Layang-layang", "Persegi", "Jajar Genjang"], type: "Layang-layang" },
+        { q: "Pintu rumah biasanya berbentuk...", a: "Persegi Panjang", options: ["Persegi Panjang", "Lingkaran", "Segitiga", "Segi Lima"], type: "Persegi Panjang" },
+        { q: "Atap rumah pada umumnya menyerupai bentuk...", a: "Segitiga", options: ["Lingkaran", "Segitiga", "Jajar Genjang", "Persegi"], type: "Segitiga" },
+        { q: "Roda sepeda berbentuk...", a: "Lingkaran", options: ["Persegi", "Segi Lima", "Lingkaran", "Belah Ketupat"], type: "Lingkaran" }
     ];
 
-    let current = 0;
+    let currentQuestion = 0;
     let score = 0;
-    let answered = false;
 
-    function startQuiz() {
-        current = 0; score = 0;
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('quiz').classList.add('active');
-        loadQ();
+    // Navigasi Layar
+    function showScreen(screenId) {
+        document.querySelectorAll('#game-container > div').forEach(div => div.classList.add('hidden'));
+        document.getElementById(screenId).classList.remove('hidden');
     }
 
-    function loadQ() {
-        answered = false;
-        const q = data[current];
-        document.getElementById('q-idx').innerText = `Question ${current + 1}/15`;
-        document.getElementById('score-val').innerText = `Score: ${score}`;
-        document.getElementById('q-text').innerText = q.q;
-        document.getElementById('feedback').style.display = 'none';
-        document.getElementById('progress-fill').style.width = (current/15)*100 + "%";
+    // Inisialisasi Materi
+    const materiList = document.getElementById('materi-list');
+    Object.keys(dataBangun).forEach(key => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<svg viewBox="0 0 100 100" style="color:${dataBangun[key].color}">${dataBangun[key].svg}</svg><div>${key}</div>`;
+        div.onclick = () => {
+            document.getElementById('materi-detail').classList.remove('hidden');
+            document.getElementById('detail-title').innerText = key;
+            document.getElementById('detail-desc').innerText = dataBangun[key].desc;
+            speak(key + ". " + dataBangun[key].desc);
+        };
+        materiList.appendChild(div);
+    });
 
-        const vis = document.getElementById('visual');
-        vis.innerHTML = '';
+    // Fitur Suara
+    function speak(text) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'id-ID';
+        window.speechSynthesis.speak(msg);
+    }
+
+    // Sistem Kuis
+    function startQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        showScreen('screen-quiz');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('question-number').innerText = `Soal ${currentQuestion + 1} dari ${questions.length}`;
+        document.getElementById('progress-bar').style.width = `${((currentQuestion) / questions.length) * 100}%`;
+        document.getElementById('question-text').innerText = q.q;
         
-        if(q.type === 'chart') {
-            q.val.forEach((v, i) => {
-                const b = document.createElement('div');
-                b.className = 'bar';
-                b.style.height = (v * 3) + 20 + "px"; // scaling
-                b.innerHTML = `<span style="margin-top:5px">${v}</span><span class="bar-label">${q.labs[i]}</span>`;
-                vis.appendChild(b);
-            });
-        } else {
-            vis.innerHTML = `<h1 style="color:var(--blue)">${q.val.join(' , ')}</h1>`;
-        }
+        // Load Visual
+        const visualArea = document.getElementById('quiz-visual');
+        visualArea.innerHTML = `<svg viewBox="0 0 100 100" style="height:100%; color:var(--secondary)">${dataBangun[q.type] ? dataBangun[q.type].svg : ''}</svg>`;
 
-        const oBox = document.getElementById('opts');
-        oBox.innerHTML = '';
-        q.ans.forEach((a, i) => {
-            const d = document.createElement('div');
-            d.className = 'opt';
-            d.innerText = a;
-            d.onclick = () => check(i);
-            oBox.appendChild(d);
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, btn);
+            optionsContainer.appendChild(btn);
         });
     }
 
-    function check(i) {
-        if(answered) return;
-        answered = true;
-        const q = data[current];
-        const fb = document.getElementById('feedback');
-        fb.style.display = 'block';
-        
-        if(i === q.correct) {
-            score++;
-            document.getElementById('status').innerHTML = "<b>✅ Excellent!</b>";
-            fb.style.background = "#eaffea";
-        } else {
-            document.getElementById('status').innerHTML = "<b>❌ Not quite!</b>";
-            fb.style.background = "#ffeaea";
-        }
-        document.getElementById('exp').innerText = "Explanation: " + q.exp;
-    }
+    function checkAnswer(choice, btn) {
+        const correctAns = questions[currentQuestion].a;
+        const allBtns = document.querySelectorAll('.opt-btn');
+        allBtns.forEach(b => b.style.pointerEvents = 'none');
 
-    function nextQ() {
-        current++;
-        if(current < 15) loadQ();
-        else showResult();
+        if(choice === correctAns) {
+            score += 10;
+            btn.classList.add('correct');
+            speak("Hebat! Jawabanmu benar.");
+        } else {
+            btn.classList.add('wrong');
+            speak("Wah, kurang tepat. Semangat ya!");
+            // Tunjukkan yang benar
+            allBtns.forEach(b => { if(b.innerText === correctAns) b.classList.add('correct'); });
+        }
+
+        setTimeout(() => {
+            currentQuestion++;
+            if(currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }, 2000);
     }
 
     function showResult() {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('result').classList.add('active');
-        document.getElementById('final-score').innerText = `${score} / 15`;
-        document.getElementById('final-msg').innerText = score > 12 ? "You're a Math Genius! 🌟" : "Good job! Keep practicing! 💪";
+        showScreen('screen-result');
+        document.getElementById('progress-bar').style.width = '100%';
+        document.getElementById('result-score').innerText = score;
+        
+        let msg = "";
+        if(score >= 80) {
+            msg = "Luar biasa! Kamu sudah jadi master bangun datar! 🌟";
+            document.getElementById('result-title').innerText = "Sempurna!";
+        } else if(score >= 50) {
+            msg = "Bagus sekali! Sedikit lagi kamu akan jadi ahli! 💪";
+            document.getElementById('result-title').innerText = "Keren!";
+        } else {
+            msg = "Ayo belajar lagi, jangan menyerah ya! Kamu pasti bisa! ❤️";
+            document.getElementById('result-title').innerText = "Semangat!";
+        }
+        document.getElementById('result-message').innerText = msg;
+        speak("Skormu adalah " + score + ". " + msg);
     }
 </script>
+
 </body>
 </html>
