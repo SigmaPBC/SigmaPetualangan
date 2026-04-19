@@ -1,308 +1,728 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Petualangan Bangun Datar - Media Belajar SD</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penganggaran Kas</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;family=Baloo+2:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: #1a1a2e; overflow: hidden; }
 
-        :root {
-            --primary: #FF6B6B;
-            --secondary: #4ECDC4;
-            --accent: #FFE66D;
-            --bg: #F7FFF7;
-            --text: #2F2F2F;
-            --white: #FFFFFF;
-        }
+  .slide { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+  .slide.active { display: flex; }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Quicksand', sans-serif;
-        }
+  /* Clay style */
+  .clay { border-radius: 20px; box-shadow: 0 8px 0 rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3); }
+  .clay-sm { border-radius: 14px; box-shadow: 0 5px 0 rgba(0,0,0,0.18), inset 0 2px 3px rgba(255,255,255,0.3); }
+  .clay-xs { border-radius: 10px; box-shadow: 0 3px 0 rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.3); }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+  /* Coin */
+  .coin { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #FFD700, #FFA500); box-shadow: 0 4px 0 #c47a00, inset 0 2px 3px rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; color: #8B4513; }
+  .coin-sm { width: 24px; height: 24px; font-size: 11px; border-radius: 50%; background: linear-gradient(135deg, #FFD700, #FFA500); box-shadow: 0 3px 0 #c47a00; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #8B4513; }
 
-        #game-container {
-            width: 95%;
-            max-width: 800px;
-            background: var(--white);
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            text-align: center;
-            position: relative;
-        }
+  /* Building */
+  .building-roof { width: 0; height: 0; border-left: 45px solid transparent; border-right: 45px solid transparent; border-bottom: 35px solid #e74c3c; }
+  .building-body { width: 90px; background: #ecf0f1; box-shadow: 0 6px 0 rgba(0,0,0,0.2); padding: 8px 6px 0; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+  .window { width: 16px; height: 16px; background: #87CEEB; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); }
+  .door { width: 20px; height: 28px; background: #8B4513; border-radius: 4px 4px 0 0; margin: 0 auto; }
 
-        .hidden { display: none !important; }
+  /* Piggy bank */
+  .piggy { font-size: 56px; filter: drop-shadow(0 6px 3px rgba(0,0,0,0.3)); }
 
-        /* Typography */
-        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 10px; }
-        p { font-size: 1.1rem; line-height: 1.6; }
+  /* Animations */
+  @keyframes floatUp { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+  @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes slideInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes popIn { 0% { opacity: 0; transform: scale(0.5); } 70% { transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+  @keyframes coinFly { 0% { opacity: 0; transform: translateX(-60px) translateY(0px) scale(0.5); } 60% { opacity: 1; transform: translateX(-10px) translateY(-20px) scale(1); } 100% { opacity: 1; transform: translateX(0px) translateY(0px) scale(1); } }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-        /* Buttons */
-        .btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 15px 35px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            margin: 10px;
-            box-shadow: 0 5px 0 #36b1a8;
-        }
+  .float { animation: floatUp 3s ease-in-out infinite; }
+  .float2 { animation: floatUp 3s ease-in-out infinite 0.5s; }
+  .float3 { animation: floatUp 3s ease-in-out infinite 1s; }
+  .anim-slide-left { animation: slideInLeft 0.6s ease forwards; }
+  .anim-slide-right { animation: slideInRight 0.6s ease forwards; }
+  .anim-slide-up { animation: slideInUp 0.6s ease forwards; }
+  .anim-pop { animation: popIn 0.5s ease forwards; }
+  .anim-fade { animation: fadeIn 0.8s ease forwards; }
+  .anim-pulse { animation: pulse 2s ease-in-out infinite; }
+  .anim-shake { animation: shake 0.6s ease; }
+  .anim-bounce { animation: bounce 1s ease-in-out infinite; }
+  .delay-1 { animation-delay: 0.2s; opacity: 0; }
+  .delay-2 { animation-delay: 0.4s; opacity: 0; }
+  .delay-3 { animation-delay: 0.6s; opacity: 0; }
+  .delay-4 { animation-delay: 0.8s; opacity: 0; }
+  .delay-5 { animation-delay: 1.0s; opacity: 0; }
 
-        .btn:hover { transform: translateY(-3px); background: #45b7af; }
-        .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #36b1a8; }
-        .btn-primary { background: var(--primary); box-shadow: 0 5px 0 #e65b5b; }
+  /* Progress dots */
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: all 0.3s; cursor: pointer; }
+  .dot.active { background: #FFD700; transform: scale(1.3); }
 
-        /* Materi Cards */
-        .materi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
+  /* Arrow */
+  .arrow-right { width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 20px solid; }
+  .arrow-down { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 20px solid; }
 
-        .card {
-            background: var(--bg);
-            border: 2px solid var(--secondary);
-            border-radius: 20px;
-            padding: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+  /* Table */
+  .table-clay td, .table-clay th { padding: 8px 14px; }
 
-        .card:hover { transform: scale(1.05); background: var(--accent); }
-        .card svg { width: 60px; height: 60px; margin-bottom: 10px; }
+  /* Nav button */
+  .nav-btn { border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 800; transition: all 0.15s; }
+  .nav-btn:active { transform: scale(0.95) translateY(2px); }
 
-        /* Quiz Area */
-        .quiz-img { margin: 20px auto; height: 150px; display: flex; justify-content: center; align-items: center; }
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
+  /* Checklist item */
+  .check-item { display: flex; align-items: center; gap: 10px; }
 
-        .opt-btn {
-            background: white;
-            border: 3px solid #ddd;
-            padding: 15px;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .opt-btn:hover { border-color: var(--secondary); background: #f0fdfc; }
-        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
-        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
-
-        /* Progress Bar */
-        .progress-container { width: 100%; background: #eee; height: 10px; border-radius: 10px; margin-bottom: 20px; }
-        #progress-bar { width: 0%; height: 100%; background: var(--secondary); border-radius: 10px; transition: 0.5s; }
-
-        /* Animations */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .animate-bounce { animation: bounce 1s infinite; }
-    </style>
-</head>
-<body>
-
-<div id="game-container">
-    <div id="screen-menu">
-        <div class="animate-bounce" style="font-size: 50px;">📐</div>
-        <h1>Petualangan Bangun Datar</h1>
-        <p>Halo Sahabat Pintar! Mari belajar mengenal bentuk-bentuk di sekitar kita dengan cara yang seru!</p>
-        <div style="margin-top: 30px;">
-            <button class="btn" onclick="showScreen('screen-materi')">📖 Mulai Belajar</button>
-            <button class="btn btn-primary" onclick="startQuiz()">🎮 Mulai Kuis</button>
+  /* Screen height reference for slides */
+  #slide-wrapper { position: relative; width: 100%; height: 100%; }
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="slide-wrapper" style="height:100%;"><!-- SLIDE 1: PEMBUKA -->
+   <div class="slide active" id="slide-1" style="background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%); flex-direction: column; align-items: center; justify-content: center; gap: 0;">
+    <div style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;">
+     <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,215,0,0.05);top:-80px;right:-80px;"></div>
+     <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(99,179,237,0.06);bottom:-60px;left:-60px;"></div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:20px; padding: 24px 28px; width:100%; max-width:640px;"><!-- Mini bangunan -->
+     <div class="anim-pop float" style="display:flex;flex-direction:column;align-items:center;">
+      <div class="building-roof"></div>
+      <div class="building-body">
+       <div class="window"></div>
+       <div class="window"></div>
+       <div class="window"></div>
+       <div class="window"></div>
+       <div class="window"></div>
+       <div class="window"></div>
+       <div class="door"></div>
+      </div>
+      <div style="width:90px;height:6px;background:#bdc3c7;border-radius:0 0 4px 4px;"></div>
+     </div><!-- Elemen kecil -->
+     <div style="display:flex;gap:18px;align-items:center;" class="anim-slide-up delay-1">
+      <div class="float2" style="font-size:32px;">
+       💰
+      </div>
+      <div class="float3" style="font-size:32px;">
+       🧮
+      </div>
+      <div class="float" style="font-size:32px;">
+       📒
+      </div>
+     </div><!-- Judul -->
+     <div class="clay anim-slide-up delay-2" style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:16px 30px;text-align:center;">
+      <div id="s1-title" style="font-family:'Baloo 2',sans-serif;font-size:clamp(20px,4vw,30px);font-weight:800;color:#1a1a2e;line-height:1.2;">
+       Memahami Penganggaran Kas
+      </div>
+     </div><!-- Subtitle -->
+     <div id="s1-sub" class="anim-fade delay-3" style="font-size:clamp(11px,2.2vw,15px);color:rgba(255,255,255,0.7);text-align:center;font-style:italic;">
+      Akuntansi Manajemen
+     </div><!-- Narasi box -->
+     <div class="clay anim-slide-up delay-3" style="background:rgba(255,255,255,0.08);padding:14px 20px;text-align:center;max-width:500px;">
+      <div style="font-size:clamp(11px,2vw,14px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       "Dalam menjalankan usaha, perusahaan tidak hanya perlu untung… tetapi juga perlu memastikan <strong style="color:#FFD700;">kas selalu tersedia.</strong>"
+      </div>
+     </div><!-- Teks layar -->
+     <div class="clay-sm anim-pop delay-4" style="background:linear-gradient(135deg,#e74c3c,#c0392b);padding:10px 22px;">
+      <div style="font-size:clamp(13px,2.5vw,17px);font-weight:800;color:#fff;">
+       ❓ Mengapa kas perlu direncanakan?
+      </div>
+     </div>
+    </div>
+   </div><!-- SLIDE 2: MASALAH UTAMA -->
+   <div class="slide" id="slide-2" style="background:linear-gradient(135deg,#1a1a2e,#16213e); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 24px;width:100%;max-width:640px;">
+     <div class="clay anim-slide-up" style="background:linear-gradient(135deg,#e74c3c,#c0392b);padding:8px 24px;text-align:center;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#fff;">
+       ⚠️ Masalah Utama
+      </div>
+     </div>
+     <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;"><!-- Pelanggan + Uang masuk -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;" class="anim-slide-left delay-1">
+       <div style="font-size:48px;" class="float">
+        🧑‍💼
+       </div>
+       <div class="clay-xs" style="background:#27ae60;padding:5px 12px;">
+        <div style="font-size:clamp(10px,1.8vw,13px);font-weight:800;color:#fff;">
+         💵 Penjualan Masuk
         </div>
+       </div>
+      </div>
+      <div style="font-size:28px;color:#FFD700;" class="anim-fade delay-2">
+       →
+      </div><!-- Celengan -->
+      <div style="font-size:52px;" class="float2 anim-pop delay-2">
+       🐷
+      </div>
+      <div style="font-size:28px;color:#e74c3c;" class="anim-fade delay-3">
+       →
+      </div><!-- Tagihan -->
+      <div style="display:flex;flex-direction:column;gap:7px;" class="anim-slide-right delay-3">
+       <div class="clay-xs anim-slide-right delay-3" style="background:#e74c3c;padding:5px 10px;display:flex;align-items:center;gap:6px;"><span>⚡</span><span style="font-size:clamp(10px,1.8vw,12px);font-weight:800;color:#fff;">Tagihan Listrik</span>
+       </div>
+       <div class="clay-xs anim-slide-right delay-4" style="background:#e67e22;padding:5px 10px;display:flex;align-items:center;gap:6px;"><span>👷</span><span style="font-size:clamp(10px,1.8vw,12px);font-weight:800;color:#fff;">Gaji Pegawai</span>
+       </div>
+       <div class="clay-xs anim-slide-right delay-5" style="background:#8e44ad;padding:5px 10px;display:flex;align-items:center;gap:6px;"><span>📦</span><span style="font-size:clamp(10px,1.8vw,12px);font-weight:800;color:#fff;">Bahan Baku</span>
+       </div>
+      </div>
+     </div><!-- Narasi -->
+     <div class="clay anim-fade delay-3" style="background:rgba(255,255,255,0.08);padding:12px 18px;max-width:500px;text-align:center;">
+      <div style="font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       "Sering kali perusahaan memiliki penjualan yang baik, tetapi tetap <strong style="color:#e74c3c;">mengalami kesulitan kas</strong> karena banyak pengeluaran."
+      </div>
+     </div><!-- Teks layar -->
+     <div class="clay anim-pop delay-4" style="background:linear-gradient(135deg,#e74c3c,#c0392b);padding:10px 22px;text-align:center;">
+      <div style="font-size:clamp(13px,2.5vw,17px);font-weight:800;color:#fff;">
+       Penjualan Tinggi ≠ Kas Selalu Aman 💸
+      </div>
+     </div>
     </div>
-
-    <div id="screen-materi" class="hidden">
-        <button class="btn" style="padding: 5px 20px; font-size: 1rem;" onclick="showScreen('screen-menu')">⬅ Kembali</button>
-        <h2>Kenali Bangun Datar</h2>
-        <p>Klik salah satu bentuk untuk melihat ciri-cirinya!</p>
-        <div class="materi-grid" id="materi-list">
-            </div>
-        <div id="materi-detail" style="margin-top: 20px; padding: 20px; border-top: 2px dashed #ccc;" class="hidden">
-            <h3 id="detail-title" style="color: var(--primary);"></h3>
-            <p id="detail-desc"></p>
+   </div><!-- SLIDE 3: APA ITU PENGANGGARAN KAS -->
+   <div class="slide" id="slide-3" style="background:linear-gradient(135deg,#0f3460,#1a1a2e); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:20px 24px;width:100%;max-width:640px;">
+     <div class="clay anim-pop" style="background:linear-gradient(135deg,#3498db,#2980b9);padding:8px 24px;text-align:center;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#fff;">
+       📖 Definisi
+      </div>
+     </div><!-- Papan Anggaran -->
+     <div class="clay anim-slide-up delay-1" style="background:linear-gradient(135deg,#8B4513,#A0522D);padding:16px 28px;text-align:center;position:relative;">
+      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:80%;height:8px;background:#6B3410;border-radius:4px;"></div>
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(18px,4vw,26px);font-weight:800;color:#FFD700;text-shadow:0 2px 4px rgba(0,0,0,0.4);">
+       📋 Anggaran Kas
+      </div>
+     </div><!-- Aliran -->
+     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;" class="anim-slide-up delay-2">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+       <div style="font-size:40px;" class="float">
+        💵
+       </div>
+       <div class="clay-xs" style="background:#27ae60;padding:5px 14px;">
+        <div style="font-size:clamp(11px,2vw,14px);font-weight:800;color:#fff;">
+         ← Uang Masuk
         </div>
+       </div>
+      </div>
+      <div class="clay-xs anim-pulse" style="background:linear-gradient(135deg,#FFD700,#FFA500);width:60px;height:60px;display:flex;align-items:center;justify-content:center;border-radius:50%;"><span style="font-size:26px;">🏦</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+       <div style="font-size:40px;" class="float3">
+        💸
+       </div>
+       <div class="clay-xs" style="background:#e74c3c;padding:5px 14px;">
+        <div style="font-size:clamp(11px,2vw,14px);font-weight:800;color:#fff;">
+         Uang Keluar →
+        </div>
+       </div>
+      </div>
+     </div><!-- Narasi -->
+     <div class="clay anim-fade delay-3" style="background:rgba(255,255,255,0.08);padding:12px 18px;max-width:500px;text-align:center;">
+      <div style="font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       "Penganggaran kas adalah <strong style="color:#FFD700;">perencanaan penerimaan dan pengeluaran kas</strong> dalam periode tertentu."
+      </div>
+     </div><!-- Teks layar -->
+     <div class="clay anim-pop delay-4" style="background:linear-gradient(135deg,#3498db,#1a6fa3);padding:10px 22px;text-align:center;">
+      <div style="font-size:clamp(11px,2.2vw,15px);font-weight:800;color:#fff;">
+       Anggaran Kas = Rencana Kas Masuk &amp; Kas Keluar 📊
+      </div>
+     </div>
     </div>
-
-    <div id="screen-quiz" class="hidden">
-        <div class="progress-container"><div id="progress-bar"></div></div>
-        <div id="question-number" style="font-weight: bold; color: var(--secondary);">Soal 1 dari 10</div>
-        <div class="quiz-img" id="quiz-visual"></div>
-        <h3 id="question-text">Memuat soal...</h3>
-        <div class="options-grid" id="options-container">
-            </div>
+   </div><!-- SLIDE 4: KAS MASUK -->
+   <div class="slide" id="slide-4" style="background:linear-gradient(135deg,#1a3a1a,#1a2a1a,#1a1a2e); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 24px;width:100%;max-width:640px;">
+     <div class="clay anim-pop" style="background:linear-gradient(135deg,#27ae60,#1e8449);padding:8px 24px;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#fff;">
+       💵 Kas Masuk
+      </div>
+     </div>
+     <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:420px;"><!-- Sumber 1 -->
+      <div style="display:flex;align-items:center;gap:14px;" class="anim-slide-left delay-1">
+       <div style="font-size:36px;" class="float">
+        🛍️
+       </div>
+       <div style="flex:1;display:flex;align-items:center;gap:10px;">
+        <div style="flex:1;height:3px;background:rgba(39,174,96,0.5);"></div>
+        <div style="font-size:18px;color:#27ae60;">
+         →
+        </div>
+       </div>
+       <div class="clay-xs" style="background:#27ae60;padding:8px 16px;">
+        <div style="font-size:clamp(11px,2vw,14px);font-weight:800;color:#fff;">
+         Penjualan Tunai
+        </div>
+       </div>
+      </div><!-- Sumber 2 -->
+      <div style="display:flex;align-items:center;gap:14px;" class="anim-slide-left delay-2">
+       <div style="font-size:36px;" class="float2">
+        📝
+       </div>
+       <div style="flex:1;display:flex;align-items:center;gap:10px;">
+        <div style="flex:1;height:3px;background:rgba(39,174,96,0.5);"></div>
+        <div style="font-size:18px;color:#27ae60;">
+         →
+        </div>
+       </div>
+       <div class="clay-xs" style="background:#1e8449;padding:8px 16px;">
+        <div style="font-size:clamp(11px,2vw,14px);font-weight:800;color:#fff;">
+         Pelunasan Piutang
+        </div>
+       </div>
+      </div><!-- Sumber 3 -->
+      <div style="display:flex;align-items:center;gap:14px;" class="anim-slide-left delay-3">
+       <div style="font-size:36px;" class="float3">
+        ✨
+       </div>
+       <div style="flex:1;display:flex;align-items:center;gap:10px;">
+        <div style="flex:1;height:3px;background:rgba(39,174,96,0.5);"></div>
+        <div style="font-size:18px;color:#27ae60;">
+         →
+        </div>
+       </div>
+       <div class="clay-xs" style="background:#145a32;padding:8px 16px;">
+        <div style="font-size:clamp(11px,2vw,14px);font-weight:800;color:#fff;">
+         Penerimaan Lain-lain
+        </div>
+       </div>
+      </div><!-- Panah ke kotak kas -->
+      <div style="display:flex;justify-content:center;" class="anim-fade delay-3">
+       <div class="arrow-down" style="border-top-color:#27ae60;"></div>
+      </div><!-- Kotak Kas -->
+      <div class="clay anim-pop delay-4" style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:14px 20px;text-align:center;">
+       <div style="font-size:clamp(16px,3.5vw,22px);font-weight:900;color:#1a1a2e;">
+        🏦 KAS
+       </div>
+       <div style="font-size:clamp(11px,2vw,13px);font-weight:700;color:#1a1a2e;opacity:0.7;">
+        Kotak Kas Perusahaan
+       </div>
+      </div>
+     </div><!-- Narasi -->
+     <div class="clay anim-fade delay-4" style="background:rgba(39,174,96,0.15);padding:10px 18px;max-width:500px;text-align:center;border:2px solid rgba(39,174,96,0.3);">
+      <div style="font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       "Kas masuk berasal dari <strong style="color:#2ecc71;">penjualan tunai</strong>, <strong style="color:#2ecc71;">pelunasan piutang</strong>, maupun <strong style="color:#2ecc71;">penerimaan lainnya.</strong>"
+      </div>
+     </div>
     </div>
-
-    <div id="screen-result" class="hidden">
-        <h1 id="result-title">Hebat!</h1>
-        <div id="result-score" style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 20px 0;">0</div>
-        <p id="result-message"></p>
-        <button class="btn btn-primary" onclick="showScreen('screen-menu')">🏠 Menu Utama</button>
-        <button class="btn" onclick="startQuiz()">🔄 Main Lagi</button>
+   </div><!-- SLIDE 5: KAS KELUAR -->
+   <div class="slide" id="slide-5" style="background:linear-gradient(135deg,#3a1a1a,#2a1a1a,#1a1a2e); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 24px;width:100%;max-width:640px;">
+     <div class="clay anim-pop" style="background:linear-gradient(135deg,#e74c3c,#c0392b);padding:8px 24px;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#fff;">
+       💸 Kas Keluar
+      </div>
+     </div><!-- Kotak Kas sumber -->
+     <div class="clay anim-pop delay-1" style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:12px 20px;text-align:center;">
+      <div style="font-size:clamp(16px,3.5vw,20px);font-weight:900;color:#1a1a2e;">
+       🏦 KAS
+      </div>
+     </div>
+     <div class="arrow-down anim-fade delay-1" style="border-top-color:#e74c3c;"></div>
+     <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+      <div class="clay-xs anim-pop delay-2 float" style="background:#e74c3c;padding:10px 14px;text-align:center;min-width:100px;">
+       <div style="font-size:28px;">
+        👷
+       </div>
+       <div style="font-size:clamp(10px,1.8vw,13px);font-weight:800;color:#fff;margin-top:4px;">
+        Gaji Pegawai
+       </div>
+      </div>
+      <div class="clay-xs anim-pop delay-3 float2" style="background:#e67e22;padding:10px 14px;text-align:center;min-width:100px;">
+       <div style="font-size:28px;">
+        ⚡
+       </div>
+       <div style="font-size:clamp(10px,1.8vw,13px);font-weight:800;color:#fff;margin-top:4px;">
+        Listrik
+       </div>
+      </div>
+      <div class="clay-xs anim-pop delay-4 float3" style="background:#8e44ad;padding:10px 14px;text-align:center;min-width:100px;">
+       <div style="font-size:28px;">
+        🏠
+       </div>
+       <div style="font-size:clamp(10px,1.8vw,13px);font-weight:800;color:#fff;margin-top:4px;">
+        Sewa
+       </div>
+      </div>
+      <div class="clay-xs anim-pop delay-5 float" style="background:#2980b9;padding:10px 14px;text-align:center;min-width:100px;">
+       <div style="font-size:28px;">
+        📦
+       </div>
+       <div style="font-size:clamp(10px,1.8vw,13px);font-weight:800;color:#fff;margin-top:4px;">
+        Bahan Baku
+       </div>
+      </div>
+     </div>
+     <div class="clay anim-fade delay-4" style="background:rgba(231,76,60,0.15);padding:10px 18px;max-width:500px;text-align:center;border:2px solid rgba(231,76,60,0.3);">
+      <div style="font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       "Kas keluar digunakan untuk membayar <strong style="color:#e74c3c;">berbagai kebutuhan operasional</strong> perusahaan."
+      </div>
+     </div>
     </div>
-</div>
+   </div><!-- SLIDE 6: CONTOH SEDERHANA -->
+   <div class="slide" id="slide-6" style="background:linear-gradient(135deg,#1a2a3a,#1a1a2e); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 24px;width:100%;max-width:640px;">
+     <div class="clay anim-pop" style="background:linear-gradient(135deg,#3498db,#1a6fa3);padding:8px 24px;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#fff;">
+       📊 Contoh Sederhana
+      </div>
+     </div><!-- Tabel -->
+     <div class="clay anim-slide-up delay-1" style="background:#fff;padding:0;overflow:hidden;width:100%;max-width:420px;">
+      <div style="background:linear-gradient(135deg,#3498db,#1a6fa3);padding:8px 16px;text-align:center;">
+       <div style="font-weight:800;font-size:clamp(13px,2.5vw,16px);color:#fff;">
+        📅 Bulan April
+       </div>
+      </div>
+      <table class="table-clay" style="width:100%;border-collapse:collapse;">
+       <tbody>
+        <tr style="border-bottom:2px solid #ecf0f1;">
+         <td style="font-size:clamp(11px,2vw,14px);color:#2c3e50;font-weight:700;">💰 Saldo Awal Kas</td>
+         <td style="font-size:clamp(11px,2vw,14px);color:#27ae60;font-weight:800;text-align:right;">Rp 5.000.000</td>
+        </tr>
+        <tr style="border-bottom:2px solid #ecf0f1;">
+         <td style="font-size:clamp(11px,2vw,14px);color:#2c3e50;font-weight:700;">📈 Kas Masuk</td>
+         <td style="font-size:clamp(11px,2vw,14px);color:#27ae60;font-weight:800;text-align:right;">+ Rp 8.000.000</td>
+        </tr>
+        <tr style="border-bottom:2px solid #ecf0f1;">
+         <td style="font-size:clamp(11px,2vw,14px);color:#2c3e50;font-weight:700;">📉 Kas Keluar</td>
+         <td style="font-size:clamp(11px,2vw,14px);color:#e74c3c;font-weight:800;text-align:right;">- Rp 10.000.000</td>
+        </tr>
+        <tr style="background:linear-gradient(135deg,#FFD700,#FFA500);">
+         <td style="font-size:clamp(12px,2.2vw,15px);color:#1a1a2e;font-weight:900;">🏆 Saldo Akhir Kas</td>
+         <td style="font-size:clamp(12px,2.2vw,15px);color:#1a1a2e;font-weight:900;text-align:right;">Rp 3.000.000</td>
+        </tr>
+       </tbody>
+      </table>
+     </div><!-- Visualisasi perhitungan -->
+     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;" class="anim-slide-up delay-2">
+      <div class="clay-xs" style="background:#3498db;padding:7px 12px;">
+       <span style="font-weight:800;color:#fff;font-size:clamp(11px,2vw,14px);">5 jt</span>
+      </div><span style="color:#27ae60;font-weight:900;font-size:20px;">+</span>
+      <div class="clay-xs" style="background:#27ae60;padding:7px 12px;">
+       <span style="font-weight:800;color:#fff;font-size:clamp(11px,2vw,14px);">8 jt</span>
+      </div><span style="color:#e74c3c;font-weight:900;font-size:20px;">−</span>
+      <div class="clay-xs" style="background:#e74c3c;padding:7px 12px;">
+       <span style="font-weight:800;color:#fff;font-size:clamp(11px,2vw,14px);">10 jt</span>
+      </div><span style="color:#FFD700;font-weight:900;font-size:20px;">=</span>
+      <div class="clay-xs anim-pulse" style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:7px 12px;">
+       <span style="font-weight:900;color:#1a1a2e;font-size:clamp(11px,2vw,14px);">3 jt 🐷</span>
+      </div>
+     </div><!-- Formula -->
+     <div class="clay anim-pop delay-3" style="background:linear-gradient(135deg,#27ae60,#1e8449);padding:10px 22px;text-align:center;">
+      <div style="font-size:clamp(10px,2vw,13px);font-weight:800;color:#fff;">
+       Saldo Akhir = Saldo Awal + Kas Masuk – Kas Keluar
+      </div>
+     </div>
+    </div>
+   </div><!-- SLIDE 7: JIKA TIDAK DIRANCANG -->
+   <div class="slide" id="slide-7" style="background:linear-gradient(135deg,#2c0000,#1a1a2e); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 24px;width:100%;max-width:640px;">
+     <div class="clay anim-pop" style="background:linear-gradient(135deg,#c0392b,#962d22);padding:8px 24px;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#fff;">
+       🚨 Risiko Tanpa Perencanaan
+      </div>
+     </div>
+     <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;"><!-- Celengan kosong -->
+      <div class="clay anim-slide-left delay-1" style="background:rgba(255,255,255,0.05);padding:16px 20px;text-align:center;border:2px solid rgba(231,76,60,0.4);">
+       <div style="font-size:52px;filter:grayscale(0.7);" class="anim-bounce">
+        🐷
+       </div>
+       <div style="font-size:clamp(11px,2vw,13px);color:#e74c3c;font-weight:800;margin-top:6px;">
+        Celengan Hampir Kosong!
+       </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+       <div class="clay-xs anim-slide-right delay-2" style="background:rgba(231,76,60,0.2);padding:10px 14px;border:2px solid rgba(231,76,60,0.4);display:flex;align-items:center;gap:8px;"><span style="font-size:24px;">😰</span> <span style="font-size:clamp(11px,2vw,13px);color:#fff;font-weight:700;">Perusahaan Panik</span>
+       </div>
+       <div class="clay-xs anim-slide-right delay-3" style="background:rgba(231,76,60,0.2);padding:10px 14px;border:2px solid rgba(231,76,60,0.4);display:flex;align-items:center;gap:8px;"><span style="font-size:24px;">👷</span> <span style="font-size:clamp(11px,2vw,13px);color:#fff;font-weight:700;">Pegawai Menunggu Gaji</span>
+       </div>
+       <div class="clay-xs anim-slide-right delay-4 anim-shake" style="background:rgba(231,76,60,0.2);padding:10px 14px;border:2px solid rgba(231,76,60,0.4);display:flex;align-items:center;gap:8px;"><span style="font-size:24px;">📋</span> <span style="font-size:clamp(11px,2vw,13px);color:#fff;font-weight:700;">Tagihan Menumpuk</span>
+       </div>
+      </div>
+     </div>
+     <div class="clay anim-fade delay-3" style="background:rgba(231,76,60,0.15);padding:10px 18px;max-width:500px;text-align:center;border:2px solid rgba(231,76,60,0.4);">
+      <div style="font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       "Tanpa perencanaan kas, perusahaan bisa <strong style="color:#e74c3c;">kekurangan dana</strong> untuk membayar kewajiban tepat waktu."
+      </div>
+     </div>
+     <div class="clay anim-pop delay-4" style="background:linear-gradient(135deg,#c0392b,#962d22);padding:10px 22px;text-align:center;">
+      <div style="font-size:clamp(13px,2.5vw,18px);font-weight:900;color:#fff;">
+       ⚠️ RISIKO: DEFISIT KAS!
+      </div>
+     </div>
+    </div>
+   </div><!-- SLIDE 8: MANFAAT -->
+   <div class="slide" id="slide-8" style="background:linear-gradient(135deg,#0a2a0a,#1a1a2e); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 24px;width:100%;max-width:640px;">
+     <div class="clay anim-pop" style="background:linear-gradient(135deg,#27ae60,#1e8449);padding:8px 24px;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#fff;">
+       ✅ Manfaat Penganggaran Kas
+      </div>
+     </div>
+     <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:flex-start;"><!-- Perusahaan tertata -->
+      <div class="clay anim-pop delay-1" style="background:rgba(255,255,255,0.06);padding:14px 16px;text-align:center;border:2px solid rgba(39,174,96,0.4);">
+       <div style="font-size:48px;" class="float">
+        🏢
+       </div>
+       <div style="font-size:clamp(10px,1.8vw,12px);color:#2ecc71;font-weight:800;margin-top:6px;">
+        Perusahaan<br>
+        Tertata Rapi
+       </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:280px;">
+       <div class="check-item anim-slide-right delay-2">
+        <div class="clay-xs" style="background:#27ae60;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;"><span style="font-size:16px;">✓</span>
+        </div>
+        <div class="clay-xs" style="background:rgba(39,174,96,0.15);padding:8px 14px;border:2px solid rgba(39,174,96,0.3);flex:1;">
+         <div style="font-size:clamp(11px,2vw,14px);font-weight:700;color:#fff;">
+          Menghindari kekurangan kas
+         </div>
+        </div>
+       </div>
+       <div class="check-item anim-slide-right delay-3">
+        <div class="clay-xs" style="background:#3498db;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;"><span style="font-size:16px;">✓</span>
+        </div>
+        <div class="clay-xs" style="background:rgba(52,152,219,0.15);padding:8px 14px;border:2px solid rgba(52,152,219,0.3);flex:1;">
+         <div style="font-size:clamp(11px,2vw,14px);font-weight:700;color:#fff;">
+          Membantu perencanaan
+         </div>
+        </div>
+       </div>
+       <div class="check-item anim-slide-right delay-4">
+        <div class="clay-xs" style="background:#FFD700;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;"><span style="font-size:16px;">✓</span>
+        </div>
+        <div class="clay-xs" style="background:rgba(255,215,0,0.15);padding:8px 14px;border:2px solid rgba(255,215,0,0.3);flex:1;">
+         <div style="font-size:clamp(11px,2vw,14px);font-weight:700;color:#fff;">
+          Menjaga operasional usaha
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="clay anim-fade delay-4" style="background:rgba(39,174,96,0.15);padding:10px 18px;max-width:500px;text-align:center;border:2px solid rgba(39,174,96,0.3);">
+      <div style="font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       "Penganggaran kas membantu mengantisipasi kekurangan dana dan <strong style="color:#2ecc71;">menjaga kelancaran operasional.</strong>"
+      </div>
+     </div>
+    </div>
+   </div><!-- SLIDE 9: PENUTUP -->
+   <div class="slide" id="slide-9" style="background:linear-gradient(135deg,#0f3460,#1a1a2e,#0a2a0a); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 24px;width:100%;max-width:640px;">
+     <div class="clay anim-pop" style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:8px 24px;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#1a1a2e;">
+       🏆 Kesimpulan
+      </div>
+     </div><!-- Semua elemen -->
+     <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:flex-end;" class="anim-slide-up delay-1">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;" class="float">
+       <div class="building-roof" style="border-bottom-color:#3498db;"></div>
+       <div class="building-body" style="background:#bdc3c7;height:40px;width:70px;"></div>
+      </div>
+      <div style="font-size:36px;" class="float2">
+       💵
+      </div>
+      <div style="font-size:36px;" class="float3">
+       💸
+      </div>
+      <div style="font-size:46px;" class="float anim-pulse">
+       🐷
+      </div>
+      <div style="font-size:36px;" class="float2">
+       📊
+      </div>
+     </div><!-- Kalimat penutup -->
+     <div class="clay anim-pop delay-2" style="background:linear-gradient(135deg,#1a1a2e,#0f3460);padding:16px 24px;text-align:center;border:3px solid rgba(255,215,0,0.5);max-width:480px;">
+      <div style="font-size:clamp(13px,2.5vw,17px);font-style:italic;color:#FFD700;font-weight:700;line-height:1.5;">
+       "Kas yang direncanakan dengan baik, membantu usaha berjalan lebih stabil."
+      </div>
+     </div>
+     <div class="clay anim-slide-up delay-3" style="background:rgba(255,255,255,0.08);padding:10px 18px;max-width:500px;text-align:center;">
+      <div style="font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       "Penganggaran kas bukan sekadar menghitung uang masuk dan keluar, tetapi juga <strong style="color:#FFD700;">alat penting untuk menjaga stabilitas perusahaan.</strong>"
+      </div>
+     </div>
+     <div class="clay anim-pop delay-4" style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:10px 22px;text-align:center;">
+      <div style="font-size:clamp(11px,2.2vw,15px);font-weight:900;color:#1a1a2e;">
+       Penganggaran Kas = Alat Perencanaan Keuangan 📈
+      </div>
+     </div>
+    </div>
+   </div><!-- SLIDE 10: REFLEKSI -->
+   <div class="slide" id="slide-10" style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460); flex-direction:column; align-items:center; justify-content:center;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px 28px;width:100%;max-width:640px;">
+     <div class="clay anim-pop" style="background:linear-gradient(135deg,#8e44ad,#6c3483);padding:8px 24px;">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:clamp(16px,3.5vw,22px);font-weight:800;color:#fff;">
+       💭 Refleksi &amp; Diskusi
+      </div>
+     </div>
+     <div class="clay anim-pop delay-2 anim-pulse" style="background:linear-gradient(135deg,#1a1a2e,#16213e);padding:24px 28px;text-align:center;border:3px solid #FFD700;max-width:480px;">
+      <div style="font-size:52px;margin-bottom:12px;">
+       🤔
+      </div>
+      <div style="font-size:clamp(14px,2.8vw,20px);font-weight:800;color:#FFD700;line-height:1.5;">
+       "Menurut Anda, apa yang akan terjadi jika perusahaan <em>tidak</em> menyusun anggaran kas?"
+      </div>
+     </div>
+     <div class="clay anim-slide-up delay-3" style="background:rgba(142,68,173,0.2);padding:12px 20px;text-align:center;border:2px solid rgba(142,68,173,0.4);max-width:460px;">
+      <div style="font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,0.85);line-height:1.6;">
+       📌 <strong style="color:#9b59b6;">Pemantik Diskusi</strong><br>
+        "Sekarang, coba pikirkan… apa yang akan terjadi jika perusahaan tidak menyusun anggaran kas?"
+      </div>
+     </div>
+     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;" class="anim-fade delay-4">
+      <div class="clay-xs" style="background:rgba(231,76,60,0.2);padding:8px 14px;border:2px solid rgba(231,76,60,0.4);">
+       <div style="font-size:clamp(10px,1.8vw,13px);color:#e74c3c;font-weight:700;">
+        💸 Defisit Kas?
+       </div>
+      </div>
+      <div class="clay-xs" style="background:rgba(231,176,60,0.2);padding:8px 14px;border:2px solid rgba(231,176,60,0.4);">
+       <div style="font-size:clamp(10px,1.8vw,13px);color:#f39c12;font-weight:700;">
+        😰 Gagal Bayar?
+       </div>
+      </div>
+      <div class="clay-xs" style="background:rgba(231,76,60,0.2);padding:8px 14px;border:2px solid rgba(231,76,60,0.4);">
+       <div style="font-size:clamp(10px,1.8vw,13px);color:#e74c3c;font-weight:700;">
+        📉 Bisnis Terganggu?
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- NAVIGATION BAR -->
+   <div style="position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:100;"><!-- Prev --> <button id="btn-prev" class="nav-btn clay-xs" style="background:rgba(255,255,255,0.1);color:#fff;padding:8px 16px;font-size:clamp(12px,2vw,14px);" onclick="changeSlide(-1)">← Sebelumnya</button> <!-- Dots -->
+    <div style="display:flex;gap:6px;align-items:center;" id="dots-container"></div><!-- Slide counter -->
+    <div style="color:rgba(255,255,255,0.7);font-size:clamp(11px,1.8vw,13px);font-weight:700;min-width:48px;text-align:center;" id="slide-counter">
+     1 / 10
+    </div><!-- Next --> <button id="btn-next" class="nav-btn clay-xs" style="background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a2e;padding:8px 16px;font-size:clamp(12px,2vw,14px);" onclick="changeSlide(1)">Selanjutnya →</button>
+   </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script>
+  const TOTAL = 10;
+  let current = 1;
 
-<script>
-    // Konfigurasi Data Materi
-    const dataBangun = {
-        'Persegi': { desc: 'Punya 4 sisi yang sama panjang dan 4 sudut siku-siku.', color: '#FF6B6B', svg: '<rect x="10" y="10" width="80" height="80" fill="currentColor"/>' },
-        'Persegi Panjang': { desc: 'Punya 2 pasang sisi sejajar yang sama panjang dan 4 sudut siku-siku.', color: '#4ECDC4', svg: '<rect x="5" y="25" width="90" height="50" fill="currentColor"/>' },
-        'Segitiga': { desc: 'Bangun datar yang dibatasi oleh 3 buah sisi dan punya 3 buah titik sudut.', color: '#FFE66D', svg: '<polygon points="50,10 90,90 10,90" fill="currentColor"/>' },
-        'Lingkaran': { desc: 'Hanya memiliki 1 sisi melengkung yang saling bertemu dan tidak punya sudut.', color: '#FF9F43', svg: '<circle cx="50" cy="50" r="40" fill="currentColor"/>' },
-        'Jajar Genjang': { desc: 'Punya 2 pasang sisi sejajar, tapi sudutnya bukan siku-siku.', color: '#1dd1a1', svg: '<polygon points="30,20 95,20 70,80 5,80" fill="currentColor"/>' },
-        'Layang-layang': { desc: 'Punya 2 pasang sisi sama panjang dan diagonalnya berpotongan tegak lurus.', color: '#5f27cd', svg: '<polygon points="50,5 90,40 50,95 10,40" fill="currentColor"/>' },
-        'Belah Ketupat': { desc: 'Semua sisinya sama panjang dan kedua diagonalnya saling tegak lurus.', color: '#54a0ff', svg: '<polygon points="50,5 90,50 50,95 10,50" fill="currentColor"/>' },
-        'Segi Lima': { desc: 'Memiliki 5 sisi dan 5 titik sudut. Sering disebut Pentagon.', color: '#ee5253', svg: '<polygon points="50,5 95,38 78,92 22,92 5,38" fill="currentColor"/>' }
-    };
+  // Build dots
+  const dotsContainer = document.getElementById('dots-container');
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.dataset.idx = i;
+    d.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(d);
+  }
 
-    // Data Kuis
-    const questions = [
-        { q: "Aku punya 4 sisi sama panjang dan 4 sudut siku-siku. Siapakah aku?", a: "Persegi", options: ["Persegi", "Persegi Panjang", "Segitiga", "Lingkaran"], type: "Persegi" },
-        { q: "Berapakah jumlah titik sudut pada bangun Segitiga?", a: "3", options: ["3", "4", "5", "6"], type: "Segitiga" },
-        { q: "Aku tidak punya sudut dan hanya punya satu sisi melengkung. Aku adalah...", a: "Lingkaran", options: ["Oval", "Segi Lima", "Lingkaran", "Belah Ketupat"], type: "Lingkaran" },
-        { q: "Bangun datar yang punya 2 pasang sisi sejajar tapi tidak punya sudut siku-siku adalah...", a: "Jajar Genjang", options: ["Persegi", "Jajar Genjang", "Segitiga", "Persegi Panjang"], type: "Jajar Genjang" },
-        { q: "Berapa banyak sisi yang dimiliki oleh bangun Segi Lima?", a: "5", options: ["4", "5", "6", "8"], type: "Segi Lima" },
-        { q: "Aku mirip persegi tapi miring, keempat sisiku sama panjang. Aku adalah...", a: "Belah Ketupat", options: ["Jajar Genjang", "Layang-layang", "Belah Ketupat", "Lingkaran"], type: "Belah Ketupat" },
-        { q: "Bangun yang bentuknya seperti mainan yang ditarik benang di udara adalah...", a: "Layang-layang", options: ["Segitiga", "Layang-layang", "Persegi", "Jajar Genjang"], type: "Layang-layang" },
-        { q: "Pintu rumah biasanya berbentuk...", a: "Persegi Panjang", options: ["Persegi Panjang", "Lingkaran", "Segitiga", "Segi Lima"], type: "Persegi Panjang" },
-        { q: "Atap rumah pada umumnya menyerupai bentuk...", a: "Segitiga", options: ["Lingkaran", "Segitiga", "Jajar Genjang", "Persegi"], type: "Segitiga" },
-        { q: "Roda sepeda berbentuk...", a: "Lingkaran", options: ["Persegi", "Segi Lima", "Lingkaran", "Belah Ketupat"], type: "Lingkaran" }
-    ];
+  function goToSlide(n) {
+    document.getElementById('slide-' + current).classList.remove('active');
+    dotsContainer.children[current - 1].classList.remove('active');
+    current = n;
+    const slide = document.getElementById('slide-' + current);
+    slide.classList.add('active');
+    dotsContainer.children[current - 1].classList.add('active');
+    document.getElementById('slide-counter').textContent = current + ' / ' + TOTAL;
 
-    let currentQuestion = 0;
-    let score = 0;
-
-    // Navigasi Layar
-    function showScreen(screenId) {
-        document.querySelectorAll('#game-container > div').forEach(div => div.classList.add('hidden'));
-        document.getElementById(screenId).classList.remove('hidden');
-    }
-
-    // Inisialisasi Materi
-    const materiList = document.getElementById('materi-list');
-    Object.keys(dataBangun).forEach(key => {
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `<svg viewBox="0 0 100 100" style="color:${dataBangun[key].color}">${dataBangun[key].svg}</svg><div>${key}</div>`;
-        div.onclick = () => {
-            document.getElementById('materi-detail').classList.remove('hidden');
-            document.getElementById('detail-title').innerText = key;
-            document.getElementById('detail-desc').innerText = dataBangun[key].desc;
-            speak(key + ". " + dataBangun[key].desc);
-        };
-        materiList.appendChild(div);
+    // Re-trigger animations by cloning children with animation classes
+    const animated = slide.querySelectorAll('[class*="anim-"]');
+    animated.forEach(el => {
+      const style = el.getAttribute('style') || '';
+      el.style.animation = 'none';
+      void el.offsetHeight;
+      el.style.animation = '';
     });
 
-    // Fitur Suara
-    function speak(text) {
-        window.speechSynthesis.cancel();
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'id-ID';
-        window.speechSynthesis.speak(msg);
-    }
+    lucide.createIcons();
+  }
 
-    // Sistem Kuis
-    function startQuiz() {
-        currentQuestion = 0;
-        score = 0;
-        showScreen('screen-quiz');
-        loadQuestion();
-    }
+  function changeSlide(dir) {
+    const next = current + dir;
+    if (next < 1 || next > TOTAL) return;
+    goToSlide(next);
+  }
 
-    function loadQuestion() {
-        const q = questions[currentQuestion];
-        document.getElementById('question-number').innerText = `Soal ${currentQuestion + 1} dari ${questions.length}`;
-        document.getElementById('progress-bar').style.width = `${((currentQuestion) / questions.length) * 100}%`;
-        document.getElementById('question-text').innerText = q.q;
-        
-        // Load Visual
-        const visualArea = document.getElementById('quiz-visual');
-        visualArea.innerHTML = `<svg viewBox="0 0 100 100" style="height:100%; color:var(--secondary)">${dataBangun[q.type] ? dataBangun[q.type].svg : ''}</svg>`;
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
 
-        const optionsContainer = document.getElementById('options-container');
-        optionsContainer.innerHTML = '';
-        
-        q.options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'opt-btn';
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(opt, btn);
-            optionsContainer.appendChild(btn);
-        });
-    }
+  // Element SDK init
+  const defaultConfig = {
+    judul_utama: 'Memahami Penganggaran Kas',
+    nama_mata_kuliah: 'Akuntansi Manajemen',
+    background_color: '#1a1a2e',
+    accent_color: '#FFD700',
+    text_color: '#ffffff',
+    card_color: '#0f3460',
+    font_family: 'Nunito',
+    font_size: 15
+  };
 
-    function checkAnswer(choice, btn) {
-        const correctAns = questions[currentQuestion].a;
-        const allBtns = document.querySelectorAll('.opt-btn');
-        allBtns.forEach(b => b.style.pointerEvents = 'none');
+  window.elementSdk && window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => {
+      const title = config.judul_utama || defaultConfig.judul_utama;
+      const sub = config.nama_mata_kuliah || defaultConfig.nama_mata_kuliah;
+      const font = config.font_family || defaultConfig.font_family;
+      const fs = config.font_size || defaultConfig.font_size;
+      const accent = config.accent_color || defaultConfig.accent_color;
+      const bg = config.background_color || defaultConfig.background_color;
+      const txt = config.text_color || defaultConfig.text_color;
+      const card = config.card_color || defaultConfig.card_color;
 
-        if(choice === correctAns) {
-            score += 10;
-            btn.classList.add('correct');
-            speak("Hebat! Jawabanmu benar.");
-        } else {
-            btn.classList.add('wrong');
-            speak("Wah, kurang tepat. Semangat ya!");
-            // Tunjukkan yang benar
-            allBtns.forEach(b => { if(b.innerText === correctAns) b.classList.add('correct'); });
+      const s1t = document.getElementById('s1-title');
+      if (s1t) { s1t.textContent = title; s1t.style.fontFamily = `${font}, 'Baloo 2', sans-serif`; s1t.style.fontSize = `${fs * 1.8}px`; }
+
+      const s1s = document.getElementById('s1-sub');
+      if (s1s) { s1s.textContent = sub; s1s.style.fontFamily = `${font}, Nunito, sans-serif`; s1s.style.fontSize = `${fs * 0.9}px`; }
+
+      document.querySelectorAll('.slide').forEach(sl => {
+        sl.style.fontFamily = `${font}, Nunito, sans-serif`;
+      });
+
+      document.querySelectorAll('.clay').forEach(el => {
+        if (!el.style.background.includes('gradient') || el.style.background.includes(defaultConfig.card_color)) {
+          // skip gradient overrides for colored boxes
         }
-
-        setTimeout(() => {
-            currentQuestion++;
-            if(currentQuestion < questions.length) {
-                loadQuestion();
-            } else {
-                showResult();
-            }
-        }, 2000);
-    }
-
-    function showResult() {
-        showScreen('screen-result');
-        document.getElementById('progress-bar').style.width = '100%';
-        document.getElementById('result-score').innerText = score;
-        
-        let msg = "";
-        if(score >= 80) {
-            msg = "Luar biasa! Kamu sudah jadi master bangun datar! 🌟";
-            document.getElementById('result-title').innerText = "Sempurna!";
-        } else if(score >= 50) {
-            msg = "Bagus sekali! Sedikit lagi kamu akan jadi ahli! 💪";
-            document.getElementById('result-title').innerText = "Keren!";
-        } else {
-            msg = "Ayo belajar lagi, jangan menyerah ya! Kamu pasti bisa! ❤️";
-            document.getElementById('result-title').innerText = "Semangat!";
+      });
+    },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        {
+          get: () => config.background_color || defaultConfig.background_color,
+          set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
+        },
+        {
+          get: () => config.card_color || defaultConfig.card_color,
+          set: (v) => { config.card_color = v; window.elementSdk.setConfig({ card_color: v }); }
+        },
+        {
+          get: () => config.text_color || defaultConfig.text_color,
+          set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
+        },
+        {
+          get: () => config.accent_color || defaultConfig.accent_color,
+          set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }
         }
-        document.getElementById('result-message').innerText = msg;
-        speak("Skormu adalah " + score + ". " + msg);
-    }
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => config.font_family || defaultConfig.font_family,
+        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => config.font_size || defaultConfig.font_size,
+        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['judul_utama', config.judul_utama || defaultConfig.judul_utama],
+      ['nama_mata_kuliah', config.nama_mata_kuliah || defaultConfig.nama_mata_kuliah]
+    ])
+  });
+
+  lucide.createIcons();
 </script>
-
-</body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e5763b074956d16',t:'MTc3NTA0NDM2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
