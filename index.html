@@ -1,185 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Angle Quiz</title>
-    <style>
-        :root {
-            --primary: #8e44ad; /* Deep Purple */
-            --accent: #fd79a8;  /* Soft Pink */
-            --bg-gradient: linear-gradient(135deg, #a29bfe 0%, #fab1a0 100%);
-            --white: #ffffff;
-            --success: #00b894;
-            --error: #d63031;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', 'Segoe UI', sans-serif; }
-        body { 
-            background: var(--bg-gradient); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding: 20px; 
-        }
-
-        #game-container {
-            background: var(--white); width: 100%; max-width: 650px;
-            border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            overflow: hidden; border: 6px solid var(--white);
-        }
-
-        .screen { display: none; padding: 40px; animation: fadeIn 0.4s ease-out; text-align: center; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .progress-bar { width: 100%; height: 12px; background: #eee; }
-        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.5s; }
-
-        .visual-box {
-            background: #fffafa; border: 3px dashed var(--accent);
-            border-radius: 20px; margin: 20px 0; padding: 15px;
-            display: flex; justify-content: center; align-items: center; min-height: 230px;
-        }
-
-        input[type="number"] {
-            width: 120px; padding: 12px; font-size: 28px; border: 4px solid var(--primary);
-            border-radius: 15px; text-align: center; outline: none; color: var(--primary);
-            background: #fdf9ff;
-        }
-
-        .btn {
-            background: var(--primary); color: white; border: none; padding: 16px;
-            border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; 
-            font-size: 18px; transition: 0.3s; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
-        }
-        .btn:hover { background: var(--accent); transform: translateY(-2px); }
-
-        .review-item { text-align: left; padding: 20px; border-bottom: 2px solid #f0f0f0; margin-bottom: 12px; border-radius: 15px; }
-        .rev-correct { border-left: 8px solid var(--success); background: #e6fffb; }
-        .rev-wrong { border-left: 8px solid var(--error); background: #fff5f5; }
-        .tick-text { font-size: 10px; fill: #555; font-weight: bold; }
-        .explanation { font-size: 14px; color: #666; margin-top: 8px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 8px; }
-        
-        #instruction-text { font-weight: 600; color: #d63031; background: #fff5f5; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: none; }
-        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 15px; }
-    </style>
+<meta charset="UTF-8">
+<title>Geometry Quest: Precision Angles</title>
+<style>
+    :root { --primary: #00d2ff; --secondary: #3a7bd5; --bg: #0f172a; --card-bg: #1e293b; --text: #f8fafc; }
+    body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, var(--bg), #1e1b4b); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: var(--text); }
+    .card { background: var(--card-bg); padding: 30px; border-radius: 24px; width: 440px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+    #quiz-screen { display: none; }
+    h1 { font-size: 28px; margin: 0; background: linear-gradient(to right, #00d2ff, #9cedff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .story-box { font-style: italic; color: #94a3b8; font-size: 14px; margin-top: 10px; }
+    svg { background: #ffffff; border-radius: 16px; margin: 20px 0; border: 1px solid #eee; }
+    button { width: 100%; margin: 8px 0; padding: 14px; border: none; border-radius: 12px; background: #334155; cursor: pointer; font-weight: 600; font-size: 16px; transition: all 0.2s; color: white; }
+    button:hover { background: #475569; transform: translateY(-2px); }
+    .btn-start { background: linear-gradient(to right, var(--primary), var(--secondary)); margin-top: 25px; }
+    .correct { background: #10b981 !important; }
+    .wrong { background: #ef4444 !important; }
+    #progress-bar { width: 100%; height: 6px; background: #334155; border-radius: 3px; margin-bottom: 20px; }
+    #progress-fill { height: 100%; width: 0%; background: var(--primary); border-radius: 3px; transition: 0.4s; }
+</style>
 </head>
 <body>
 
-<div id="game-container">
-    <div class="progress-bar"><div id="progress-fill"></div></div>
-
-    <div id="screen-start" class="screen active">
-        <h1>📐 Interactive Angle Quiz</h1>
-        <p style="color: #636e72; font-size: 1.1rem; margin-bottom: 30px;">Practice geometry with these colorful exercises!</p>
-        <button class="btn" onclick="start()">START THE QUIZ</button>
+<div class="card">
+    <div id="opening-screen">
+        <h1>Geometry Quest</h1>
+        <p>Fixed Math Precision • Type & Calculation</p>
+        <div style="font-size: 50px; margin: 20px;">📐</div>
+        <button class="btn-start" onclick="startGame()">Start Quiz</button>
     </div>
 
-    <div id="screen-quiz" class="screen">
-        <div style="display: flex; justify-content: space-between; font-weight: bold; color: var(--primary); margin-bottom: 10px;">
-            <span id="lvl-info">Question 1/10</span>
-            <span id="score-live">Score: 0</span>
-        </div>
-        <p id="q-text" style="margin: 10px 0; font-size: 19px; color: #2d3436; font-weight: 600;"></p>
-        <div id="instruction-text">Note: Black Hand (Short) is Hour | Red Hand (Long) is Minute.</div>
-        <div class="visual-box" id="visual"></div>
-        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <input type="number" id="ans-input" placeholder="0"> <b style="font-size: 30px; color: var(--primary);">°</b>
-        </div>
-        <button class="btn" style="margin-top:25px" onclick="check()">SUBMIT ANSWER</button>
-    </div>
-
-    <div id="screen-result" class="screen">
-        <h2 style="color: var(--primary); font-size: 2rem;">Quiz Finished!</h2>
-        <div id="final-score" style="font-size: 1.5rem; margin: 10px 0; font-weight: bold;">Score: 0 / 10</div>
-        <div id="review-area" style="max-height: 400px; overflow-y: auto; margin: 20px 0; border: 2px solid #eee; padding: 15px; border-radius: 20px; background: #fafafa;"></div>
-        <button class="btn" onclick="location.reload()">TRY AGAIN</button>
+    <div id="quiz-screen">
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+        <div id="num-display" style="font-weight: bold; color: var(--primary);">STAGE 01</div>
+        <p id="story-text" class="story-box"></p>
+        <p id="question-text" style="font-size: 16px; margin: 10px 0; font-weight: 500;"></p>
+        <svg id="svg-canvas" width="240" height="240"></svg>
+        <div id="options-container"></div>
+        <p style="margin-top:15px; font-size: 14px;">Score: <span id="score-val">0</span>/15</p>
     </div>
 </div>
 
 <script>
-    let current = 0;
-    let score = 0;
-    let userHistory = [];
+let idx = 0, score = 0;
+// Pusat O ada di tengah kanvas
+const pusat = {x: 120, y: 120}; 
 
-    function createClockSVG(hour, minute) {
-        let marks = "";
-        for(let i=1; i<=12; i++) {
-            let ang = (i * 30) * Math.PI / 180;
-            let x = 50 + 38 * Math.sin(ang);
-            let y = 50 - 38 * Math.cos(ang);
-            marks += `<text x="${x}" y="${y+3}" class="tick-text" text-anchor="middle">${i}</text>`;
+// Fungsi trigonometri standar (0 deg = kanan, berlawanan arah jarum jam)
+function getPoint(deg, r) {
+    const rad = (deg * Math.PI) / 180;
+    return {
+        x: pusat.x + r * Math.cos(rad),
+        y: pusat.y - r * Math.sin(rad) // SVG Y terbalik
+    };
+}
+
+// Fungsi bantu membuat garis
+function drawLine(deg, r=90, color="#1e293b", width=3) {
+    const p = getPoint(deg, r);
+    return `<line x1="${pusat.x}" y1="${pusat.y}" x2="${p.x}" y2="${p.y}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`;
+}
+
+// Fungsi bantu busur arsiran biru (Pastikan sinkron dengan garis)
+function drawArc(ang1, ang2, r=40, color="rgba(0, 210, 255, 0.2)") {
+    const p1 = getPoint(ang1, r);
+    const p2 = getPoint(ang2, r);
+    const diff = (ang2 - ang1 + 360) % 360;
+    const largeArc = diff > 180 ? 1 : 0;
+    
+    // String path SVG: Move ke pusat, Line ke p1, Arc ke p2, Close path Z
+    return `<path d="M ${pusat.x} ${pusat.y} L ${p1.x} ${p1.y} A ${r} ${r} 0 ${largeArc} 1 ${p2.x} ${p2.y} Z" fill="${color}" stroke="none"/>`;
+}
+
+// Fungsi bantu menaruh label huruf
+function drawLetter(deg, r, char) {
+    const p = getPoint(deg, r);
+    return `<text x="${p.x}" y="${p.y}" font-size="14" text-anchor="middle" font-weight="bold" fill="#333">${char}</text>`;
+}
+
+const quizData = [
+    // --- PART 1: IDENTIFICATION (Scenario-based) ---
+    {
+        story: "A laptop is slightly open.",
+        q: "The screen makes a 35° angle. What type is this?",
+        a: "Acute", opsi: ["Acute", "Obtuse", "Right"],
+        render: () => {
+            return drawArc(0, 35) + drawLine(0) + drawLine(35) + 
+                   drawLetter(0, 100, "B") + drawLetter(35, 100, "A") + `<text x="110" y="125">O</text>`;
         }
-        const hAng = (hour * 30) + (minute * 0.5);
-        const mAng = minute * 6;
-        return `<svg width="220" height="220" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="48" fill="white" stroke="#8e44ad" stroke-width="2.5"/>
-            ${marks}
-            <line x1="50" y1="50" x2="${50 + 24 * Math.sin(hAng * Math.PI/180)}" y2="${50 - 24 * Math.cos(hAng * Math.PI/180)}" stroke="#2d3436" stroke-width="5" stroke-linecap="round"/>
-            <line x1="50" y1="50" x2="${50 + 38 * Math.sin(mAng * Math.PI/180)}" y2="${50 - 38 * Math.cos(mAng * Math.PI/180)}" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="50" cy="50" r="3.5" fill="#2d3436"/>
-        </svg>`;
-    }
+    },
+    {
+        story: "A carpenter checks a table corner.",
+        q: "It fits a perfect 90° square mark. This is a...",
+        a: "Right Angle", opsi: ["Acute", "Right Angle", "Straight"],
+        render: () => {
+            return drawLine(0) + drawLine(90) + 
+                   `<rect x="120" y="100" width="20" height="20" fill="none" stroke="red" stroke-width="2"/>` +
+                   drawLetter(0, 100, "B") + drawLetter(90, 100, "A") + `<text x="110" y="125">O</text>`;
+        }
+    },
+    {
+        story: "A clock shows 4:00 PM.",
+        q: "The hands form a 120° angle. Classify it:",
+        a: "Obtuse", opsi: ["Obtuse", "Acute", "Reflex"],
+        render: () => {
+            // Clock hands use different logic, but this visual is correct for 120 deg obtuse
+            return drawArc(0, 120) + drawLine(0) + drawLine(120) + 
+                   `<circle cx="120" cy="120" r="4" fill="black"/>` + `<text x="115" y="135">O</text>`;
+        }
+    },
+    {
+        story: "A road represents a perfectly flat line.",
+        q: "This forms a 180° angle. What type is this?",
+        a: "Straight", opsi: ["Obtuse", "Straight", "Reflex"],
+        render: () => {
+            // FIXED: Added center point
+            return drawLine(0) + drawLine(180) + 
+                   `<circle cx="120" cy="120" r="6" fill="red"/>` + // Center point O
+                   drawLetter(180, 100, "A") + drawLetter(0, 100, "B") + `<text x="110" y="135">O</text>`;
+        }
+    },
+    {
+        story: "A spinner rotates massively, almost a full circle.",
+        q: "The outer rotation shown is 270°. What type is this?",
+        a: "Reflex", opsi: ["Obtuse", "Reflex", "Straight"],
+        render: () => {
+            // FIXED: Position accurate (0 deg to 270 deg clockwise Y) and smaller size
+            return drawArc(0, 270, 30) + drawLine(0, 80) + drawLine(270, 80) + 
+                   `<circle cx="120" cy="120" r="4" fill="black"/>` + `<text x="115" y="135">O</text>`;
+        }
+    },
 
-    const quiz = [
-        { q: "Pukul 02.00. Berapa besar sudutnya?", svg: createClockSVG(2, 0), a: 60, exp: "Every hour on a clock is 30°. 2 hours x 30° = 60°." },
-        { q: "It's 04:00. What is the measure of the smaller angle?", svg: createClockSVG(4, 0), a: 120, exp: "4 hours x 30° = 120°." },
-        { q: "Supplementary angles: If the known side is 130°, find x.", svg: `<svg width="200" height="100"><line x1="10" y1="80" x2="190" y2="80" stroke="black" stroke-width="3"/><line x1="100" y1="80" x2="40" y2="25" stroke="#fd79a8" stroke-width="4"/><text x="40" y="75" fill="red" font-weight="bold">x</text><text x="120" y="75">130°</text></svg>`, a: 50, exp: "Straight lines are 180°. 180 - 130 = 50°." },
-        { q: "Opposite angles: If the top angle is 110°, find the bottom angle.", svg: `<svg width="180" height="120"><line x1="20" y1="20" x2="160" y2="100" stroke="black"/><line x1="20" y1="100" x2="160" y2="20" stroke="black"/><text x="80" y="40">110°</text><text x="85" y="90" fill="red" font-weight="bold">?</text></svg>`, a: 110, exp: "Vertically opposite angles are equal." },
-        { q: "It's 06:00. What is the degree of the angle?", svg: createClockSVG(6, 0), a: 180, exp: "The hands form a flat straight line, which is 180°." },
-        { q: "It's 09:00. What is the smaller angle measure?", svg: createClockSVG(9, 0), a: 90, exp: "3 hours difference x 30° = 90°." },
-        { q: "Complementary angles: If one part is 35°, find y.", svg: `<svg width="150" height="120"><path d="M 30 110 L 130 110 M 30 110 L 30 20" fill="none" stroke="black" stroke-width="3"/><line x1="30" y1="110" x2="110" y2="70" stroke="#fd79a8"/><text x="60" y="100">35°</text><text x="40" y="60" fill="red" font-weight="bold">y</text></svg>`, a: 55, exp: "Right angles are 90°. 90 - 35 = 55°." },
-        { q: "It's 03:30. What is the measure of the smaller angle?", svg: createClockSVG(3, 30), a: 75, exp: "Hour hand at 3.5 (15°) + distance to 6 (60°) = 75°." },
-        { q: "Parallel lines: If the alternate interior angle is 110°, find its pair.", svg: `<svg width="200" height="100"><line x1="10" y1="30" x2="190" y2="30" stroke="#8e44ad" stroke-width="2"/><line x1="10" y1="70" x2="190" y2="70" stroke="#8e44ad" stroke-width="2"/><line x1="50" y1="10" x2="150" y2="90" stroke="black"/><text x="65" y="85">110°</text><text x="105" y="25" fill="red" font-weight="bold">?</text></svg>`, a: 110, exp: "Alternate interior angles are equal (both obtuse in this case)." },
-        { q: "Reflex angle is 320°. Find the value of x.", svg: `<svg width="120" height="120" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#ddd"/><path d="M 50 50 L 90 50 A 40 40 0 1 1 50 10 Z" fill="#fd79a8" opacity="0.2"/><line x1="50" y1="50" x2="90" y2="50" stroke="black"/><line x1="50" y1="50" x2="50" y2="10" stroke="black"/><text x="25" y="70">320°</text><text x="55" y="45" fill="red" font-weight="bold">x</text></svg>`, a: 40, exp: "360 - 320 = 40°." }
-    ];
-
-    function start() {
-        document.getElementById('screen-start').classList.remove('active');
-        document.getElementById('screen-quiz').classList.add('active');
-        loadQ();
+    // --- PART 2: CALCULATION (No Algebra) ---
+    {
+        story: "Level 1: Supplement",
+        q: "AB is straight. If ∠BOC = 115°, find ∠AOC.",
+        a: "65°", opsi: ["55°", "65°", "75°"],
+        render: () => {
+            pusat.y = 160; // Geser pusat ke bawah untuk visual sudut pelurus
+            let g = drawLine(0)+drawLine(180)+drawLine(115)+drawLetter(0,100,"B")+drawLetter(115,100,"C")+drawLetter(180,100,"A")+
+                   `<text x="110" y="175">O</text>`+`<text x="140" y="140" fill="red">115°</text>`;
+            pusat.y = 120; // reset
+            return g;
+        }
+    },
+    {
+        story: "Level 2: Complement",
+        q: "∠AOB is 90°. If ∠BOC = 28°, find ∠AOC.",
+        a: "62°", opsi: ["62°", "52°", "72°"],
+        render: () => drawLine(0)+drawLine(90)+drawLine(28)+drawLetter(0,100,"B")+drawLetter(28,100,"C")+drawLetter(90,100,"A")
+    },
+    {
+        story: "Level 3: Circle Part",
+        q: "A full turn (360°) has parts 150° and 90°. What is the remaining angle?",
+        a: "120°", opsi: ["110°", "120°", "130°"],
+        render: () => drawLine(0)+drawLine(150)+drawLine(240)+
+                       `<text x="150" y="100">150°</text>`+`<text x="90" y="150">90°</text>`
+    },
+    {
+        story: "Level 4: Vertically Opposite",
+        q: "Lines cross. Top is 74°. Find the bottom angle.",
+        a: "74°", opsi: ["74°", "106°", "180°"],
+        render: () => drawLine(30)+drawLine(210)+drawLine(150)+drawLine(330)+`<text x="110" y="90">74°</text>`
+    },
+    {
+        story: "Level 5: Triangle Core",
+        q: "Two angles are 45° and 85°. Find the third angle.",
+        a: "50°", opsi: ["40°", "50°", "60°"],
+        render: () => `<polygon points="120,60 50,180 190,180" fill="none" stroke="black" stroke-width="2"/>`
+    },
+    {
+        story: "Level 6: Full Turn Slices",
+        q: "4 angles make 360°. Three are 80° each. Find the 4th.",
+        a: "120°", opsi: ["100°", "120°", "140°"],
+        render: () => drawLine(0)+drawLine(80)+drawLine(160)+drawLine(240)
+    },
+    {
+        story: "Level 7: Straight line split",
+        q: "A 180° line is split into 4 equal parts. One part measures...",
+        a: "45°", opsi: ["30°", "45°", "60°"],
+        render: () => drawLine(0)+drawLine(45)+drawLine(90)+drawLine(135)+drawLine(180)
+    },
+    {
+        story: "Level 8: Almost Circle",
+        q: "A gap in a circle is 50°. What is the reflex angle?",
+        a: "310°", opsi: ["300°", "310°", "320°"],
+        render: () => drawArc(50, 360, 40, "rgba(200,0,0,0.1)")+drawLine(0)+drawLine(50)+`<text x="135" y="100">50° gap</text>`
+    },
+    {
+        story: "Level 9: Joining Right",
+        q: "Add 90° to 45°. The total rotation is?",
+        a: "135°", opsi: ["125°", "135°", "145°"],
+        render: () => drawLine(0)+drawLine(90)+drawLine(135)
+    },
+    {
+        story: "Level 10: Symmetry",
+        q: "Divide 360° into 5 equal parts. Each part is?",
+        a: "72°", opsi: ["60°", "72°", "80°"],
+        render: () => drawLine(0)+drawLine(72)+drawLine(144)+drawLine(216)+drawLine(288)
     }
+];
 
-    function loadQ() {
-        const d = quiz[current];
-        document.getElementById('lvl-info').innerText = `Question ${current + 1}/10`;
-        document.getElementById('q-text').innerText = d.q;
-        document.getElementById('visual').innerHTML = d.svg;
-        document.getElementById('ans-input').value = "";
-        document.getElementById('progress-fill').style.width = (current / 10 * 100) + "%";
-        document.getElementById('instruction-text').style.display = (current === 0) ? "block" : "none";
-        document.getElementById('ans-input').focus();
-    }
+function startGame() {
+    document.getElementById("opening-screen").style.display = "none";
+    document.getElementById("quiz-screen").style.display = "block";
+    showQuestion();
+}
 
-    function check() {
-        const val = document.getElementById('ans-input').value;
-        if(val === "") return;
-        const isCorrect = val == quiz[current].a;
-        if(isCorrect) score++;
-        userHistory.push({ q: quiz[current].q, userAns: val, correctAns: quiz[current].a, isCorrect: isCorrect, exp: quiz[current].exp });
-        document.getElementById('score-live').innerText = `Score: ${score}`;
-        current++;
-        if(current < 10) loadQ();
-        else showResult();
-    }
+function showQuestion() {
+    let s = quizData[idx];
+    document.getElementById("num-display").innerText = "STAGE " + (idx < 9 ? "0" : "") + (idx + 1);
+    document.getElementById("story-text").innerText = "Scenario: " + s.story;
+    document.getElementById("question-text").innerText = s.q;
+    document.getElementById("svg-canvas").innerHTML = s.render();
+    document.getElementById("progress-fill").style.width = ((idx)/quizData.length)*100 + "%";
 
-    function showResult() {
-        document.getElementById('screen-quiz').classList.remove('active');
-        document.getElementById('screen-result').classList.add('active');
-        document.getElementById('progress-fill').style.width = "100%";
-        document.getElementById('final-score').innerText = `You got ${score} out of 10!`;
-        let html = "<h3>Review Your Answers:</h3>";
-        userHistory.forEach((h, i) => {
-            html += `<div class="review-item ${h.isCorrect ? 'rev-correct' : 'rev-wrong'}">
-                <strong>No ${i+1}:</strong> ${h.q}<br>
-                <span>Your Answer: ${h.userAns}° | <strong>Correct: ${h.correctAns}°</strong></span>
-                <div class="explanation">💡 ${h.exp}</div>
-            </div>`;
-        });
-        document.getElementById('review-area').innerHTML = html;
+    let html = "";
+    // Shuffle options for better gameplay
+    let shuffled = [...s.opsi].sort(() => Math.random() - 0.5);
+    shuffled.forEach(o => {
+        html += `<button onclick="checkAnswer('${o}', this)">${o}</button>`;
+    });
+    document.getElementById("options-container").innerHTML = html;
+}
+
+function checkAnswer(choice, btn) {
+    if (choice === quizData[idx].a) {
+        score++;
+        btn.classList.add("correct");
+    } else {
+        btn.classList.add("wrong");
     }
+    document.getElementById("score-val").innerText = score;
+
+    setTimeout(() => {
+        idx++;
+        if (idx < quizData.length) {
+            showQuestion();
+        } else {
+            alert("Legend status achieved! Score: " + score + "/15");
+            idx = 0; score = 0;
+            document.getElementById("score-val").innerText = score;
+            startGame(); // Reload quiz
+        }
+    }, 1000);
+}
 </script>
 </body>
 </html>
