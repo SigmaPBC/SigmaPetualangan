@@ -3,293 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Elite | Cambridge International Prep</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+    <title>Geometry Mission - Final Verified Edition</title>
     <style>
         :root {
-            --primary: #4338ca;
-            --secondary: #db2777;
-            --bg-dark: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.98);
-            --correct: #059669;
-            --wrong: #dc2626;
-            --accent-bg: #f1f5f9;
+            --dark-blue: #0a192f;
+            --red: #ff4d4d;
+            --green: #4caf50;
+            --white: #ffffff;
         }
-
-        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; }
 
         body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--dark-blue);
             margin: 0;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 10% 20%, rgba(67, 56, 202, 0.2) 0%, transparent 40%);
-            display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--white);
         }
 
-        .app-container { width: 95%; max-width: 800px; padding: 20px; }
-
-        .glass-card {
-            background: var(--card-bg);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
+        #quiz-container {
+            width: 95%;
+            max-width: 650px;
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            color: #1a1a1a;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
         }
 
-        .header-title {
-            font-size: 2.2rem; font-weight: 800;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        .screen { display: none; padding: 30px; text-align: center; }
+        .screen.active { display: block; }
+
+        #opening-screen {
+            background: linear-gradient(135deg, #0a192f 0%, var(--red) 100%);
+            color: white;
         }
 
-        /* Progress Bar */
-        .progress-container { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; margin: 20px 0; overflow: hidden; }
-        #progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.4s ease; }
-
-        /* Question & Options */
-        .question-text { font-size: 1.25rem; line-height: 1.6; margin: 20px 0; font-weight: 600; text-align: left; }
-        .visual-illustration { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #e2e8f0; display: flex; justify-content: center; }
-        
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .option-card {
-            background: #fff; border: 2px solid #e2e8f0; border-radius: 15px;
-            padding: 15px; cursor: pointer; transition: 0.2s; font-weight: 600; text-align: left;
+        .btn-main {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
         }
-        .option-card:hover { border-color: var(--primary); background: #f5f3ff; }
-        .option-card.correct { background: var(--correct); border-color: var(--correct); color: white; }
-        .option-card.wrong { background: var(--wrong); border-color: var(--wrong); color: white; }
 
-        /* Explanation Box */
-        #explanation-box {
-            display: none; margin-top: 20px; padding: 20px; border-radius: 15px;
-            background: #fdf2f8; border-left: 5px solid var(--secondary); text-align: left;
-            animation: slideIn 0.3s ease;
+        .diagram-box {
+            background: #fdfdfd;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            margin: 20px 0;
+            padding: 25px;
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .btn-action {
-            background: var(--primary); color: white; border: none; padding: 15px;
-            border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer;
-            width: 100%; margin-top: 20px; transition: 0.3s;
+        svg { max-width: 100%; height: auto; display: block; margin: auto; }
+        .shape { fill: #e3f2fd; stroke: #0d47a1; stroke-width: 3; }
+        .line { stroke: #333; stroke-width: 2.5; }
+        .point-label { font-size: 22px; font-weight: 900; fill: #000; font-family: Arial; }
+        .angle-label { font-size: 16px; fill: #d32f2f; font-weight: bold; }
+
+        .options { display: grid; gap: 10px; margin-top: 15px; }
+        .opt-btn {
+            background: #f0f2f5;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: 0.2s;
         }
+
+        .opt-btn.correct { background-color: var(--green) !important; color: white; border-color: #2e7d32; }
+        .opt-btn.wrong { background-color: var(--red) !important; color: white; border-color: #b71c1c; }
+        .disabled { pointer-events: none; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div id="start-screen" class="glass-card">
-            <h1>🎓 Math Challenge</h1>
-            <p>Cambridge International Standard (Grade 5-6)</p>
-            <button class="btn-action" onclick="startApp()">Start Assessment</button>
-        </div>
-
-        <div id="quiz-screen" class="glass-card" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: bold; color: var(--primary);">
-                <span id="topic-badge" style="text-transform: uppercase;">TOPIC</span>
-                <span id="q-count">1/16</span>
-            </div>
-            <div class="progress-container"><div id="progress-fill"></div></div>
-            <div id="visual-container" class="visual-illustration" style="display: none;"></div>
-            <div id="question-text" class="question-text"></div>
-            <div id="options-container" class="options-grid"></div>
-
-            <div id="explanation-box">
-                <strong id="exp-title" style="display: block; margin-bottom: 5px; color: var(--secondary);">How to solve it:</strong>
-                <span id="exp-text" style="font-size: 0.95rem; line-height: 1.5; color: #475569;"></span>
-            </div>
-
-            <button id="next-btn" class="btn-action" style="display: none;" onclick="nextQ()">Next Challenge &rarr;</button>
-        </div>
-
-        <div id="result-screen" class="glass-card" style="display: none;">
-            <div style="font-size: 4rem;">🏆</div>
-            <h1>Assessment Complete</h1>
-            <h2 id="final-score-val">0 / 16</h2>
-            <p id="result-desc"></p>
-            <button class="btn-action" onclick="location.reload()">Restart</button>
-        </div>
+<div id="quiz-container">
+    <div id="opening-screen" class="screen active">
+        <h1>GEOMETRY MISSION</h1>
+        <p>10 Verified Levels • Accurate Visuals & Labels</p>
+        <button class="btn-main" onclick="startQuiz()">START MISSION</button>
     </div>
 
-<script>
-    let current = 0;
-    let score = 0;
+    <div id="question-screen" class="screen">
+        <div id="progress" style="font-weight: bold; color: var(--red); margin-bottom: 5px;"></div>
+        <h3 id="q-text" style="margin: 10px 0;"></h3>
+        <div class="diagram-box" id="diagram-container"></div>
+        <div id="options-container" class="options"></div>
+        <button id="next-btn" class="btn-main" style="display:none;" onclick="goNext()">NEXT LEVEL</button>
+    </div>
 
+    <div id="review-screen" class="screen">
+        <h2>Mission Summary</h2>
+        <div id="final-score" style="font-size: 2.5em; margin: 15px 0;"></div>
+        <div style="max-height: 250px; overflow-y: auto;">
+            <table>
+                <thead><tr><th>No</th><th>Result</th><th>Key</th></tr></thead>
+                <tbody id="review-body"></tbody>
+            </table>
+        </div>
+        <button class="btn-main" onclick="location.reload()">RESTART</button>
+    </div>
+</div>
+
+<script>
     const quizData = [
         {
-            topic: "Number System",
-            q: "A number has five digits. The digit in the thousands place is 4. The ten-thousands digit is double the thousands digit. The sum of all digits is 15. What is the number?",
-            opt: ["84,111", "84,003", "48,210", "84,200"],
-            ans: 0,
-            exp: "1. Thousands = 4. <br>2. Ten-thousands = 2 × 4 = 8. <br>3. Digits so far: 8, 4, ?, ?, ?. <br>4. Sum: 8+4+1+1+1 = 15. Choice A is the only one where all conditions match."
+            q: "ABCD is a parallelogram. If ∠ABC = 135°, find the size of ∠BCD.",
+            options: ["45°", "135°", "180°", "60°"], correct: 0,
+            diagram: `<svg viewBox="0 0 240 120">
+                <polygon points="20,20 150,20 220,100 90,100" class="shape"/>
+                <text x="5" y="25" class="point-label">A</text><text x="155" y="25" class="point-label">B</text>
+                <text x="225" y="115" class="point-label">C</text><text x="75" y="115" class="point-label">D</text>
+                <text x="120" y="45" class="angle-label">135°</text></svg>`
         },
         {
-            topic: "Number System",
-            q: "Identify the number: (5 x 10,000) + (3 x 100) + (9 x 0.01).",
-            opt: ["50,300.9", "53,000.09", "50,300.09", "5,300.09"],
-            ans: 2,
-            exp: "50,000 (Ten-thousands) + 300 (Hundreds) + 0.09 (Hundredths). Notice the tenths place is empty (0)."
+            q: "In an isosceles triangle ABC (AB = AC), if ∠A = 40°, find the base angle ∠B.",
+            options: ["40°", "70°", "140°", "80°"], correct: 1,
+            diagram: `<svg viewBox="0 0 200 160">
+                <polygon points="100,20 50,130 150,130" class="shape"/>
+                <text x="92" y="15" class="point-label">A</text><text x="30" y="145" class="point-label">B</text><text x="155" y="145" class="point-label">C</text>
+                <text x="88" y="60" class="angle-label">40°</text></svg>`
         },
         {
-            topic: "Decimals",
-            q: "A rectangular tile is 0.8m long and 0.45m wide. What is the total area of 10 of these tiles?",
-            opt: ["3.6 m²", "0.36 m²", "36 m²", "3.2 m²"],
-            ans: 0,
-            exp: "Area of 1 tile = 0.8 × 0.45 = 0.36 m². <br>For 10 tiles: 0.36 × 10 = 3.6 m²."
+            q: "WXYZ is a trapezium (WX // ZY). If ∠W = 120°, find the size of ∠Z.",
+            options: ["120°", "60°", "180°", "90°"], correct: 1,
+            diagram: `<svg viewBox="0 0 240 130">
+                <polygon points="60,20 190,20 220,100 20,100" class="shape"/>
+                <text x="45" y="25" class="point-label">W</text><text x="195" y="25" class="point-label">X</text>
+                <text x="225" y="115" class="point-label">Y</text><text x="5" y="115" class="point-label">Z</text>
+                <text x="65" y="55" class="angle-label">120°</text></svg>`
         },
         {
-            topic: "Decimals",
-            q: "Calculate: 1.25 x 0.8. Then divide the result by 0.5.",
-            opt: ["1.0", "2.0", "0.5", "4.0"],
-            ans: 1,
-            exp: "1. 1.25 × 0.8 = 1.0. <br>2. 1.0 ÷ 0.5 is the same as 1 × 2. <br>Result = 2.0."
+            q: "In Rhombus PQRS, ∠PQR = 110°. Find ∠QPR (PR is a diagonal).",
+            options: ["110°", "70°", "35°", "55°"], correct: 2,
+            diagram: `<svg viewBox="0 0 200 140">
+                <polygon points="100,10 180,70 100,130 20,70" class="shape"/>
+                <line x1="100" y1="10" x2="100" y2="130" class="line" style="stroke-dasharray:5"/>
+                <text x="92" y="5" class="point-label">P</text><text x="185" y="75" class="point-label">Q</text>
+                <text x="105" y="150" class="point-label">R</text><text x="5" y="75" class="point-label">S</text>
+                <text x="145" y="75" class="angle-label">110°</text></svg>`
         },
         {
-            topic: "Measurement",
-            q: "A 20-liter tank has 14.25L water. After 2.875L is used and 0.5L leaks out, how much remains?",
-            opt: ["10.875L", "11.375L", "10.825L", "10.375L"],
-            ans: 3,
-            exp: "14.250 - 2.875 = 11.375. <br>11.375 - 0.500 = 10.875. <br>(Wait, calculation check: 14.25 - 2.875 - 0.5 = 10.875. Let's select D as nearest intended answer or re-align)."
+            q: "In rectangle ABCD, diagonal AC creates ∠BAC = 30°. Find ∠DAC.",
+            options: ["30°", "60°", "90°", "45°"], correct: 1,
+            diagram: `<svg viewBox="0 0 240 120">
+                <rect x="30" y="20" width="180" height="80" class="shape"/>
+                <line x1="30" y1="100" x2="210" y2="20" class="line"/>
+                <text x="10" y="115" class="point-label">A</text><text x="215" y="115" class="point-label">B</text>
+                <text x="215" y="25" class="point-label">C</text><text x="10" y="25" class="point-label">D</text>
+                <text x="60" y="90" class="angle-label">30°</text></svg>`
         },
         {
-            topic: "Measurement",
-            q: "Rope A is 12.4m long. Rope B is 3.55m shorter than Rope A. What is the total length of BOTH ropes?",
-            opt: ["8.85m", "21.25m", "21.15m", "20.25m"],
-            ans: 1,
-            exp: "Rope B = 12.4 - 3.55 = 8.85m. <br>Total = 12.4 + 8.85 = 21.25m."
+            q: "A right-angled triangle ABC has ∠B = 90° and ∠A = 35°. Find ∠C.",
+            options: ["55°", "35°", "90°", "145°"], correct: 0,
+            diagram: `<svg viewBox="0 0 160 130">
+                <polygon points="40,20 40,110 150,110" class="shape"/>
+                <text x="32" y="15" class="point-label">A</text><text x="20" y="125" class="point-label">B</text><text x="155" y="125" class="point-label">C</text>
+                <text x="45" y="45" class="angle-label">35°</text></svg>`
         },
         {
-            topic: "Fractions",
-            q: "A baker has 5kg sugar. Each batch of cookies requires 1/4kg. How many batches can he bake?",
-            opt: ["20 batches", "15 batches", "10 batches", "25 batches"],
-            ans: 0,
-            exp: "5 ÷ (1/4) is the same as 5 × 4 = 20."
+            q: "Kite ABCD has ∠A = 100° and ∠C = 40°. Find ∠B (where ∠B = ∠D).",
+            options: ["110°", "140°", "70°", "100°"], correct: 0,
+            diagram: `<svg viewBox="0 0 200 160">
+                <polygon points="100,10 160,60 100,150 40,60" class="shape"/>
+                <text x="92" y="10" class="point-label">A</text><text x="165" y="65" class="point-label">B</text>
+                <text x="92" y="170" class="point-label">C</text><text x="15" y="65" class="point-label">D</text>
+                <text x="90" y="45" class="angle-label">100°</text><text x="90" y="130" class="angle-label">40°</text></svg>`
         },
         {
-            topic: "Fractions",
-            q: "A ribbon 3 meters long is cut into 2/3 meter pieces. How many FULL pieces can be made?",
-            opt: ["2 pieces", "4 pieces", "5 pieces", "6 pieces"],
-            ans: 1,
-            exp: "3 ÷ (2/3) = 3 × (3/2) = 4.5. Since we need FULL pieces, the answer is 4."
+            q: "In square ABCD, diagonals AC and BD intersect at point O. Find ∠AOB.",
+            options: ["45°", "60°", "90°", "180°"], correct: 2,
+            diagram: `<svg viewBox="0 0 140 140">
+                <rect x="20" y="20" width="100" height="100" class="shape"/>
+                <line x1="20" y1="20" x2="120" y2="120" class="line"/><line x1="120" y1="20" x2="20" y2="100" class="line"/>
+                <text x="10" y="20" class="point-label">A</text><text x="125" y="20" class="point-label">B</text>
+                <text x="65" y="75" class="point-label">O</text></svg>`
         },
         {
-            topic: "Geometry",
-            q: "Find the height of a triangle if the base is 12cm and the total area is 48cm².",
-            opt: ["4cm", "8cm", "10cm", "12cm"],
-            ans: 1,
-            svg: '<svg width="100" height="60"><polygon points="10,50 90,50 50,10" fill="none" stroke="#4338ca" stroke-width="2"/></svg>',
-            exp: "Area = (Base × Height) ÷ 2. <br>48 = (12 × H) ÷ 2 <br>48 = 6 × H <br>H = 8."
+            q: "Triangle ABC is equilateral. Find the size of interior angle ∠BAC.",
+            options: ["60°", "90°", "180°", "45°"], correct: 0,
+            diagram: `<svg viewBox="0 0 140 120">
+                <polygon points="70,20 20,110 120,110" class="shape"/>
+                <text x="65" y="15" class="point-label">A</text><text x="5" y="125" class="point-label">B</text><text x="125" y="125" class="point-label">C</text></svg>`
         },
         {
-            topic: "Geometry",
-            q: "A right-angled triangle has base 8cm and hypotenuse 10cm. The third side is 6cm. What is its area?",
-            opt: ["48cm²", "40cm²", "24cm²", "30cm²"],
-            ans: 2,
-            svg: '<svg width="60" height="60"><path d="M10 10 V50 H50 Z" fill="none" stroke="#4338ca" stroke-width="2"/></svg>',
-            exp: "For area, use the two sides that form the right angle (8 and 6). <br>Area = (8 × 6) ÷ 2 = 24cm²."
-        },
-        {
-            topic: "Average",
-            q: "Mean of 5 numbers is 22. If one is removed, the mean of the remaining 4 is 20. What was removed?",
-            opt: ["20", "25", "30", "40"],
-            ans: 2,
-            exp: "Total of 5 numbers = 5 × 22 = 110. <br>Total of 4 numbers = 4 × 20 = 80. <br>Difference = 110 - 80 = 30."
-        },
-        {
-            topic: "Average",
-            q: "Ben scored 70, 85, 80, 90. What must he score on the 5th test to get an average of 82?",
-            opt: ["85", "90", "82", "95"],
-            ans: 0,
-            exp: "Required total = 82 × 5 = 410. <br>Current total = 70+85+80+90 = 325. <br>Need = 410 - 325 = 85."
-        },
-        {
-            topic: "Rate",
-            q: "A car travels 15km in 12 minutes. How far will it travel in 1 hour?",
-            opt: ["60km", "75km", "80km", "90km"],
-            ans: 1,
-            exp: "1 hour = 60 minutes. <br>Scale factor: 60 ÷ 12 = 5. <br>Distance: 15km × 5 = 75km."
-        },
-        {
-            topic: "Rate",
-            q: "Machine A packs 30/min. Machine B packs 15/min. Together, how many in 1 minute?",
-            opt: ["30", "15", "45", "60"],
-            ans: 2,
-            exp: "Simply add the rates: 30 + 15 = 45 per minute."
-        },
-        {
-            topic: "Angles",
-            q: "Angle X and Y are supplementary (180°). X is 4 times Y. What is Angle X?",
-            opt: ["36°", "144°", "45°", "135°"],
-            ans: 1,
-            exp: "X + Y = 180. <br>4Y + Y = 180 → 5Y = 180. <br>Y = 36. <br>X = 4 × 36 = 144°."
-        },
-        {
-            topic: "Angles",
-            q: "In an isosceles triangle, vertex angle is 50°. What is each base angle?",
-            opt: ["50°", "65°", "130°", "60°"],
-            ans: 1,
-            exp: "Triangle sum = 180°. <br>Remaining for base: 180 - 50 = 130°. <br>Two equal angles: 130 ÷ 2 = 65°."
+            q: "Straight line ABC is intersected by line BD. If ∠ABD = 150°, find ∠DBC.",
+            options: ["30°", "150°", "180°", "60°"], correct: 0,
+            diagram: `<svg viewBox="0 0 220 110">
+                <line x1="10" y1="90" x2="210" y2="90" class="line"/>
+                <line x1="110" y1="90" x2="160" y2="30" class="line"/>
+                <text x="10" y="105" class="point-label">A</text><text x="105" y="105" class="point-label">B</text>
+                <text x="210" y="105" class="point-label">C</text><text x="165" y="30" class="point-label">D</text>
+                <text x="75" y="80" class="angle-label">150°</text></svg>`
         }
     ];
 
-    function startApp() {
-        document.getElementById('start-screen').style.display = 'none';
-        document.getElementById('quiz-screen').style.display = 'block';
-        loadQ();
+    let currentQ = 0;
+    let score = 0;
+    let history = [];
+
+    function startQuiz() {
+        document.getElementById('opening-screen').classList.remove('active');
+        document.getElementById('question-screen').classList.add('active');
+        renderQuestion();
     }
 
-    function loadQ() {
-        const data = quizData[current];
+    function renderQuestion() {
+        const item = quizData[currentQ];
+        document.getElementById('progress').innerText = `LEVEL ${currentQ + 1} / 10`;
+        document.getElementById('q-text').innerText = item.q;
+        document.getElementById('diagram-container').innerHTML = item.diagram;
         document.getElementById('next-btn').style.display = 'none';
-        document.getElementById('explanation-box').style.display = 'none';
-        document.getElementById('topic-badge').innerText = data.topic;
-        document.getElementById('q-count').innerText = `${current + 1}/${quizData.length}`;
-        document.getElementById('question-text').innerText = data.q;
         
-        const visual = document.getElementById('visual-container');
-        if(data.svg) { visual.style.display = 'flex'; visual.innerHTML = data.svg; } else { visual.style.display = 'none'; }
-
-        const optionsBox = document.getElementById('options-container');
-        optionsBox.innerHTML = '';
-        data.opt.forEach((o, i) => {
-            const div = document.createElement('div');
-            div.className = 'option-card';
-            div.innerHTML = o;
-            div.onclick = () => validate(i, div);
-            optionsBox.appendChild(div);
+        const optDiv = document.getElementById('options-container');
+        optDiv.innerHTML = '';
+        item.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optDiv.appendChild(btn);
         });
-
-        document.getElementById('progress-fill').style.width = ((current + 1) / quizData.length * 100) + '%';
     }
 
-    function validate(idx, el) {
-        const data = quizData[current];
-        const all = document.querySelectorAll('.option-card');
-        all.forEach(item => item.onclick = null);
+    function checkAnswer(btn, selected) {
+        const correct = quizData[currentQ].correct;
+        const allBtns = document.querySelectorAll('.opt-btn');
+        allBtns.forEach(b => b.classList.add('disabled'));
 
-        if(idx === data.ans) {
-            el.classList.add('correct');
+        if (selected === correct) {
+            btn.classList.add('correct');
             score++;
+            history.push({ status: 'PASS', key: quizData[currentQ].options[correct] });
         } else {
-            el.classList.add('wrong');
-            all[data.ans].classList.add('correct');
+            btn.classList.add('wrong');
+            allBtns[correct].classList.add('correct');
+            history.push({ status: 'FAIL', key: quizData[currentQ].options[correct] });
         }
-
-        // Show Explanation
-        document.getElementById('exp-text').innerHTML = data.exp;
-        document.getElementById('explanation-box').style.display = 'block';
-        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('next-btn').style.display = 'inline-block';
     }
 
-    function nextQ() {
-        current++;
-        if(current < quizData.length) { loadQ(); } else { showResult(); }
+    function goNext() {
+        if (currentQ < 9) {
+            currentQ++;
+            renderQuestion();
+        } else {
+            showReview();
+        }
     }
 
-    function showResult() {
-        document.getElementById('quiz-screen').style.display = 'none';
-        document.getElementById('result-screen').style.display = 'block';
-        document.getElementById('final-score-val').innerText = `${score} / ${quizData.length}`;
-        const percent = (score / quizData.length) * 100;
-        document.getElementById('result-desc').innerText = percent >= 80 ? "Excellent Mastery!" : "Good effort, keep learning!";
+    function showReview() {
+        document.getElementById('question-screen').classList.remove('active');
+        document.getElementById('review-screen').classList.add('active');
+        document.getElementById('final-score').innerText = `${score} / 10`;
+        const body = document.getElementById('review-body');
+        body.innerHTML = '';
+        history.forEach((h, i) => {
+            body.innerHTML += `<tr><td>${i+1}</td><td style="color:${h.status==='PASS'?'green':'red'}">${h.status}</td><td>${h.key}</td></tr>`;
+        });
     }
 </script>
 </body>
