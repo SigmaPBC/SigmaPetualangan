@@ -1,277 +1,220 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geometry Mission - Final Verified Edition</title>
+    <title>Sigma Math Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --dark-blue: #0a192f;
-            --red: #ff4d4d;
-            --green: #4caf50;
-            --white: #ffffff;
+            --mint-primary: #7fb685;
+            --mint-light: #e8f5e9;
+            --pink-accent: #d8a7b1;
+            --text-main: #2d3748;
+            --bg-app: #f7fafc;
         }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--dark-blue);
+            font-family: 'Comfortaa', cursive;
+            background-color: var(--bg-app);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            color: var(--white);
+            color: var(--text-main);
         }
 
-        #quiz-container {
-            width: 95%;
-            max-width: 650px;
-            background: var(--white);
-            border-radius: 20px;
-            overflow: hidden;
-            color: #1a1a1a;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+        .app-shell {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            height: 100vh;
+            max-height: 850px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
         }
 
-        .screen { display: none; padding: 30px; text-align: center; }
-        .screen.active { display: block; }
-
-        #opening-screen {
-            background: linear-gradient(135deg, #0a192f 0%, var(--red) 100%);
-            color: white;
+        @media (min-width: 480px) {
+            .app-shell { height: 90vh; border-radius: 40px; }
         }
 
-        .btn-main {
-            background: var(--red);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1em;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 20px;
+        /* Nav Header */
+        .nav-header { padding: 25px 25px 10px; }
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .progress-track {
+            flex: 1; height: 12px; background: #edf2f7; border-radius: 10px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: var(--mint-primary); width: 0%; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .diagram-box {
-            background: #fdfdfd;
-            border: 2px solid #eee;
-            border-radius: 15px;
-            margin: 20px 0;
-            padding: 25px;
+        /* Screen Management */
+        .screen { display: none; flex: 1; flex-direction: column; padding: 20px 25px; overflow-y: auto; }
+        .screen.active { display: flex; animation: slideIn 0.4s ease-out; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        svg { max-width: 100%; height: auto; display: block; margin: auto; }
-        .shape { fill: #e3f2fd; stroke: #0d47a1; stroke-width: 3; }
-        .line { stroke: #333; stroke-width: 2.5; }
-        .point-label { font-size: 22px; font-weight: 900; fill: #000; font-family: Arial; }
-        .angle-label { font-size: 16px; fill: #d32f2f; font-weight: bold; }
-
-        .options { display: grid; gap: 10px; margin-top: 15px; }
-        .opt-btn {
-            background: #f0f2f5;
-            border: 2px solid #ddd;
-            padding: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: 0.2s;
+        /* Logic Card (The Educational Soul) */
+        .logic-card {
+            background: var(--mint-light);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(127, 182, 133, 0.1);
         }
+        .logic-badge {
+            display: inline-block; background: var(--mint-primary); color: white;
+            padding: 4px 12px; border-radius: 8px; font-size: 10px; font-weight: bold; margin-bottom: 10px;
+        }
+        .logic-text { font-size: 15px; font-weight: 700; color: #445e47; line-height: 1.4; }
 
-        .opt-btn.correct { background-color: var(--green) !important; color: white; border-color: #2e7d32; }
-        .opt-btn.wrong { background-color: var(--red) !important; color: white; border-color: #b71c1c; }
-        .disabled { pointer-events: none; }
+        /* Question Area */
+        .question-box {
+            flex: 0 0 auto; margin-bottom: 30px; text-align: center;
+        }
+        .question-text { font-size: 32px; font-weight: 700; color: var(--text-main); }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        /* Answer Stack */
+        .answer-stack { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .ans-btn {
+            background: white; border: 2px solid #e2e8f0; padding: 20px; border-radius: 20px;
+            font-family: 'Comfortaa'; font-size: 18px; font-weight: bold; cursor: pointer;
+            transition: all 0.2s; text-align: center; color: var(--text-main);
+        }
+        .ans-btn:hover { border-color: var(--mint-primary); background: #f0fff4; }
+        .ans-btn:active { transform: scale(0.96); }
+
+        /* General UI */
+        .btn-large {
+            background: var(--mint-primary); color: white; border: none; padding: 22px;
+            border-radius: 25px; font-family: 'Comfortaa'; font-size: 20px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(127, 182, 133, 0.3);
+        }
+        .score-display { font-size: 100px; font-weight: 700; color: var(--mint-primary); margin: 20px 0; }
+        .feedback-text { color: #718096; font-size: 18px; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-<div id="quiz-container">
-    <div id="opening-screen" class="screen active">
-        <h1>GEOMETRY MISSION</h1>
-        <p>10 Verified Levels • Accurate Visuals & Labels</p>
-        <button class="btn-main" onclick="startQuiz()">START MISSION</button>
-    </div>
-
-    <div id="question-screen" class="screen">
-        <div id="progress" style="font-weight: bold; color: var(--red); margin-bottom: 5px;"></div>
-        <h3 id="q-text" style="margin: 10px 0;"></h3>
-        <div class="diagram-box" id="diagram-container"></div>
-        <div id="options-container" class="options"></div>
-        <button id="next-btn" class="btn-main" style="display:none;" onclick="goNext()">NEXT LEVEL</button>
-    </div>
-
-    <div id="review-screen" class="screen">
-        <h2>Mission Summary</h2>
-        <div id="final-score" style="font-size: 2.5em; margin: 15px 0;"></div>
-        <div style="max-height: 250px; overflow-y: auto;">
-            <table>
-                <thead><tr><th>No</th><th>Result</th><th>Key</th></tr></thead>
-                <tbody id="review-body"></tbody>
-            </table>
+    <div class="app-shell">
+        <div id="scr-start" class="screen active" style="justify-content: center; text-align: center;">
+            <div style="font-size: 70px; margin-bottom: 20px;">🎒</div>
+            <h1 style="color: var(--mint-primary); margin: 0 0 10px;">Misi Sigma</h1>
+            <p style="color: #a0aec0; margin-bottom: 40px;">Taklukkan angka dengan trik cerdas!</p>
+            <button class="btn-large" onclick="startQuiz()">Mulai Belajar</button>
         </div>
-        <button class="btn-main" onclick="location.reload()">RESTART</button>
+
+        <div id="scr-quiz" class="screen">
+            <div class="nav-header">
+                <div class="progress-container">
+                    <span id="step-info" style="font-size: 14px; font-weight: bold;">1/15</span>
+                    <div class="progress-track"><div class="progress-fill" id="pb"></div></div>
+                </div>
+            </div>
+
+            <div class="logic-card">
+                <div class="logic-badge" id="l-badge">TRIK</div>
+                <div class="logic-text" id="l-text">...</div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text" id="q-text">...</div>
+            </div>
+
+            <div class="answer-stack" id="ans-container"></div>
+        </div>
+
+        <div id="scr-result" class="screen" style="justify-content: center; text-align: center;">
+            <h2 style="margin: 0;">Misi Selesai!</h2>
+            <div class="score-display" id="final-score">0</div>
+            <p class="feedback-text" id="feedback-msg"></p>
+            <button class="btn-large" style="background: var(--pink-accent); box-shadow: none; margin-top: 20px;" onclick="location.reload()">Coba Lagi</button>
+        </div>
     </div>
-</div>
 
 <script>
     const quizData = [
-        {
-            q: "ABCD is a parallelogram. If ∠ABC = 135°, find the size of ∠BCD.",
-            options: ["45°", "135°", "180°", "60°"], correct: 0,
-            diagram: `<svg viewBox="0 0 240 120">
-                <polygon points="20,20 150,20 220,100 90,100" class="shape"/>
-                <text x="5" y="25" class="point-label">A</text><text x="155" y="25" class="point-label">B</text>
-                <text x="225" y="115" class="point-label">C</text><text x="75" y="115" class="point-label">D</text>
-                <text x="120" y="45" class="angle-label">135°</text></svg>`
-        },
-        {
-            q: "In an isosceles triangle ABC (AB = AC), if ∠A = 40°, find the base angle ∠B.",
-            options: ["40°", "70°", "140°", "80°"], correct: 1,
-            diagram: `<svg viewBox="0 0 200 160">
-                <polygon points="100,20 50,130 150,130" class="shape"/>
-                <text x="92" y="15" class="point-label">A</text><text x="30" y="145" class="point-label">B</text><text x="155" y="145" class="point-label">C</text>
-                <text x="88" y="60" class="angle-label">40°</text></svg>`
-        },
-        {
-            q: "WXYZ is a trapezium (WX // ZY). If ∠W = 120°, find the size of ∠Z.",
-            options: ["120°", "60°", "180°", "90°"], correct: 1,
-            diagram: `<svg viewBox="0 0 240 130">
-                <polygon points="60,20 190,20 220,100 20,100" class="shape"/>
-                <text x="45" y="25" class="point-label">W</text><text x="195" y="25" class="point-label">X</text>
-                <text x="225" y="115" class="point-label">Y</text><text x="5" y="115" class="point-label">Z</text>
-                <text x="65" y="55" class="angle-label">120°</text></svg>`
-        },
-        {
-            q: "In Rhombus PQRS, ∠PQR = 110°. Find ∠QPR (PR is a diagonal).",
-            options: ["110°", "70°", "35°", "55°"], correct: 2,
-            diagram: `<svg viewBox="0 0 200 140">
-                <polygon points="100,10 180,70 100,130 20,70" class="shape"/>
-                <line x1="100" y1="10" x2="100" y2="130" class="line" style="stroke-dasharray:5"/>
-                <text x="92" y="5" class="point-label">P</text><text x="185" y="75" class="point-label">Q</text>
-                <text x="105" y="150" class="point-label">R</text><text x="5" y="75" class="point-label">S</text>
-                <text x="145" y="75" class="angle-label">110°</text></svg>`
-        },
-        {
-            q: "In rectangle ABCD, diagonal AC creates ∠BAC = 30°. Find ∠DAC.",
-            options: ["30°", "60°", "90°", "45°"], correct: 1,
-            diagram: `<svg viewBox="0 0 240 120">
-                <rect x="30" y="20" width="180" height="80" class="shape"/>
-                <line x1="30" y1="100" x2="210" y2="20" class="line"/>
-                <text x="10" y="115" class="point-label">A</text><text x="215" y="115" class="point-label">B</text>
-                <text x="215" y="25" class="point-label">C</text><text x="10" y="25" class="point-label">D</text>
-                <text x="60" y="90" class="angle-label">30°</text></svg>`
-        },
-        {
-            q: "A right-angled triangle ABC has ∠B = 90° and ∠A = 35°. Find ∠C.",
-            options: ["55°", "35°", "90°", "145°"], correct: 0,
-            diagram: `<svg viewBox="0 0 160 130">
-                <polygon points="40,20 40,110 150,110" class="shape"/>
-                <text x="32" y="15" class="point-label">A</text><text x="20" y="125" class="point-label">B</text><text x="155" y="125" class="point-label">C</text>
-                <text x="45" y="45" class="angle-label">35°</text></svg>`
-        },
-        {
-            q: "Kite ABCD has ∠A = 100° and ∠C = 40°. Find ∠B (where ∠B = ∠D).",
-            options: ["110°", "140°", "70°", "100°"], correct: 0,
-            diagram: `<svg viewBox="0 0 200 160">
-                <polygon points="100,10 160,60 100,150 40,60" class="shape"/>
-                <text x="92" y="10" class="point-label">A</text><text x="165" y="65" class="point-label">B</text>
-                <text x="92" y="170" class="point-label">C</text><text x="15" y="65" class="point-label">D</text>
-                <text x="90" y="45" class="angle-label">100°</text><text x="90" y="130" class="angle-label">40°</text></svg>`
-        },
-        {
-            q: "In square ABCD, diagonals AC and BD intersect at point O. Find ∠AOB.",
-            options: ["45°", "60°", "90°", "180°"], correct: 2,
-            diagram: `<svg viewBox="0 0 140 140">
-                <rect x="20" y="20" width="100" height="100" class="shape"/>
-                <line x1="20" y1="20" x2="120" y2="120" class="line"/><line x1="120" y1="20" x2="20" y2="100" class="line"/>
-                <text x="10" y="20" class="point-label">A</text><text x="125" y="20" class="point-label">B</text>
-                <text x="65" y="75" class="point-label">O</text></svg>`
-        },
-        {
-            q: "Triangle ABC is equilateral. Find the size of interior angle ∠BAC.",
-            options: ["60°", "90°", "180°", "45°"], correct: 0,
-            diagram: `<svg viewBox="0 0 140 120">
-                <polygon points="70,20 20,110 120,110" class="shape"/>
-                <text x="65" y="15" class="point-label">A</text><text x="5" y="125" class="point-label">B</text><text x="125" y="125" class="point-label">C</text></svg>`
-        },
-        {
-            q: "Straight line ABC is intersected by line BD. If ∠ABD = 150°, find ∠DBC.",
-            options: ["30°", "150°", "180°", "60°"], correct: 0,
-            diagram: `<svg viewBox="0 0 220 110">
-                <line x1="10" y1="90" x2="210" y2="90" class="line"/>
-                <line x1="110" y1="90" x2="160" y2="30" class="line"/>
-                <text x="10" y="105" class="point-label">A</text><text x="105" y="105" class="point-label">B</text>
-                <text x="210" y="105" class="point-label">C</text><text x="165" y="30" class="point-label">D</text>
-                <text x="75" y="80" class="angle-label">150°</text></svg>`
-        }
+        // STRUKTUR: DASAR -> TRIK NOL (TURUN) -> PEMBAGIAN (NAIK) -> REALITA
+        { q: "4 x 6 = ...", t: "Logika Dasar", l: "Sama dengan menjumlahkan angka 6 sebanyak 4 kali.", a: ["20", "24", "28", "10"], c: "24" },
+        { q: "7 x 3 = ...", t: "Logika Dasar", l: "Bayangkan ada 3 kelompok, masing-masing isi 7.", a: ["21", "18", "24", "25"], c: "21" },
+        { q: "8 x 2 = ...", t: "Logika Dasar", l: "Angka 8 yang menjadi dua kali lipat!", a: ["14", "16", "18", "10"], c: "16" },
+
+        { q: "5 x 10 = ...", t: "Trik Turun Tangga", l: "Turun 1 tangga = Tempelkan satu hadiah '0' di belakang angka.", a: ["5", "15", "50", "500"], c: "50" },
+        { q: "3 x 100 = ...", t: "Trik Turun Tangga", l: "Turun 2 tangga = Tempelkan dua hadiah '00' di belakang.", a: ["30", "300", "33", "3000"], c: "300" },
+        { q: "4 x 20 = ...", t: "Trik Simpan Nol", l: "Kalikan 4 x 2 dulu, lalu tempelkan nol yang disimpan.", a: ["60", "80", "100", "42"], c: "80" },
+
+        { q: "30 x 30 = ...", t: "Double Power", l: "Kalikan 3 x 3, lalu tempelkan dua nol yang disimpan.", a: ["90", "900", "60", "9000"], c: "900" },
+        { q: "60 x 5 = ...", t: "Simpan Nol", l: "6 x 5 adalah 30, lalu jangan lupa tempel nol-nya!", a: ["30", "110", "300", "350"], c: "300" },
+        { q: "20 x 8 = ...", t: "Simpan Nol", l: "2 x 8 dulu, baru tempel nol di belakangnya.", a: ["16", "100", "160", "180"], c: "160" },
+
+        { q: "90 : 10 = ...", t: "Trik Naik Tangga", l: "Naik 1 tangga = Hapus satu angka nol yang sama.", a: ["9", "90", "1", "19"], c: "9" },
+        { q: "200 : 20 = ...", t: "Coret Adil", l: "Coret satu nol di kiri dan kanan, lalu hitung 20 : 2.", a: ["10", "2", "20", "100"], c: "10" },
+        { q: "400 : 100 = ...", t: "Trik Naik Tangga", l: "Naik 2 tangga = Hapus dua angka nol yang sama.", a: ["4", "40", "400", "44"], c: "4" },
+
+        { q: "Ada 4 ikat balon, tiap ikat isi 20. Berapa total balon?", t: "Soal Cerita", l: "Gunakan trik 4 x 2, lalu tempel nol-nya.", a: ["60", "80", "100", "24"], c: "80" },
+        { q: "Ibu punya 50 permen untuk 5 anak. Satu anak dapat?", t: "Soal Cerita", l: "Gunakan trik 50 : 5 (Coret atau bagi angka depannya).", a: ["5", "10", "15", "50"], c: "10" },
+        { q: "3 baris meja, tiap baris ada 10 meja. Totalnya?", t: "Soal Cerita", l: "Turun satu tangga dari angka 3!", a: ["13", "30", "300", "3"], c: "30" }
     ];
 
-    let currentQ = 0;
+    let currentIdx = 0;
     let score = 0;
-    let history = [];
 
     function startQuiz() {
-        document.getElementById('opening-screen').classList.remove('active');
-        document.getElementById('question-screen').classList.add('active');
+        document.getElementById('scr-start').classList.remove('active');
+        document.getElementById('scr-quiz').classList.add('active');
         renderQuestion();
     }
 
     function renderQuestion() {
-        const item = quizData[currentQ];
-        document.getElementById('progress').innerText = `LEVEL ${currentQ + 1} / 10`;
-        document.getElementById('q-text').innerText = item.q;
-        document.getElementById('diagram-container').innerHTML = item.diagram;
-        document.getElementById('next-btn').style.display = 'none';
-        
-        const optDiv = document.getElementById('options-container');
-        optDiv.innerHTML = '';
-        item.options.forEach((opt, index) => {
+        const data = quizData[currentIdx];
+        document.getElementById('step-info').innerText = (currentIdx + 1) + "/15";
+        document.getElementById('pb').style.width = (currentIdx / quizData.length * 100) + "%";
+        document.getElementById('l-badge').innerText = data.t;
+        document.getElementById('l-text').innerText = data.l;
+        document.getElementById('q-text').innerText = data.q;
+
+        const container = document.getElementById('ans-container');
+        container.innerHTML = "";
+        data.a.sort(() => Math.random() - 0.5).forEach(choice => {
             const btn = document.createElement('button');
-            btn.className = 'opt-btn';
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(btn, index);
-            optDiv.appendChild(btn);
+            btn.className = 'ans-btn';
+            btn.innerText = choice;
+            btn.onclick = () => handleAnswer(choice);
+            container.appendChild(btn);
         });
     }
 
-    function checkAnswer(btn, selected) {
-        const correct = quizData[currentQ].correct;
-        const allBtns = document.querySelectorAll('.opt-btn');
-        allBtns.forEach(b => b.classList.add('disabled'));
-
-        if (selected === correct) {
-            btn.classList.add('correct');
-            score++;
-            history.push({ status: 'PASS', key: quizData[currentQ].options[correct] });
-        } else {
-            btn.classList.add('wrong');
-            allBtns[correct].classList.add('correct');
-            history.push({ status: 'FAIL', key: quizData[currentQ].options[correct] });
-        }
-        document.getElementById('next-btn').style.display = 'inline-block';
+    function handleAnswer(selected) {
+        if(selected === quizData[currentIdx].c) score++;
+        currentIdx++;
+        if(currentIdx < quizData.length) renderQuestion();
+        else showFinal();
     }
 
-    function goNext() {
-        if (currentQ < 9) {
-            currentQ++;
-            renderQuestion();
-        } else {
-            showReview();
-        }
-    }
-
-    function showReview() {
-        document.getElementById('question-screen').classList.remove('active');
-        document.getElementById('review-screen').classList.add('active');
-        document.getElementById('final-score').innerText = `${score} / 10`;
-        const body = document.getElementById('review-body');
-        body.innerHTML = '';
-        history.forEach((h, i) => {
-            body.innerHTML += `<tr><td>${i+1}</td><td style="color:${h.status==='PASS'?'green':'red'}">${h.status}</td><td>${h.key}</td></tr>`;
-        });
+    function showFinal() {
+        document.getElementById('scr-quiz').classList.remove('active');
+        document.getElementById('scr-result').classList.add('active');
+        const finalPercent = Math.round((score / quizData.length) * 100);
+        document.getElementById('final-score').innerText = finalPercent;
+        
+        let msg = "Terus semangat belajar, ya!";
+        if(finalPercent === 100) msg = "Luar Biasa! Kamu adalah Master Angka Sigma! 🌟";
+        else if(finalPercent >= 80) msg = "Keren sekali! Logika berhitungmu sangat tajam. ✨";
+        
+        document.getElementById('feedback-msg').innerText = msg;
     }
 </script>
 </body>
